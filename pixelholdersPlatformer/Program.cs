@@ -1,4 +1,6 @@
-﻿namespace pixelholdersPlatformer
+﻿using pixelholdersPlatformer.classes;
+
+namespace pixelholdersPlatformer
 {
     internal class Program
     {
@@ -6,7 +8,7 @@
         {
             Game game = new Game();
 
-
+            game.StartGame();
         }
     }
 }
