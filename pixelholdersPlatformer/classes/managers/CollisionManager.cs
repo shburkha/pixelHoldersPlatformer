@@ -1,6 +1,6 @@
 ﻿namespace pixelholdersPlatformer.classes.managers;
 
-public class CollisionManger
+public class CollisionManager
 {
     
 }

@@ -10,5 +10,8 @@ public class RenderingComponent : IComponent
         BoundingBox = new SDL_Rect();
     }
 
-
+    public void Update()
+    {
+        
+    }
 };

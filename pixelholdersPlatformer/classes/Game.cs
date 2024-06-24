@@ -16,6 +16,7 @@ public class Game
     Stopwatch stopwatch = new Stopwatch();
     private bool _quit;
 
+    private Player _player;
 
     private double _frameInterval;
     private RenderManager _renderManager;
@@ -26,22 +27,20 @@ public class Game
         _inputManager = new InputManager();
         gameObjects = new List<GameObject>();
         _quit = false;
+
         GameObject object1 = new GameObject(51.2f, 51, 2, 2);
-        object1.AddComponent(new RenderingComponent());
         GameObject object2 = new GameObject(51, 51, 2, 2);
-        object2.AddComponent(new RenderingComponent());
         GameObject object3 = new GameObject(45, 51, 2, 2);
-        object3.AddComponent(new RenderingComponent());
         GameObject object4 = new GameObject(45.7f, 51, 2, 2);
-        object4.AddComponent(new RenderingComponent());
         GameObject object5 = new GameObject(0, 0, 100, 100);
-        object5.AddComponent(new RenderingComponent());
+        _player = new Player(55, 55, 1, 1);
 
         gameObjects.Add(object1);
         gameObjects.Add(object2);
         gameObjects.Add(object3);
         gameObjects.Add(object4);
         gameObjects.Add(object5);
+        gameObjects.Add(_player);
 
         _renderManager.SetGameObjects(gameObjects);
 
@@ -89,13 +88,14 @@ public class Game
             switch (inputs[i])
             {
                 case InputTypes.PlayerLeft:
-                    //_player.Move('left');
+                    _player.MovePlayerX(-1);
                     break;
                 case InputTypes.PlayerRight:
-                    //_player.Move('right');
+                    _player.MovePlayerX(1);
+
                     break;
                 case InputTypes.PlayerJump:
-                    //_player.Jump();
+                    _player.MovePlayerY(-1);
                     break;
                 case InputTypes.Quit:
                     _quit = true;
@@ -128,12 +128,16 @@ public class Game
 
     private void update()
     {
-
+        foreach (GameObject gameObject in gameObjects)
+        {
+            gameObject.Update();
+        }
     }
 
     private void render()
     {
         _renderManager.WipeScreen();
         _renderManager.RenderGameObjects();
+        
     }
 }
