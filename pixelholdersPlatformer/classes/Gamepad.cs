@@ -1,4 +1,4 @@
-﻿﻿using SharpDX.DirectInput;
+﻿using SharpDX.DirectInput;
 namespace pixelholdersPlatformer.classes;
 
 public class Gamepad
