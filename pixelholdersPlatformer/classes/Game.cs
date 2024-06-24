@@ -1,4 +1,5 @@
-﻿using pixelholdersPlatformer.classes.gameObjects;
+﻿using pixelholdersPlatformer.classes.Component;
+using pixelholdersPlatformer.classes.gameObjects;
 using pixelholdersPlatformer.classes.managers;
 using pixelholdersPlatformer.gameObjects;
 using SDL2;
@@ -13,19 +14,40 @@ public class Game
     private List<GameObject> gameObjects;
 
     Stopwatch stopwatch = new Stopwatch();
+    private bool _quit;
+
 
     private double _frameInterval;
     private RenderManager _renderManager;
+    private InputManager _inputManager;
     public Game()
     {
         _renderManager = new RenderManager();
+        _inputManager = new InputManager();
         gameObjects = new List<GameObject>();
+        _quit = false;
+        GameObject object1 = new GameObject(51.2f, 51, 2, 2);
+        object1.AddComponent(new RenderingComponent());
+        GameObject object2 = new GameObject(51, 51, 2, 2);
+        object2.AddComponent(new RenderingComponent());
+        GameObject object3 = new GameObject(45, 51, 2, 2);
+        object3.AddComponent(new RenderingComponent());
+        GameObject object4 = new GameObject(45.7f, 51, 2, 2);
+        object4.AddComponent(new RenderingComponent());
+        GameObject object5 = new GameObject(0, 0, 100, 100);
+        object5.AddComponent(new RenderingComponent());
 
-        gameObjects.Add(new GameObject(51, 51, 2, 2));
-        gameObjects.Add(new GameObject(45, 50, 2, 2));
-        gameObjects.Add(new GameObject(0, 0, 100, 100));
+        gameObjects.Add(object1);
+        gameObjects.Add(object2);
+        gameObjects.Add(object3);
+        gameObjects.Add(object4);
+        gameObjects.Add(object5);
+
+        _renderManager.SetGameObjects(gameObjects);
+
         SDL_DisplayMode _displayMode;
         SDL_GetCurrentDisplayMode(0, out _displayMode);
+
         int _refreshRate = _displayMode.refresh_rate;
         double targetFPS = _refreshRate * 1.0d;
         _frameInterval = 1000d / targetFPS;
@@ -37,8 +59,15 @@ public class Game
 
     public void StartGame()
     {
-        while (true)
+        SDL_Event e;
+
+        while (SDL_PollEvent(out e) != 0 || !_quit)
         {
+            if (e.type == SDL_EventType.SDL_QUIT)
+            {
+                _quit = true;
+            }
+
             double timeElapsed = (double)stopwatch.ElapsedMilliseconds;
             if (timeElapsed > _frameInterval)
             {
@@ -53,54 +82,49 @@ public class Game
 
     private void processInput()
     {
-        int numKeys;
-        IntPtr keyStatePtr = SDL.SDL_GetKeyboardState(out numKeys);
-        byte[] keyState = new byte[numKeys];
-        System.Runtime.InteropServices.Marshal.Copy(keyStatePtr, keyState, 0, numKeys);
-        int w = keyState[(int)SDL.SDL_Scancode.SDL_SCANCODE_W];
-        int a = keyState[(int)SDL.SDL_Scancode.SDL_SCANCODE_A];
-        int s = keyState[(int)SDL.SDL_Scancode.SDL_SCANCODE_S];
-        int d = keyState[(int)SDL.SDL_Scancode.SDL_SCANCODE_D];
-        int plus = keyState[(int)SDL.SDL_Scancode.SDL_SCANCODE_KP_PLUS];
-        int minus = keyState[(int)SDL.SDL_Scancode.SDL_SCANCODE_KP_MINUS];
-        int r = keyState[(int)SDL.SDL_Scancode.SDL_SCANCODE_R];
-        if (w != 0)
-        {
-            _renderManager.MoveCamera(0, -1);
-        }
-        if (s != 0)
-        {
-            _renderManager.MoveCamera(0, 1);
-        }
-        if (a != 0)
-        {
-            _renderManager.MoveCamera(-1, 0);
-        }
+        List<InputTypes> inputs = _inputManager.GetInputs();
 
-        if (d != 0)
+        for (int i = 0; i < inputs.Count; i++)
         {
-            _renderManager.MoveCamera(1, 0);
-        }
-        if (r != 0)
-        {
-            _renderManager.SwitchRenderMode();
-        }
-        if(plus != 0) 
-        {
-            _renderManager.Zoom(-5);
-        }
-        if(minus != 0) 
-        {
-            _renderManager.Zoom(5);
-        }
+            switch (inputs[i])
+            {
+                case InputTypes.PlayerLeft:
+                    //_player.Move('left');
+                    break;
+                case InputTypes.PlayerRight:
+                    //_player.Move('right');
+                    break;
+                case InputTypes.PlayerJump:
+                    //_player.Jump();
+                    break;
+                case InputTypes.Quit:
+                    _quit = true;
+                    break;
+                case InputTypes.CameraRenderMode:
+                    _renderManager.SwitchRenderMode();
+                    break;
+                case InputTypes.CameraUp:
+                    _renderManager.MoveCamera(0, -1);
+                    break;
+                case InputTypes.CameraDown:
+                    _renderManager.MoveCamera(0, 1);
+                    break;
+                case InputTypes.CameraLeft:
+                    _renderManager.MoveCamera(-1, 0);
+                    break;
+                case InputTypes.CameraRight:
+                    _renderManager.MoveCamera(1, 0);
+                    break;
+                case InputTypes.CameraZoomIn:
+                    _renderManager.Zoom(-2);
+                    break;
+                case InputTypes.CameraZoomOut:
+                    _renderManager.Zoom(2);
+                    break;
 
-        SDL_Event e;
-        while (SDL_PollEvent(out e) != 0)
-        {
-
-        } 
+            }
+        }
     }
-        
 
     private void update()
     {
@@ -109,11 +133,7 @@ public class Game
 
     private void render()
     {
-        _renderManager.wipeScreen();
-        foreach (GameObject gameObject in gameObjects) 
-        {            
-            _renderManager.RenderGameObject(gameObject);
-
-        }
+        _renderManager.WipeScreen();
+        _renderManager.RenderGameObjects();
     }
 }

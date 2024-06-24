@@ -10,9 +10,7 @@ namespace pixelholdersPlatformer
             SDL_Init(SDL_INIT_EVERYTHING);
 
             Game game = new Game();
-           
             game.StartGame();
-
 
         }
     }
