@@ -21,10 +21,13 @@ public class Game
     private double _frameInterval;
     private RenderManager _renderManager;
     private InputManager _inputManager;
+    private CollisionManager _collisionManager;
     public Game()
     {
         _renderManager = new RenderManager();
         _inputManager = new InputManager();
+        _collisionManager = new CollisionManager();
+
         gameObjects = new List<GameObject>();
         _quit = false;
 
@@ -33,6 +36,11 @@ public class Game
         GameObject object3 = new GameObject(45, 51, 2, 2);
         GameObject object4 = new GameObject(45.7f, 51, 2, 2);
         GameObject object5 = new GameObject(0, 0, 100, 100);
+        GameObject platform = new GameObject(50, 50, 10, 1);
+        platform.AddComponent(new MovableComponent(platform));
+        platform.AddComponent(new PhysicsComponent(platform));
+        platform.AddComponent(new CollisionComponent(platform));
+
         _player = new Player(55, 55, 1, 1);
 
         gameObjects.Add(object1);
@@ -40,9 +48,11 @@ public class Game
         gameObjects.Add(object3);
         gameObjects.Add(object4);
         gameObjects.Add(object5);
+        gameObjects.Add(platform);
         gameObjects.Add(_player);
 
         _renderManager.SetGameObjects(gameObjects);
+        _collisionManager.SetGameObjects(gameObjects);
 
         SDL_DisplayMode _displayMode;
         SDL_GetCurrentDisplayMode(0, out _displayMode);
@@ -132,6 +142,7 @@ public class Game
         {
             gameObject.Update();
         }
+        _collisionManager.HandleCollision();
     }
 
     private void render()

@@ -46,9 +46,9 @@ public class RenderManager
         _camera = new GameObject(50, 50, 20, 15);
         _map = new GameObject(0, 0, 100, 100);
 
-        _alwaysRender = false;
+        _alwaysRender = true;
 
-        _zoomLevel = 1;
+        _zoomLevel = 10;
         _scaleX = (int)(_defaultScreenWidth / _camera.Width) / _zoomLevel;
         _scaleY = (int)(_defaultScreenWidth / _camera.Width) / _zoomLevel;
         _offsetX = (int)((_defaultScreenWidth / 2) - (_camera.Width/2)*_scaleX);

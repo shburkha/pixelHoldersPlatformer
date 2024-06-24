@@ -15,6 +15,7 @@ public class PhysicsComponent : IComponent
     public PhysicsComponent(GameObject owner)
     {
         _owner = owner;
+        IsFallable = false;
     }
 
     public void SetVelocity(float amountX, float amountY)
@@ -36,26 +37,30 @@ public class PhysicsComponent : IComponent
 
     }
 
-    bool isColliding = true;
+    //A player is Fallable, but a platform is not
+    public bool IsFallable { get; set; }
+
     public void Update()
     {
-        if (_owner.CoordY >= 100 - _owner.Height)
+        if (IsFallable)
         {
-            _owner.CoordY = 100 - _owner.Height;
-            if (_velocity.Y > 0 ) 
+            if (_owner.CoordY >= 100 - _owner.Height)
             {
-                _velocity.Y = 0;
+                _owner.CoordY = 100 - _owner.Height;
+                if (_velocity.Y > 0)
+                {
+                    _velocity.Y = 0;
+                }
+
             }
-            
-            
-        }
-        else
-        {
-            //TODO: not make it frame dependent
-            _velocity.Y += (float)_gravity * 0.016f;
+            else
+            {
+                //TODO: not make it frame dependent
+                _velocity.Y += (float)_gravity * 0.016f;
+
+            }
         }
         
-
         ((MovableComponent)_owner.Components.Where(t => t.GetType().Name == "MovableComponent").First()).MoveGameObject(_velocity.X, _velocity.Y);
         SetVelocityX(0);
 

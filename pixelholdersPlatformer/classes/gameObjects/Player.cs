@@ -11,6 +11,10 @@ public class Player : GameObject
         this.CoordY = 50;
         this.Components.Add(new MovableComponent(this));
         this.Components.Add(new PhysicsComponent(this));
+        this.Components.Add(new CollisionComponent(this));
+        ((PhysicsComponent)Components.Where(t => t.GetType().Name == "PhysicsComponent").First()).IsFallable = true;
+
+
     }
 
     public void MovePlayer(float amountX, float amountY)
