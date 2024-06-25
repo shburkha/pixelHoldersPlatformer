@@ -31,24 +31,26 @@ public class Game
         gameObjects = new List<GameObject>();
         _quit = false;
 
-        GameObject object1 = new GameObject(51.2f, 51, 2, 2);
-        GameObject object2 = new GameObject(51, 51, 2, 2);
-        GameObject object3 = new GameObject(45, 51, 2, 2);
-        GameObject object4 = new GameObject(45.7f, 51, 2, 2);
-        GameObject object5 = new GameObject(0, 0, 100, 100);
+        GameObject border = new GameObject(0, 0, 100, 100);
         GameObject platform = new GameObject(50, 50, 10, 1);
         platform.AddComponent(new MovableComponent(platform));
         platform.AddComponent(new PhysicsComponent(platform));
         platform.AddComponent(new CollisionComponent(platform));
+        GameObject wall = new GameObject(50, 40, 1, 10);
+        wall.AddComponent(new MovableComponent(wall));
+        wall.AddComponent(new PhysicsComponent(wall));
+        wall.AddComponent(new CollisionComponent(wall));
+        GameObject ceiling = new GameObject(50, 55, 10, 1);
+        ceiling.AddComponent(new MovableComponent(ceiling));
+        ceiling.AddComponent(new PhysicsComponent(ceiling));
+        ceiling.AddComponent(new CollisionComponent(ceiling));
+        _player = new Player(52, 51, 1, 1);
 
-        _player = new Player(55, 55, 1, 1);
 
-        gameObjects.Add(object1);
-        gameObjects.Add(object2);
-        gameObjects.Add(object3);
-        gameObjects.Add(object4);
-        gameObjects.Add(object5);
+        gameObjects.Add(border);
         gameObjects.Add(platform);
+        gameObjects.Add(ceiling);
+        //gameObjects.Add(wall);
         gameObjects.Add(_player);
 
         _renderManager.SetGameObjects(gameObjects);
@@ -98,10 +100,10 @@ public class Game
             switch (inputs[i])
             {
                 case InputTypes.PlayerLeft:
-                    _player.MovePlayerX(-1);
+                    _player.MovePlayerX(-0.5f);
                     break;
                 case InputTypes.PlayerRight:
-                    _player.MovePlayerX(1);
+                    _player.MovePlayerX(0.5f);
 
                     break;
                 case InputTypes.PlayerJump:
@@ -114,22 +116,22 @@ public class Game
                     _renderManager.SwitchRenderMode();
                     break;
                 case InputTypes.CameraUp:
-                    _renderManager.MoveCamera(0, -1);
+                    _renderManager.MoveCamera(0, -0.5f);
                     break;
                 case InputTypes.CameraDown:
-                    _renderManager.MoveCamera(0, 1);
+                    _renderManager.MoveCamera(0, 0.5f);
                     break;
                 case InputTypes.CameraLeft:
-                    _renderManager.MoveCamera(-1, 0);
+                    _renderManager.MoveCamera(-0.5f, 0);
                     break;
                 case InputTypes.CameraRight:
-                    _renderManager.MoveCamera(1, 0);
+                    _renderManager.MoveCamera(0.5f, 0);
                     break;
                 case InputTypes.CameraZoomIn:
-                    _renderManager.Zoom(-2);
+                    _renderManager.Zoom(-1);
                     break;
                 case InputTypes.CameraZoomOut:
-                    _renderManager.Zoom(2);
+                    _renderManager.Zoom(1);
                     break;
 
             }

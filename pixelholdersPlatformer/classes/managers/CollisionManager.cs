@@ -1,5 +1,6 @@
 ﻿using pixelholdersPlatformer.classes.Component;
 using pixelholdersPlatformer.classes.gameObjects;
+using System.Numerics;
 
 namespace pixelholdersPlatformer.classes.managers;
 
@@ -17,6 +18,9 @@ public class CollisionManager
         
     }
 
+
+    private float overlapX;
+    private float overlapY;
     public void HandleCollision()
     { 
         foreach(GameObject gameObject in gameObjects) 
@@ -30,26 +34,37 @@ public class CollisionManager
                     {
                         if (isColliding(gameObject, other))
                         {
-                            ((CollisionComponent)gameObject.Components.Where(t => t.GetType().Name == "CollisionComponent").First()).Collide();
+                              ((CollisionComponent)gameObject.Components.Where(t => t.GetType().Name == "CollisionComponent").First()).Collide(overlapX, overlapY);
+
                         }
+                        overlapX = 0;
+                        overlapY = 0;
                     }
                 }
             }
         }
     }
 
-
+    
     private bool isColliding(GameObject gameObject, GameObject other)
     {
 
         if (((CollisionComponent)gameObject.Components.Where(t => t.GetType().Name == "CollisionComponent").First()).IsCollidable && ((CollisionComponent)other.Components.Where(t => t.GetType().Name == "CollisionComponent").First()).IsCollidable)
         {
 
-            if (gameObject.CoordX + gameObject.Width >= other.CoordX &&
-            gameObject.CoordX <= other.CoordX + other.Width &&
-            gameObject.CoordY + gameObject.Height >= other.CoordY &&
-            gameObject.CoordY <= other.CoordY + other.Height)
+
+            Vector2 velocity = ((PhysicsComponent)gameObject.Components.Where(t => t.GetType().Name == "PhysicsComponent").First()).Velocity;
+            if (gameObject.CoordX + gameObject.Width + velocity.X > other.CoordX &&
+                gameObject.CoordX + velocity.X < other.CoordX + other.Width &&
+                gameObject.CoordY + gameObject.Height + velocity.Y > other.CoordY &&
+                gameObject.CoordY < other.CoordY + other.Height)
             {
+
+                
+
+
+                overlapX = other.CoordX + other.Width - gameObject.CoordX;
+                overlapY = gameObject.CoordY + gameObject.Height - other.CoordY;
 
                 return true;
             }

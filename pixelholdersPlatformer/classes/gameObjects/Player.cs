@@ -7,8 +7,6 @@ public class Player : GameObject
 {
     public Player(float coordX, float coordY, float width, float height) : base(coordX, coordY, width, height)
     {
-        this.CoordX = 50;
-        this.CoordY = 50;
         this.Components.Add(new MovableComponent(this));
         this.Components.Add(new PhysicsComponent(this));
         this.Components.Add(new CollisionComponent(this));

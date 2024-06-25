@@ -10,7 +10,7 @@ public class PhysicsComponent : IComponent
 
     private const double _gravity = 9.8d;
 
-    private Vector2 _velocity;
+    public Vector2 Velocity;
 
     public PhysicsComponent(GameObject owner)
     {
@@ -20,20 +20,20 @@ public class PhysicsComponent : IComponent
 
     public void SetVelocity(float amountX, float amountY)
     {
-        _velocity.X = amountX;
-        _velocity.Y = amountY;
+        Velocity.X = amountX;
+        Velocity.Y = amountY;
 
     }
 
     public void SetVelocityX(float amountX)
     {
-        _velocity.X = amountX;
+        Velocity.X = amountX;
 
 
     }
     public void SetVelocityY(float amountY)
     {
-        _velocity.Y = amountY;
+        Velocity.Y = amountY;
 
     }
 
@@ -47,21 +47,21 @@ public class PhysicsComponent : IComponent
             if (_owner.CoordY >= 100 - _owner.Height)
             {
                 _owner.CoordY = 100 - _owner.Height;
-                if (_velocity.Y > 0)
+                if (Velocity.Y > 0)
                 {
-                    _velocity.Y = 0;
+                    Velocity.Y = 0;
                 }
 
             }
             else
             {
                 //TODO: not make it frame dependent
-                _velocity.Y += (float)_gravity * 0.016f;
+                Velocity.Y += (float)_gravity * 0.016f;
 
             }
         }
         
-        ((MovableComponent)_owner.Components.Where(t => t.GetType().Name == "MovableComponent").First()).MoveGameObject(_velocity.X, _velocity.Y);
+        ((MovableComponent)_owner.Components.Where(t => t.GetType().Name == "MovableComponent").First()).MoveGameObject(Velocity.X, Velocity.Y);
         SetVelocityX(0);
 
     }

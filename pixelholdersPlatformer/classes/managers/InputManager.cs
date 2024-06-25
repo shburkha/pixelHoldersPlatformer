@@ -1,10 +1,13 @@
 ﻿using SDL2;
+using System.Diagnostics;
 using static SDL2.SDL;
 
 namespace pixelholdersPlatformer.classes.managers;
 
 public class InputManager
 {
+
+
     public InputManager()
     {
 
