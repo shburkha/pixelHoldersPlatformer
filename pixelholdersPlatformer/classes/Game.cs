@@ -12,7 +12,6 @@ namespace pixelholdersPlatformer;
 
 public class Game
 {
-
     private List<GameObject> gameObjects;
 
     Stopwatch stopwatch = new Stopwatch();
@@ -90,7 +89,6 @@ public class Game
                 Render();
                 stopwatch.Restart();
             }
-
         }
     }
 
@@ -135,18 +133,56 @@ public class Game
                 case InputTypes.CameraZoomOut:
                     _renderManager.Zoom(2);
                     break;
-
             }
         }
+
         if (_gamepad.Joystick != null)
         {
-            _gamepad.ProcessInput();
+            List<InputTypes> gamepadInputs = _inputManager.GetGamepadInputs(_gamepad.Joystick);
+            foreach (var input in gamepadInputs)
+            {
+                switch (input)
+                {
+                    case InputTypes.PlayerLeft:
+                        //_player.Move('left');
+                        break;
+                    case InputTypes.PlayerRight:
+                        //_player.Move('right');
+                        break;
+                    case InputTypes.PlayerJump:
+                        //_player.Jump();
+                        break;
+                    case InputTypes.Quit:
+                        _quit = true;
+                        break;
+                    case InputTypes.CameraRenderMode:
+                        _renderManager.SwitchRenderMode();
+                        break;
+                    case InputTypes.CameraUp:
+                        _renderManager.MoveCamera(0, -1);
+                        break;
+                    case InputTypes.CameraDown:
+                        _renderManager.MoveCamera(0, 1);
+                        break;
+                    case InputTypes.CameraLeft:
+                        _renderManager.MoveCamera(-1, 0);
+                        break;
+                    case InputTypes.CameraRight:
+                        _renderManager.MoveCamera(1, 0);
+                        break;
+                    case InputTypes.CameraZoomIn:
+                        _renderManager.Zoom(-2);
+                        break;
+                    case InputTypes.CameraZoomOut:
+                        _renderManager.Zoom(2);
+                        break;
+                }
+            }
         }
     }
 
     private void Update()
     {
-
     }
 
     private void Render()
