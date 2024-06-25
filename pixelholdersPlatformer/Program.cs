@@ -1,4 +1,7 @@
-﻿using pixelholdersPlatformer.classes;
+using pixelholdersPlatformer.classes;
+
+using static SDL2.SDL;
+
 
 namespace pixelholdersPlatformer
 {
@@ -6,9 +9,11 @@ namespace pixelholdersPlatformer
     {
         static void Main(string[] args)
         {
-            Game game = new Game();
+            SDL_Init(SDL_INIT_EVERYTHING);
 
+            Game game = new Game();
             game.StartGame();
+
         }
     }
 }

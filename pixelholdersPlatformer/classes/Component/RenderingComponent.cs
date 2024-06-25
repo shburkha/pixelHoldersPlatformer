@@ -1,3 +1,14 @@
-﻿namespace pixelholdersPlatformer.classes.Component;
+﻿using static SDL2.SDL;
 
-public class RenderingComponent : IComponent{ };
+namespace pixelholdersPlatformer.classes.Component;
+
+public class RenderingComponent : IComponent
+{
+    public SDL_Rect BoundingBox;
+    public RenderingComponent()
+    {
+        BoundingBox = new SDL_Rect();
+    }
+
+
+};
