@@ -2,5 +2,5 @@
 
 public interface IComponent
 {
-    public void Update() {}
+   void Update();
 }

@@ -42,8 +42,7 @@ public class InputManager
         // TODO prevent crashing when controller is disconnected
         joystick.Poll();
         var state = joystick.GetCurrentState();
-        float normalizedX = ((state.X - 0) / 65535.0f) * 2 - 1; //TODO recheck max values
-        float normalizedY = ((state.Y - 0) / 65535.0f) * 2 - 1; // needed ?
+        float normalizedX = ((state.X - 0) / 65535.0f) * 2 - 1;
         float normalizedCameraX = ((state.RotationX - 0) / 65535.0f) * 2 - 1;
         float normalizedCameraY = ((state.RotationY - 0) / 65535.0f) * 2 - 1;
 

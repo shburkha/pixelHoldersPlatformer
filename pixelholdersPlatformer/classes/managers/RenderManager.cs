@@ -113,7 +113,11 @@ public class RenderManager
     public void RenderGameObjects()
     {
         foreach (GameObject gameObject in gameObjects)
-        { 
+        {
+            if (gameObject.Components.Find(t => t.GetType().Name == "MovableComponent") != null)
+            {
+                setGameObjectBoundingBox(gameObject);
+            }
             drawGameObject(gameObject);
         }
         SDL_RenderPresent(_renderer);
@@ -148,7 +152,6 @@ public class RenderManager
         {
             setGameObjectBoundingBox(gameObject);
         }
-
     }
 
     public void Zoom(int amount)

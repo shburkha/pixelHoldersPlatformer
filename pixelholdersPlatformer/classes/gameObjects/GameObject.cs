@@ -21,6 +21,7 @@ public class GameObject
         this.CoordY = coordY;
         this.Width = width;
         this.Height = height;
+        Components.Add(new RenderingComponent());
     }
 
     public void AddComponent(IComponent component)
