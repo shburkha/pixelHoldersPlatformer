@@ -43,7 +43,7 @@ public class RenderManager
 
         _renderer = SDL_CreateRenderer(_window, -1, SDL_RendererFlags.SDL_RENDERER_ACCELERATED );
 
-        _camera = new GameObject(50, 50, 20, 15);
+        _camera = new GameObject(50, 50, 32, 18);
         _map = new GameObject(0, 0, 100, 100);
 
         _alwaysRender = false;
@@ -142,7 +142,7 @@ public class RenderManager
         }
         if (_camera.CoordY + _camera.Height > _map.Height)
         {
-            _camera.CoordY = _map.Width - _camera.Height;
+            _camera.CoordY = _map.Height - _camera.Height;
         }
         if (_camera.CoordY < 0)
         {
@@ -157,8 +157,7 @@ public class RenderManager
     public void Zoom(int amount)
     {
         _zoomLevel += amount;
-        if (_zoomLevel < 1) _zoomLevel = 1;
-        else if(_zoomLevel >    10) _zoomLevel = 10;
+        _zoomLevel = Math.Clamp(_zoomLevel, 1, 10); //does the same as before, just looks nicer and saves lines
         _scaleX = (int)(_defaultScreenWidth / _camera.Width) / _zoomLevel;
         _scaleY = (int)(_defaultScreenWidth / _camera.Width) / _zoomLevel;
         _offsetX = (int)((_defaultScreenWidth / 2) - (_camera.Width / 2) * _scaleX);
@@ -196,6 +195,10 @@ public class RenderManager
         return false;
     }
 
-    
+    public void SetZoomLevel(int level)
+    {
+        _zoomLevel = level;
+        Zoom(0);
+    }
 
 }

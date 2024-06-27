@@ -116,10 +116,13 @@ public class Game
                     _renderManager.MoveCamera(1, 0);
                     break;
                 case InputTypes.CameraZoomIn:
-                    _renderManager.Zoom(-2);
+                    _renderManager.Zoom(-1);
                     break;
                 case InputTypes.CameraZoomOut:
-                    _renderManager.Zoom(2);
+                    _renderManager.Zoom(1);
+                    break;
+                case InputTypes.CameraSetZoom2:
+                    _renderManager.SetZoomLevel(2);
                     break;
 
             }

@@ -30,6 +30,7 @@ public class InputManager
         if (keyState[(int)SDL_Scancode.SDL_SCANCODE_RIGHT] != 0) { keysPressed.Add(InputTypes.CameraRight); }
         if (keyState[(int)SDL_Scancode.SDL_SCANCODE_KP_PLUS] != 0) { keysPressed.Add(InputTypes.CameraZoomIn); }
         if (keyState[(int)SDL_Scancode.SDL_SCANCODE_KP_MINUS] != 0) { keysPressed.Add(InputTypes.CameraZoomOut); }
+        if (keyState[(int)SDL_Scancode.SDL_SCANCODE_KP_0] != 0) { keysPressed.Add(InputTypes.CameraSetZoom2); }
         return keysPressed;
     }
 
@@ -40,5 +41,5 @@ public class InputManager
 
 public enum InputTypes 
 { 
-    PlayerLeft, PlayerRight, PlayerJump, Quit, CameraRenderMode, CameraUp, CameraDown, CameraLeft, CameraRight, CameraZoomIn, CameraZoomOut
+    PlayerLeft, PlayerRight, PlayerJump, Quit, CameraRenderMode, CameraUp, CameraDown, CameraLeft, CameraRight, CameraZoomIn, CameraZoomOut, CameraSetZoom2
 }
