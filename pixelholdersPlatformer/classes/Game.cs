@@ -92,7 +92,6 @@ public class Game
                     break;
                 case InputTypes.PlayerRight:
                     _player.MovePlayerX(1);
-
                     break;
                 case InputTypes.PlayerJump:
                     _player.MovePlayerY(-1);
