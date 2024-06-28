@@ -202,30 +202,16 @@ public class RenderManager
         Zoom(0);
     }
 
-    public void CenterPlayerInCamera() //TODO: actually keep the player near the center instead of just barely in view
+    public void CenterCameraAroundPlayer()
     {
         var player = gameObjects.Find(t => t.GetType().Name == "Player");
-        
-        if (player == null || isInsideCameraView(player)) { return; }
+
+        if (player == null) { return; }
 
         Vector2 diff = new Vector2 { X = 0, Y = 0 };
 
-        if (_camera.CoordX > player.CoordX + player.Width)
-        {
-            diff.X = player.CoordX - _camera.CoordX;
-        }
-        else if (_camera.CoordX + _camera.Width < player.CoordX)
-        {
-            diff.X = player.CoordX + player.Width - _camera.CoordX - _camera.Width;
-        }
-        if (_camera.CoordY > player.CoordY + player.Height)
-        {
-            diff.Y = player.CoordY - _camera.CoordY;
-        }
-        else if (_camera.CoordY + _camera.Height < player.CoordY)
-        {
-            diff.Y = player.CoordY + player.Height - _camera.CoordY - _camera.Height;
-        }
+        diff.X = (player.CoordX + player.Width / 2 - _camera.Width / 2) - _camera.CoordX;
+        diff.Y = (player.CoordY + player.Height / 2 - _camera.Height / 2) - _camera.CoordY;
 
         MoveCamera(diff.X, diff.Y);
     }

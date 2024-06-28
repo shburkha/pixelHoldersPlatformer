@@ -125,7 +125,7 @@ public class Game
                     _renderManager.SetZoomLevel(2);
                     break;
                 case InputTypes.CameraCenter:
-                    _renderManager.CenterPlayerInCamera();
+                    _renderManager.CenterCameraAroundPlayer();
                     break;
 
             }
@@ -142,7 +142,7 @@ public class Game
 
     private void render()
     {
-        _renderManager.CenterPlayerInCamera();
+        _renderManager.CenterCameraAroundPlayer();
 
         _renderManager.WipeScreen();
         _renderManager.RenderGameObjects();
