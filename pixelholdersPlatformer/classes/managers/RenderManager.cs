@@ -1,5 +1,6 @@
 ﻿using pixelholdersPlatformer.classes.Component;
 using pixelholdersPlatformer.classes.gameObjects;
+using System.Numerics;
 using static SDL2.SDL;
 
 namespace pixelholdersPlatformer.classes.managers;
@@ -201,4 +202,31 @@ public class RenderManager
         Zoom(0);
     }
 
+    public void CenterPlayerInCamera() //TODO: actually keep the player near the center instead of just barely in view
+    {
+        var player = gameObjects.Find(t => t.GetType().Name == "Player");
+        
+        if (player == null || isInsideCameraView(player)) { return; }
+
+        Vector2 diff = new Vector2 { X = 0, Y = 0 };
+
+        if (_camera.CoordX > player.CoordX + player.Width)
+        {
+            diff.X = player.CoordX - _camera.CoordX;
+        }
+        else if (_camera.CoordX + _camera.Width < player.CoordX)
+        {
+            diff.X = player.CoordX + player.Width - _camera.CoordX - _camera.Width;
+        }
+        if (_camera.CoordY > player.CoordY + player.Height)
+        {
+            diff.Y = player.CoordY - _camera.CoordY;
+        }
+        else if (_camera.CoordY + _camera.Height < player.CoordY)
+        {
+            diff.Y = player.CoordY + player.Height - _camera.CoordY - _camera.Height;
+        }
+
+        MoveCamera(diff.X, diff.Y);
+    }
 }

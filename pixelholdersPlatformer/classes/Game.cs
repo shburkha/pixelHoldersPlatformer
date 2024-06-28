@@ -124,6 +124,9 @@ public class Game
                 case InputTypes.CameraSetZoom2:
                     _renderManager.SetZoomLevel(2);
                     break;
+                case InputTypes.CameraCenter:
+                    _renderManager.CenterPlayerInCamera();
+                    break;
 
             }
         }
@@ -139,8 +142,9 @@ public class Game
 
     private void render()
     {
+        _renderManager.CenterPlayerInCamera();
+
         _renderManager.WipeScreen();
         _renderManager.RenderGameObjects();
-        
     }
 }
