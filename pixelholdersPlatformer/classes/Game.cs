@@ -36,10 +36,14 @@ public class Game
         platform.AddComponent(new MovableComponent(platform));
         platform.AddComponent(new PhysicsComponent(platform));
         platform.AddComponent(new CollisionComponent(platform));
-        GameObject wall = new GameObject(50, 40, 1, 10);
+        GameObject wall = new GameObject(50, 52, 1, 3);
         wall.AddComponent(new MovableComponent(wall));
         wall.AddComponent(new PhysicsComponent(wall));
         wall.AddComponent(new CollisionComponent(wall));
+        GameObject wall2 = new GameObject(60, 50, 1, 7);
+        wall2.AddComponent(new MovableComponent(wall2));
+        wall2.AddComponent(new PhysicsComponent(wall2));
+        wall2.AddComponent(new CollisionComponent(wall2));
         GameObject ceiling = new GameObject(50, 55, 10, 2);
         ceiling.AddComponent(new MovableComponent(ceiling));
         ceiling.AddComponent(new PhysicsComponent(ceiling));
@@ -50,7 +54,8 @@ public class Game
         gameObjects.Add(border);
         gameObjects.Add(platform);
         gameObjects.Add(ceiling);
-        //gameObjects.Add(wall);
+        gameObjects.Add(wall);
+        gameObjects.Add(wall2);
         gameObjects.Add(_player);
 
         _renderManager.SetGameObjects(gameObjects);

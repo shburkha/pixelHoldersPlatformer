@@ -66,33 +66,28 @@ public class CollisionManager
                 float player_right = gameObject.CoordX + gameObject.Width;
                 float tiles_right = other.CoordX + other.Width;
 
-                float b_collision = tiles_bottom - gameObject.CoordY;
-                float t_collision = player_bottom - other.CoordY;
-                float l_collision = player_right - other.CoordX;
-                float r_collision = tiles_right - gameObject.CoordX;
+                float top_collision = tiles_bottom - gameObject.CoordY;
+                float bottom_collision = player_bottom - other.CoordY;
+                float right_collision = player_right - other.CoordX;
+                float left_collision = tiles_right - gameObject.CoordX;
 
-                if (t_collision < b_collision && t_collision < l_collision && t_collision < r_collision)
+                float[] collisions = [top_collision, bottom_collision, right_collision, left_collision];
+
+                if (collisions.Min() == bottom_collision)
                 {
-                    //Top collision
-
-
                     overlapY = gameObject.CoordY + gameObject.Height - other.CoordY;
                 }
-                if (b_collision < t_collision && b_collision < l_collision && b_collision < r_collision)
+                if (collisions.Min() == top_collision)
                 {
-
-                    //bottom collision (bottom of the tile so ceiling collision)
                     overlapY = -1 * (other.CoordY + other.Height - gameObject.CoordY);
                 }
-                if (l_collision < r_collision && l_collision < t_collision && l_collision < b_collision)
+                if (collisions.Min() == right_collision)
                 {
-                    //Left collision
-
+                    overlapX = gameObject.CoordX + gameObject.Width - other.CoordX;
                 }
-                if (r_collision < l_collision && r_collision < t_collision && r_collision < b_collision)
+                if (collisions.Min() == left_collision)
                 {
-                    //Right collision
-
+                    overlapX = -1 * (other.CoordX + other.Width - gameObject.CoordX);
                 }
 
 

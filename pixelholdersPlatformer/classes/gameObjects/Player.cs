@@ -13,7 +13,8 @@ public class Player : GameObject
         this.Components.Add(new MovableComponent(this));
         this.Components.Add(new PhysicsComponent(this));
         this.Components.Add(new CollisionComponent(this));
-        ((PhysicsComponent)Components.Where(t => t.GetType().Name == "PhysicsComponent").First()).IsFallable = true;
+        ((PhysicsComponent)Components.Where(t => t.GetType().Name == "PhysicsComponent").First()).HasGravity = true;
+        ((PhysicsComponent)Components.Where(t => t.GetType().Name == "PhysicsComponent").First()).CanMove = true;
         startPosX = coordX;
         startPosY = coordY;
 

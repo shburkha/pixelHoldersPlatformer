@@ -16,7 +16,8 @@ public class PhysicsComponent : IComponent
     public PhysicsComponent(GameObject owner)
     {
         _owner = owner;
-        IsFallable = false;
+        HasGravity = false;
+        CanMove = false;
     }
 
     public void SetVelocity(float amountX, float amountY)
@@ -38,13 +39,14 @@ public class PhysicsComponent : IComponent
 
     }
 
-    //A player is Fallable, but a platform is not
-    public bool IsFallable { get; set; }
+    //A player has gravity, but a platform does not
+    public bool HasGravity { get; set; }
 
+    public bool CanMove { get; set; }
    
     public void Update()
     {
-        if (IsFallable)
+        if (HasGravity)
         {
             if (_owner.CoordY >= 100 - _owner.Height)
             {
