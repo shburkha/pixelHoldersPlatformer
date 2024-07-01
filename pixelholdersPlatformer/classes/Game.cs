@@ -109,10 +109,10 @@ public class Game
                 case InputTypes.PlayerJump:
                     if (((PhysicsComponent)_player.Components.Where(t => t.GetType().Name == "PhysicsComponent").First()).Velocity.Y == 0)
                     {
-                        _player.MovePlayerY(-2);
+                        _player.MovePlayerY(-1);
                     }
-                    
                     break;
+
                 case InputTypes.Quit:
                     _quit = true;
                     break;

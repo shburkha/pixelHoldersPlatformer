@@ -74,15 +74,15 @@ public class CollisionManager
                 if (t_collision < b_collision && t_collision < l_collision && t_collision < r_collision)
                 {
                     //Top collision
-                    
-                    
-                    overlapY = other.CoordY - (gameObject.CoordY + gameObject.Height);
+
+
+                    overlapY = gameObject.CoordY + gameObject.Height - other.CoordY;
                 }
                 if (b_collision < t_collision && b_collision < l_collision && b_collision < r_collision)
                 {
 
                     //bottom collision (bottom of the tile so ceiling collision)
-                    overlapY = other.CoordY + other.Height - gameObject.CoordY;
+                    overlapY = -1 * (other.CoordY + other.Height - gameObject.CoordY);
                 }
                 if (l_collision < r_collision && l_collision < t_collision && l_collision < b_collision)
                 {
