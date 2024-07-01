@@ -12,6 +12,8 @@ public class PhysicsComponent : IComponent
     private const double AIR_RESISTANCE = 1.5d;
     private const double FRICTION = 5.0d;
 
+    public double DeltaT = 0.016d;
+
     private Vector2 _velocity;
 
     public PhysicsComponent(GameObject owner)
@@ -47,8 +49,7 @@ public class PhysicsComponent : IComponent
         }
         else
         {
-            //TODO: not make it frame dependent
-            _velocity.Y += (float)GRAVITY * 0.016f;
+            _velocity.Y += (float)(GRAVITY * DeltaT);
         }
 
         if (_owner.CoordX != Math.Clamp(_owner.CoordX, 0, 100 - _owner.Width))
@@ -63,20 +64,18 @@ public class PhysicsComponent : IComponent
         else
         {
             if (_velocity.Y == 0) {
-                //TODO: not make it frame dependent
-                _velocity.X -= Math.Sign(_velocity.X) * (float)FRICTION * 0.016f;
+                _velocity.X -= Math.Sign(_velocity.X) * (float)(FRICTION * DeltaT);
 
-                if (Math.Abs(_velocity.X) < (float)FRICTION * 0.016f)
+                if (Math.Abs(_velocity.X) < (float)(FRICTION * DeltaT))
                 {
                     _velocity.X = 0;
                 }
             }
             else
             {
-                //TODO: not make it frame dependent
-                _velocity.X -= Math.Sign(_velocity.X) * (float)AIR_RESISTANCE * 0.016f;
+                _velocity.X -= Math.Sign(_velocity.X) * (float)(AIR_RESISTANCE * DeltaT);
 
-                if (Math.Abs(_velocity.X) < (float)AIR_RESISTANCE * 0.016f)
+                if (Math.Abs(_velocity.X) < (float)(AIR_RESISTANCE * DeltaT))
                 {
                     _velocity.X = 0;
                 }

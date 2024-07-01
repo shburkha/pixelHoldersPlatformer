@@ -10,13 +10,14 @@ namespace pixelholdersPlatformer;
 
 public class Game
 {
-
     private List<GameObject> gameObjects;
 
     Stopwatch stopwatch = new Stopwatch();
     private bool _quit;
 
     private Player _player;
+
+    private double _deltaT;
 
     private double _frameInterval;
     private RenderManager _renderManager;
@@ -55,7 +56,6 @@ public class Game
 
     }
 
-
     public void StartGame()
     {
         SDL_Event e;
@@ -70,6 +70,7 @@ public class Game
             double timeElapsed = (double)stopwatch.ElapsedMilliseconds;
             if (timeElapsed > _frameInterval)
             {
+                _deltaT = timeElapsed;
                 processInput();
                 update();
                 render();
@@ -135,6 +136,10 @@ public class Game
     {
         foreach (GameObject gameObject in gameObjects)
         {
+            if (gameObject.GetType().Name == "Player")
+            {
+                ((Player)gameObject).SetDeltaTime(_deltaT/1000d);
+            }
             gameObject.Update();
         }
     }

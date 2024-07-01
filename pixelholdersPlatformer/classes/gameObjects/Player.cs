@@ -32,4 +32,8 @@ public class Player : GameObject
         CoordY = 50;
     }
 
+    public void SetDeltaTime(double dt)
+    {
+        ((PhysicsComponent)Components.Where(t => t.GetType().Name == "PhysicsComponent").First()).DeltaT = dt;
+    }
 }
