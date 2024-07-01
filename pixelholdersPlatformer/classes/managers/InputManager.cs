@@ -48,17 +48,25 @@ public class InputManager
 
         List<InputTypes> keysPressed = new List<InputTypes>();
 
+        // left stick input
         if (normalizedX < -0.1) keysPressed.Add(InputTypes.PlayerLeft);
+        if (normalizedX < -0.8) keysPressed.Add(InputTypes.PlayerLeft);
         if (normalizedX > 0.1) keysPressed.Add(InputTypes.PlayerRight);
+        if (normalizedX > 0.8) keysPressed.Add(InputTypes.PlayerRight);
         if (state.Buttons[0])keysPressed.Add(InputTypes.PlayerJump); // Cross
         if (state.Buttons[1]) keysPressed.Add(InputTypes.Quit); // Circle
         if (state.Buttons[2]) keysPressed.Add(InputTypes.CameraRenderMode); // Square
         if (state.Buttons[5]) keysPressed.Add(InputTypes.CameraZoomIn); // Right shoulder
         if (state.Buttons[4]) keysPressed.Add(InputTypes.CameraZoomOut); // Left shoulder
+        // right stick input
         if (normalizedCameraX < -0.1) keysPressed.Add(InputTypes.CameraLeft);
+        if (normalizedCameraX < -0.8) keysPressed.Add(InputTypes.CameraLeft);
         if (normalizedCameraX > 0.1) keysPressed.Add(InputTypes.CameraRight);
+        if (normalizedCameraX > 0.8) keysPressed.Add(InputTypes.CameraRight);
         if (normalizedCameraY < -0.1) keysPressed.Add(InputTypes.CameraUp);
+        if (normalizedCameraY < -0.8) keysPressed.Add(InputTypes.CameraUp);
         if (normalizedCameraY > 0.1) keysPressed.Add(InputTypes.CameraDown);
+        if (normalizedCameraY > 0.8) keysPressed.Add(InputTypes.CameraDown);
         return keysPressed;
     }
 

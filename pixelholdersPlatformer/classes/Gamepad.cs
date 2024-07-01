@@ -31,6 +31,7 @@ public class Gamepad
             }
         }
 
+        if (joystickGuid == Guid.Empty) return; // this fixes crash when no gamepad is connected
         Joystick = new Joystick(_directInput, joystickGuid);
         Joystick.Properties.BufferSize = 128;
         Joystick.Acquire();
