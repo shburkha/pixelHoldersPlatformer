@@ -10,13 +10,14 @@ namespace pixelholdersPlatformer;
 
 public class Game
 {
-
     private List<GameObject> gameObjects;
 
     Stopwatch stopwatch = new Stopwatch();
     private bool _quit;
 
     private Player _player;
+
+    private double _deltaT;
 
     private double _frameInterval;
     private RenderManager _renderManager;
@@ -72,7 +73,6 @@ public class Game
 
     }
 
-
     public void StartGame()
     {
         SDL_Event e;
@@ -87,6 +87,7 @@ public class Game
             double timeElapsed = (double)stopwatch.ElapsedMilliseconds;
             if (timeElapsed > _frameInterval)
             {
+                _deltaT = timeElapsed;
                 processInput();
                 update();
                 render();
@@ -109,7 +110,6 @@ public class Game
                     break;
                 case InputTypes.PlayerRight:
                     _player.MovePlayerX(0.5f);
-
                     break;
                 case InputTypes.PlayerJump:
                     if (((PhysicsComponent)_player.Components.Where(t => t.GetType().Name == "PhysicsComponent").First()).Velocity.Y == 0)
@@ -117,15 +117,12 @@ public class Game
                         _player.MovePlayerY(-1);
                     }
                     break;
-
                 case InputTypes.Quit:
                     _quit = true;
                     break;
-
                 case InputTypes.ResetPlayerPos:
                     _player.ResetPlayerPosition();
                     break;
-
                 case InputTypes.CameraRenderMode:
                     _renderManager.SwitchRenderMode();
                     break;
@@ -147,6 +144,13 @@ public class Game
                 case InputTypes.CameraZoomOut:
                     _renderManager.Zoom(1);
                     break;
+                case InputTypes.CameraSetZoom2:
+                    _renderManager.SetZoomLevel(2);
+                    break;
+                case InputTypes.CameraCenter:
+                    _renderManager.CenterCameraAroundPlayer();
+                    _renderManager.Zoom(1);
+                    break;
 
             }
         }
@@ -156,6 +160,10 @@ public class Game
     {
         foreach (GameObject gameObject in gameObjects)
         {
+            if (gameObject.GetType().Name == "Player")
+            {
+                ((Player)gameObject).SetDeltaTime(_deltaT/1000d);
+            }
             gameObject.Update();
         }
         _collisionManager.HandleCollision();
@@ -163,8 +171,9 @@ public class Game
 
     private void render()
     {
+        _renderManager.CenterCameraAroundPlayer();
+
         _renderManager.WipeScreen();
         _renderManager.RenderGameObjects();
-        
     }
 }

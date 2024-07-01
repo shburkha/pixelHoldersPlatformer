@@ -8,8 +8,12 @@ public class PhysicsComponent : IComponent
 
     private GameObject _owner;
 
-    private const double _gravity = 4d;
     private const float _terminalVelocityY = 1;
+    private const double GRAVITY = 5.5d;
+    private const double AIR_RESISTANCE = 1.5d;
+    private const double FRICTION = 5.0d;
+
+    public double DeltaT = 0.016d;
 
     public Vector2 Velocity;
 
@@ -43,7 +47,7 @@ public class PhysicsComponent : IComponent
     public bool HasGravity { get; set; }
 
     public bool CanMove { get; set; }
-   
+
     public void Update()
     {
         if (HasGravity)
@@ -59,17 +63,39 @@ public class PhysicsComponent : IComponent
             }
             else
             {
-                //TODO: not make it frame dependent
-                if(Velocity.Y < _terminalVelocityY) 
-                
-                {
-                    Velocity.Y += (float)_gravity * 0.016f;
-                }
-                
+                Velocity.Y += (float)(GRAVITY * DeltaT);
+            }
 
+            if (_owner.CoordX != Math.Clamp(_owner.CoordX, 0, 100 - _owner.Width))
+            {
+                _owner.CoordX = Math.Clamp(_owner.CoordX, 0, 100 - _owner.Width);
+
+                if (Velocity.X != 0)
+                {
+                    Velocity.X = 0;
+                }
+            }
+            else
+            {
+                if (Velocity.Y == 0) {
+                    Velocity.X -= Math.Sign(Velocity.X) * (float)(FRICTION * DeltaT);
+
+                    if (Math.Abs(Velocity.X) < (float)(FRICTION * DeltaT))
+                    {
+                        Velocity.X = 0;
+                    }
+                }
+                else
+                {
+                    Velocity.X -= Math.Sign(Velocity.X) * (float)(AIR_RESISTANCE * DeltaT);
+
+                    if (Math.Abs(Velocity.X) < (float)(AIR_RESISTANCE * DeltaT))
+                    {
+                        Velocity.X = 0;
+                    }
+                }
             }
         }
-        
         ((MovableComponent)_owner.Components.Where(t => t.GetType().Name == "MovableComponent").First()).MoveGameObject(Velocity.X, Velocity.Y);
         SetVelocityX(0);
 
