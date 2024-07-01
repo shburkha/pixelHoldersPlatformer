@@ -19,6 +19,8 @@ public class Game
 
     private Player _player;
 
+    private double _deltaT;
+
     private double _frameInterval;
     private RenderManager _renderManager;
     private InputManager _inputManager;
@@ -41,7 +43,6 @@ public class Game
         GameObject object3 = new GameObject(45, 51, 2, 2);
         GameObject object4 = new GameObject(45.7f, 51, 2, 2);
         GameObject object5 = new GameObject(0, 0, 100, 100);
-
         _player = new Player(55, 55, 1, 1);
 
         gameObjects.Add(object1);
@@ -76,6 +77,7 @@ public class Game
             double timeElapsed = (double)stopwatch.ElapsedMilliseconds;
             if (timeElapsed > _frameInterval)
             {
+                _deltaT = timeElapsed;
                 ProcessInput();
                 Update();
                 Render();
@@ -120,10 +122,16 @@ public class Game
                     _renderManager.MoveCamera(1, 0);
                     break;
                 case InputTypes.CameraZoomIn:
-                    _renderManager.Zoom(-2);
+                    _renderManager.Zoom(-1);
                     break;
                 case InputTypes.CameraZoomOut:
-                    _renderManager.Zoom(2);
+                    _renderManager.Zoom(1);
+                    break;
+                case InputTypes.CameraSetZoom2:
+                    _renderManager.SetZoomLevel(2);
+                    break;
+                case InputTypes.CameraCenter:
+                    _renderManager.CenterCameraAroundPlayer();
                     break;
             }
         }
@@ -177,12 +185,18 @@ public class Game
     {
         foreach (GameObject gameObject in gameObjects)
         {
+            if (gameObject.GetType().Name == "Player")
+            {
+                ((Player)gameObject).SetDeltaTime(_deltaT/1000d);
+            }
             gameObject.Update();
         }
     }
 
     private void Render()
     {
+        _renderManager.CenterCameraAroundPlayer();
+
         _renderManager.WipeScreen();
         _renderManager.RenderGameObjects();
     }

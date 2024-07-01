@@ -2,6 +2,7 @@
 using pixelholdersPlatformer.classes.gameObjects;
 using SDL2;
 using TiledCSPlus;
+using System.Numerics;
 using static SDL2.SDL;
 
 namespace pixelholdersPlatformer.classes.managers;
@@ -48,10 +49,9 @@ public class RenderManager
 
         _renderer = SDL_CreateRenderer(_window, -1, SDL_RendererFlags.SDL_RENDERER_ACCELERATED);
 
-        _camera = new GameObject(50, 50, 20, 15);
+        _camera = new GameObject(50, 50, 32, 18);
         _border = new GameObject(0, 0, 100, 100);
         _map = new GameObject(0, 0, 100, 50);
-        
 
         _alwaysRender = false;
 
@@ -81,7 +81,7 @@ public class RenderManager
         {
             SetGameObjectBoundingBox(gameObject);
         }
-       
+
     }
 
     private void SetGameObjectBoundingBox(GameObject gameObject)
@@ -111,12 +111,11 @@ public class RenderManager
         //first, we check if the gameObject is inside the camera's view
         if (_alwaysRender || IsInsideCameraView(gameObject))
         {
-
             SDL_SetRenderDrawColor(_renderer, 255, 255, 255, 255);
             SDL_RenderDrawRect(_renderer,
                 ref ((RenderingComponent)gameObject.Components.Where(t => t.GetType().Name == "RenderingComponent")
                     .First()).BoundingBox);
-            
+
         }
     }
 
@@ -133,8 +132,6 @@ public class RenderManager
             {
                 SetGameObjectBoundingBox(gameObject);
             }
-
-
             DrawGameObject(gameObject);
         }
         SDL_RenderPresent(_renderer);
@@ -153,22 +150,18 @@ public class RenderManager
         {
             _camera.CoordX = _border.Width - _camera.Width;
         }
-
         if (_camera.CoordX < 0)
         {
             _camera.CoordX = 0;
         }
-
         if (_camera.CoordY + _camera.Height > _border.Height)
         {
             _camera.CoordY = _border.Width - _camera.Height;
         }
-
         if (_camera.CoordY < 0)
         {
             _camera.CoordY = 0;
         }
-
         foreach (GameObject gameObject in gameObjects)
         {
             SetGameObjectBoundingBox(gameObject);
@@ -178,8 +171,7 @@ public class RenderManager
     public void Zoom(int amount)
     {
         _zoomLevel += amount;
-        if (_zoomLevel < 1) _zoomLevel = 1;
-        else if (_zoomLevel > 10) _zoomLevel = 10;
+        _zoomLevel = Math.Clamp(_zoomLevel, 1, 10); //does the same as before, just looks nicer and saves lines
         _scaleX = (int)(_defaultScreenWidth / _camera.Width) / _zoomLevel;
         _scaleY = (int)(_defaultScreenWidth / _camera.Width) / _zoomLevel;
         _offsetX = (int)((_defaultScreenWidth / 2) - (_camera.Width / 2) * _scaleX);
@@ -213,5 +205,25 @@ public class RenderManager
             return true;
 
         return false;
+    }
+
+    public void SetZoomLevel(int level)
+    {
+        _zoomLevel = level;
+        Zoom(0);
+    }
+
+    public void CenterCameraAroundPlayer()
+    {
+        var player = gameObjects.Find(t => t.GetType().Name == "Player");
+
+        if (player == null) { return; }
+
+        Vector2 diff = new Vector2 { X = 0, Y = 0 };
+
+        diff.X = (player.CoordX + player.Width / 2 - _camera.Width / 2) - _camera.CoordX;
+        diff.Y = (player.CoordY + player.Height / 2 - _camera.Height / 2) - _camera.CoordY;
+
+        MoveCamera(diff.X, diff.Y);
     }
 }
