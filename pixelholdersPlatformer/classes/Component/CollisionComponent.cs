@@ -28,7 +28,14 @@ namespace pixelholdersPlatformer.classes.Component
             if (overlapY != 0f && ((PhysicsComponent)_owner.Components.Where(t => t.GetType().Name == "PhysicsComponent").First()).HasGravity)
             {
                 ((MovableComponent)_owner.Components.Where(t => t.GetType().Name == "MovableComponent").First()).MoveGameObject(0, -overlapY);
-                ((PhysicsComponent)_owner.Components.Where(t => t.GetType().Name == "PhysicsComponent").First()).Velocity.Y = 0;
+                if (((PhysicsComponent)_owner.Components.Where(t => t.GetType().Name == "PhysicsComponent").First()).Velocity.Y < 0)
+                {
+                    ((PhysicsComponent)_owner.Components.Where(t => t.GetType().Name == "PhysicsComponent").First()).Velocity.Y = 0.001f;
+                }
+                else
+                {
+                    ((PhysicsComponent)_owner.Components.Where(t => t.GetType().Name == "PhysicsComponent").First()).Velocity.Y = 0;
+                }
             }
             if (overlapX != 0f && ((PhysicsComponent)_owner.Components.Where(t => t.GetType().Name == "PhysicsComponent").First()).CanMove)
             {

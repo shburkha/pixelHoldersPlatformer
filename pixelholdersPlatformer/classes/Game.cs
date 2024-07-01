@@ -36,11 +36,11 @@ public class Game
         platform.AddComponent(new MovableComponent(platform));
         platform.AddComponent(new PhysicsComponent(platform));
         platform.AddComponent(new CollisionComponent(platform));
-        GameObject wall = new GameObject(50, 52, 1, 3);
+        GameObject wall = new GameObject(49.5f, 50, 1, 7);
         wall.AddComponent(new MovableComponent(wall));
         wall.AddComponent(new PhysicsComponent(wall));
         wall.AddComponent(new CollisionComponent(wall));
-        GameObject wall2 = new GameObject(60, 50, 1, 7);
+        GameObject wall2 = new GameObject(59.5f, 50, 1, 7);
         wall2.AddComponent(new MovableComponent(wall2));
         wall2.AddComponent(new PhysicsComponent(wall2));
         wall2.AddComponent(new CollisionComponent(wall2));
