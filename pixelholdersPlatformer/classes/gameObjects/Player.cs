@@ -5,13 +5,17 @@ namespace pixelholdersPlatformer.gameObjects;
 
 public class Player : GameObject
 {
+
+    private float startPosX;
+    private float startPosY;
     public Player(float coordX, float coordY, float width, float height) : base(coordX, coordY, width, height)
     {
         this.Components.Add(new MovableComponent(this));
         this.Components.Add(new PhysicsComponent(this));
         this.Components.Add(new CollisionComponent(this));
         ((PhysicsComponent)Components.Where(t => t.GetType().Name == "PhysicsComponent").First()).IsFallable = true;
-
+        startPosX = coordX;
+        startPosY = coordY;
 
     }
 
@@ -30,8 +34,8 @@ public class Player : GameObject
 
     public void ResetPlayerPosition()
     {
-        CoordX = 50;
-        CoordY = 50;
+        CoordX = startPosX;
+        CoordY = startPosY;
     }
 
 }

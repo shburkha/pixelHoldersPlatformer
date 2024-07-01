@@ -32,7 +32,7 @@ public class Game
         _quit = false;
 
         GameObject border = new GameObject(0, 0, 100, 100);
-        GameObject platform = new GameObject(50, 50, 10, 1);
+        GameObject platform = new GameObject(50, 50, 10, 2);
         platform.AddComponent(new MovableComponent(platform));
         platform.AddComponent(new PhysicsComponent(platform));
         platform.AddComponent(new CollisionComponent(platform));
@@ -40,11 +40,11 @@ public class Game
         wall.AddComponent(new MovableComponent(wall));
         wall.AddComponent(new PhysicsComponent(wall));
         wall.AddComponent(new CollisionComponent(wall));
-        GameObject ceiling = new GameObject(50, 55, 10, 1);
+        GameObject ceiling = new GameObject(50, 55, 10, 2);
         ceiling.AddComponent(new MovableComponent(ceiling));
         ceiling.AddComponent(new PhysicsComponent(ceiling));
         ceiling.AddComponent(new CollisionComponent(ceiling));
-        _player = new Player(52, 51, 1, 1);
+        _player = new Player(52, 52, 1, 1);
 
 
         gameObjects.Add(border);
@@ -116,6 +116,11 @@ public class Game
                 case InputTypes.Quit:
                     _quit = true;
                     break;
+
+                case InputTypes.ResetPlayerPos:
+                    _player.ResetPlayerPosition();
+                    break;
+
                 case InputTypes.CameraRenderMode:
                     _renderManager.SwitchRenderMode();
                     break;

@@ -28,17 +28,10 @@ namespace pixelholdersPlatformer.classes.Component
             if (((PhysicsComponent)_owner.Components.Where(t => t.GetType().Name == "PhysicsComponent").First()).IsFallable)
             {
 
-                Vector2 velocity = ((PhysicsComponent)_owner.Components.Where(t => t.GetType().Name == "PhysicsComponent").First()).Velocity;
-
-                ((MovableComponent)_owner.Components.Where(t => t.GetType().Name == "MovableComponent").First()).MoveGameObject(0, -overlapY);
-                ((PhysicsComponent)_owner.Components.Where(t => t.GetType().Name == "PhysicsComponent").First()).SetVelocityY(-9.8f * 0.016f);
-
-
-
-
+                //((MovableComponent)_owner.Components.Where(t => t.GetType().Name == "MovableComponent").First()).MoveGameObject(0, -overlapY);
+                ((PhysicsComponent)_owner.Components.Where(t => t.GetType().Name == "PhysicsComponent").First()).SetVelocityY(-overlapY);
             }
         }
-
         public void Update()
         {
             

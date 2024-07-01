@@ -8,7 +8,8 @@ public class PhysicsComponent : IComponent
 
     private GameObject _owner;
 
-    private const double _gravity = 9.8d;
+    private const double _gravity = 4d;
+    private const float _terminalVelocityY = 1;
 
     public Vector2 Velocity;
 
@@ -40,6 +41,7 @@ public class PhysicsComponent : IComponent
     //A player is Fallable, but a platform is not
     public bool IsFallable { get; set; }
 
+   
     public void Update()
     {
         if (IsFallable)
@@ -56,7 +58,12 @@ public class PhysicsComponent : IComponent
             else
             {
                 //TODO: not make it frame dependent
-                Velocity.Y += (float)_gravity * 0.016f;
+                if(Velocity.Y < _terminalVelocityY) 
+                
+                {
+                    Velocity.Y += (float)_gravity * 0.016f;
+                }
+                
 
             }
         }
