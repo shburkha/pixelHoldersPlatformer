@@ -25,7 +25,12 @@ public class RenderManager
     private nint _renderer;
 
     private GameObject _camera;
+    private GameObject _border;
     private GameObject _map;
+
+
+    private IntPtr _mapTexture;
+
 
     private List<GameObject> gameObjects;
 
@@ -44,7 +49,9 @@ public class RenderManager
         _renderer = SDL_CreateRenderer(_window, -1, SDL_RendererFlags.SDL_RENDERER_ACCELERATED);
 
         _camera = new GameObject(50, 50, 20, 15);
-        _map = new GameObject(0, 0, 100, 100);
+        _border = new GameObject(0, 0, 100, 100);
+        _map = new GameObject(0, 0, 100, 50);
+        
 
         _alwaysRender = false;
 
@@ -61,15 +68,20 @@ public class RenderManager
             w = ((int)(_camera.Width * _scaleX)),
             h = ((int)(_camera.Height * _scaleY))
         };
+
+        _mapTexture = SDL_CreateTextureFromSurface(_renderer, SDL_image.IMG_Load("assets/map.png"));
+
     }
 
     public void SetGameObjects(List<GameObject> gameObjects)
     {
         this.gameObjects = gameObjects;
+        gameObjects.Add(_map);
         foreach (GameObject gameObject in gameObjects)
         {
             SetGameObjectBoundingBox(gameObject);
         }
+       
     }
 
     private void SetGameObjectBoundingBox(GameObject gameObject)
@@ -99,33 +111,22 @@ public class RenderManager
         //first, we check if the gameObject is inside the camera's view
         if (_alwaysRender || IsInsideCameraView(gameObject))
         {
-            if (nameof(gameObject) == "map")
-            {
-                var imgPath = "assets/map.png";
 
-                IntPtr img = SDL_image.IMG_Load(imgPath);
-                IntPtr texture = SDL_CreateTextureFromSurface(_renderer, img);
-
-
-                SDL_RenderCopy(_renderer, texture, (nint)null, ref ((RenderingComponent)gameObject.Components.Where(t => t.GetType().Name == "RenderingComponent")
+            SDL_SetRenderDrawColor(_renderer, 255, 255, 255, 255);
+            SDL_RenderDrawRect(_renderer,
+                ref ((RenderingComponent)gameObject.Components.Where(t => t.GetType().Name == "RenderingComponent")
                     .First()).BoundingBox);
-
-                SDL_DestroyTexture(texture);
-                SDL_FreeSurface(img);
-            }
-            else
-            {
-                SDL_SetRenderDrawColor(_renderer, 255, 255, 255, 255);
-                SDL_RenderDrawRect(_renderer,
-                    ref ((RenderingComponent)gameObject.Components.Where(t => t.GetType().Name == "RenderingComponent")
-                        .First()).BoundingBox);
-            }
-
+            
         }
     }
 
     public void RenderGameObjects()
     {
+
+        SDL_RenderCopy(_renderer, _mapTexture, (nint)null, ref ((RenderingComponent)_map.Components.Where(t => t.GetType().Name == "RenderingComponent")
+            .First()).BoundingBox);
+
+
         foreach (GameObject gameObject in gameObjects)
         {
             if (gameObject.Components.Find(t => t.GetType().Name == "RenderingComponent") != null)
@@ -136,8 +137,6 @@ public class RenderManager
 
             DrawGameObject(gameObject);
         }
-
-        //RenderTileMap();
         SDL_RenderPresent(_renderer);
     }
 
@@ -150,9 +149,9 @@ public class RenderManager
     {
         _camera.CoordX += distanceX;
         _camera.CoordY += distanceY;
-        if (_camera.CoordX + _camera.Width > _map.Width)
+        if (_camera.CoordX + _camera.Width > _border.Width)
         {
-            _camera.CoordX = _map.Width - _camera.Width;
+            _camera.CoordX = _border.Width - _camera.Width;
         }
 
         if (_camera.CoordX < 0)
@@ -160,9 +159,9 @@ public class RenderManager
             _camera.CoordX = 0;
         }
 
-        if (_camera.CoordY + _camera.Height > _map.Height)
+        if (_camera.CoordY + _camera.Height > _border.Height)
         {
-            _camera.CoordY = _map.Width - _camera.Height;
+            _camera.CoordY = _border.Width - _camera.Height;
         }
 
         if (_camera.CoordY < 0)
@@ -214,51 +213,5 @@ public class RenderManager
             return true;
 
         return false;
-    }
-
-    private IntPtr LoadTexture(string path)
-    {
-        //The final optimized image
-        var newTexture = IntPtr.Zero;
-
-        //Load image at specified path
-        var loadedSurface = SDL_image.IMG_Load(path);
-        if (loadedSurface == IntPtr.Zero)
-        {
-            Console.WriteLine("Unable to load image {0}! SDL Error: {1}", path, SDL.SDL_GetError());
-        }
-        else
-        {
-            //Create texture from surface pixels
-            newTexture = SDL.SDL_CreateTextureFromSurface(_renderer, loadedSurface);
-            if (newTexture == IntPtr.Zero)
-                Console.WriteLine("Unable to create texture from {0}! SDL Error: {1}", path, SDL.SDL_GetError());
-
-            //Get rid of old loaded surface
-            SDL.SDL_FreeSurface(loadedSurface);
-        }
-
-        return newTexture;
-    }
-
-    public void RenderTileMap()
-    {
-        var imgPath = "assets/map.png";
-
-        IntPtr img = SDL_image.IMG_Load(imgPath);
-        IntPtr texture = SDL_CreateTextureFromSurface(_renderer, img);
-
-        SDL_Rect dstRect = new SDL_Rect
-        {
-            x = 0,
-            y = 0,
-            w = 3200,
-            h = 1504
-        };
-
-        SDL_RenderCopy(_renderer, texture, (nint)null, ref dstRect);
-
-        SDL_DestroyTexture(texture);
-        SDL_FreeSurface(img);
     }
 }
