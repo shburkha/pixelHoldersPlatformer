@@ -120,7 +120,7 @@ namespace pixelholdersPlatformer.classes.managers
                 h = _humanKingSpriteHeight
             };
 
-            IntPtr spriteSurface = SDL_CreateRGBSurfaceWithFormat(0, _humanKingSpriteWidth, _humanKingSpriteHeight, 32, SDL_PIXELFORMAT_RGB332);
+            IntPtr spriteSurface = SDL_CreateRGBSurfaceWithFormat(0, _humanKingSpriteWidth, _humanKingSpriteHeight, 32, SDL_PIXELFORMAT_RGBA4444);
             SDL_BlitSurface(imgSurface, ref spriteRect, spriteSurface, IntPtr.Zero);
             return spriteSurface;
         }
