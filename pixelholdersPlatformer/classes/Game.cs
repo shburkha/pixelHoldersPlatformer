@@ -1,10 +1,12 @@
-﻿using pixelholdersPlatformer.classes.Component;
+using pixelholdersPlatformer.classes.Component;
 using pixelholdersPlatformer.classes.gameObjects;
 using pixelholdersPlatformer.classes.managers;
 using pixelholdersPlatformer.gameObjects;
 using SDL2;
 using System.Diagnostics;
+using pixelholdersPlatformer.classes;
 using static SDL2.SDL;
+using TiledCSPlus;
 
 namespace pixelholdersPlatformer;
 
@@ -22,28 +24,52 @@ public class Game
     private double _frameInterval;
     private RenderManager _renderManager;
     private InputManager _inputManager;
+    private CollisionManager _collisionManager;
+
+    Gamepad _gamepad;
+    TileMapManager _tileMapManager;
+
     public Game()
     {
         _renderManager = new RenderManager();
         _inputManager = new InputManager();
+        _collisionManager = new CollisionManager();
+
         gameObjects = new List<GameObject>();
         _quit = false;
 
-        GameObject object1 = new GameObject(51.2f, 51, 2, 2);
-        GameObject object2 = new GameObject(51, 51, 2, 2);
-        GameObject object3 = new GameObject(45, 51, 2, 2);
-        GameObject object4 = new GameObject(45.7f, 51, 2, 2);
-        GameObject object5 = new GameObject(0, 0, 100, 100);
-        _player = new Player(55, 55, 1, 1);
+        _gamepad = new Gamepad();
+        _tileMapManager = new TileMapManager();
 
-        gameObjects.Add(object1);
-        gameObjects.Add(object2);
-        gameObjects.Add(object3);
-        gameObjects.Add(object4);
-        gameObjects.Add(object5);
+        GameObject border = new GameObject(0, 0, 100, 100);
+        GameObject platform = new GameObject(50, 50, 10, 2);
+        platform.AddComponent(new MovableComponent(platform));
+        platform.AddComponent(new PhysicsComponent(platform));
+        platform.AddComponent(new CollisionComponent(platform));
+        GameObject wall = new GameObject(49.5f, 50, 1, 7);
+        wall.AddComponent(new MovableComponent(wall));
+        wall.AddComponent(new PhysicsComponent(wall));
+        wall.AddComponent(new CollisionComponent(wall));
+        GameObject wall2 = new GameObject(59.5f, 50, 1, 7);
+        wall2.AddComponent(new MovableComponent(wall2));
+        wall2.AddComponent(new PhysicsComponent(wall2));
+        wall2.AddComponent(new CollisionComponent(wall2));
+        GameObject ceiling = new GameObject(50, 55, 10, 2);
+        ceiling.AddComponent(new MovableComponent(ceiling));
+        ceiling.AddComponent(new PhysicsComponent(ceiling));
+        ceiling.AddComponent(new CollisionComponent(ceiling));
+        _player = new Player(52, 52, 1, 1);
+
+
+        gameObjects.Add(border);
+        gameObjects.Add(platform);
+        gameObjects.Add(ceiling);
+        gameObjects.Add(wall);
+        gameObjects.Add(wall2);
         gameObjects.Add(_player);
 
         _renderManager.SetGameObjects(gameObjects);
+        _collisionManager.SetGameObjects(gameObjects);
 
         SDL_DisplayMode _displayMode;
         SDL_GetCurrentDisplayMode(0, out _displayMode);
@@ -52,8 +78,6 @@ public class Game
         double targetFPS = _refreshRate * 1.0d;
         _frameInterval = 1000d / targetFPS;
         stopwatch.Start();
-
-
     }
 
     public void StartGame()
@@ -71,16 +95,15 @@ public class Game
             if (timeElapsed > _frameInterval)
             {
                 _deltaT = timeElapsed;
-                processInput();
-                update();
-                render();
+                ProcessInput();
+                Update();
+                Render();
                 stopwatch.Restart();
             }
-           
         }
     }
 
-    private void processInput()
+    private void ProcessInput()
     {
         List<InputTypes> inputs = _inputManager.GetInputs();
 
@@ -89,31 +112,37 @@ public class Game
             switch (inputs[i])
             {
                 case InputTypes.PlayerLeft:
-                    _player.MovePlayerX(-1);
+                    _player.MovePlayerX(-0.5f);
                     break;
                 case InputTypes.PlayerRight:
-                    _player.MovePlayerX(1);
+                    _player.MovePlayerX(0.5f);
                     break;
                 case InputTypes.PlayerJump:
-                    _player.MovePlayerY(-1);
+                    if (((PhysicsComponent)_player.Components.Where(t => t.GetType().Name == "PhysicsComponent").First()).Velocity.Y == 0)
+                    {
+                        _player.MovePlayerY(-1);
+                    }
                     break;
                 case InputTypes.Quit:
                     _quit = true;
+                    break;
+                case InputTypes.ResetPlayerPos:
+                    _player.ResetPlayerPosition();
                     break;
                 case InputTypes.CameraRenderMode:
                     _renderManager.SwitchRenderMode();
                     break;
                 case InputTypes.CameraUp:
-                    _renderManager.MoveCamera(0, -1);
+                    _renderManager.MoveCamera(0, -0.5f);
                     break;
                 case InputTypes.CameraDown:
-                    _renderManager.MoveCamera(0, 1);
+                    _renderManager.MoveCamera(0, 0.5f);
                     break;
                 case InputTypes.CameraLeft:
                     _renderManager.MoveCamera(-1, 0);
                     break;
                 case InputTypes.CameraRight:
-                    _renderManager.MoveCamera(1, 0);
+                    _renderManager.MoveCamera(0.5f, 0);
                     break;
                 case InputTypes.CameraZoomIn:
                     _renderManager.Zoom(-1);
@@ -126,13 +155,57 @@ public class Game
                     break;
                 case InputTypes.CameraCenter:
                     _renderManager.CenterCameraAroundPlayer();
+                    _renderManager.Zoom(1);
                     break;
+            }
+        }
 
+        if (_gamepad.Joystick != null)
+        {
+            List<InputTypes> gamepadInputs = _inputManager.GetGamepadInputs(_gamepad.Joystick);
+            foreach (var input in gamepadInputs)
+            {
+                switch (input)
+                {
+                    case InputTypes.PlayerLeft:
+                        _player.MovePlayerX(-1);
+                        break;
+                    case InputTypes.PlayerRight:
+                        _player.MovePlayerX(1);
+                        break;
+                    case InputTypes.PlayerJump:
+                        _player.MovePlayerY(-1);
+                        break;
+                    case InputTypes.Quit:
+                        _quit = true;
+                        break;
+                    case InputTypes.CameraRenderMode:
+                        _renderManager.SwitchRenderMode();
+                        break;
+                    case InputTypes.CameraUp:
+                        _renderManager.MoveCamera(0, -1);
+                        break;
+                    case InputTypes.CameraDown:
+                        _renderManager.MoveCamera(0, 1);
+                        break;
+                    case InputTypes.CameraLeft:
+                        _renderManager.MoveCamera(-1, 0);
+                        break;
+                    case InputTypes.CameraRight:
+                        _renderManager.MoveCamera(1, 0);
+                        break;
+                    case InputTypes.CameraZoomIn:
+                        _renderManager.Zoom(-2);
+                        break;
+                    case InputTypes.CameraZoomOut:
+                        _renderManager.Zoom(2);
+                        break;
+                }
             }
         }
     }
 
-    private void update()
+    private void Update()
     {
         foreach (GameObject gameObject in gameObjects)
         {
@@ -142,9 +215,10 @@ public class Game
             }
             gameObject.Update();
         }
+        _collisionManager.HandleCollision();
     }
 
-    private void render()
+    private void Render()
     {
         _renderManager.CenterCameraAroundPlayer();
 

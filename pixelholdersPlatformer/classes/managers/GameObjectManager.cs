@@ -1,4 +1,4 @@
-﻿namespace pixelholdersPlatformer.classes.managers;
+﻿    namespace pixelholdersPlatformer.classes.managers;
 
 public class GameObjectManager
 {

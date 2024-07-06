@@ -1,4 +1,6 @@
-﻿using static SDL2.SDL;
+using pixelholdersPlatformer.classes;
+
+using static SDL2.SDL;
 
 
 namespace pixelholdersPlatformer

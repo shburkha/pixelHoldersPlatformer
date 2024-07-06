@@ -1,5 +1,7 @@
 ﻿using pixelholdersPlatformer.classes.Component;
 using pixelholdersPlatformer.classes.gameObjects;
+using SDL2;
+using TiledCSPlus;
 using System.Numerics;
 using static SDL2.SDL;
 
@@ -7,8 +9,6 @@ namespace pixelholdersPlatformer.classes.managers;
 
 public class RenderManager
 {
-
-
     //let's say that 10px is 1m
     //so the default screen size is 80m by 60m
     private int _defaultScreenWidth = 1280;
@@ -26,15 +26,20 @@ public class RenderManager
     private nint _renderer;
 
     private GameObject _camera;
+    private GameObject _border;
     private GameObject _map;
+
+
+    private IntPtr _mapTexture;
+
 
     private List<GameObject> gameObjects;
 
     private int _zoomLevel;
     private bool _alwaysRender;
+
     public RenderManager()
     {
-
         _window = SDL_CreateWindow("Platformer",
             SDL_WINDOWPOS_CENTERED,
             SDL_WINDOWPOS_CENTERED,
@@ -42,19 +47,20 @@ public class RenderManager
             _defaultScreenHeight,
             SDL_WindowFlags.SDL_WINDOW_SHOWN);
 
-        _renderer = SDL_CreateRenderer(_window, -1, SDL_RendererFlags.SDL_RENDERER_ACCELERATED );
+        _renderer = SDL_CreateRenderer(_window, -1, SDL_RendererFlags.SDL_RENDERER_ACCELERATED);
 
         _camera = new GameObject(50, 50, 32, 18);
-        _map = new GameObject(0, 0, 100, 100);
+        _border = new GameObject(0, 0, 100, 100);
+        _map = new GameObject(0, 0, 100, 50);
 
-        _alwaysRender = false;
+        _alwaysRender = true;
 
-        _zoomLevel = 1;
+        _zoomLevel = 10;
         _scaleX = (int)(_defaultScreenWidth / _camera.Width) / _zoomLevel;
         _scaleY = (int)(_defaultScreenWidth / _camera.Width) / _zoomLevel;
-        _offsetX = (int)((_defaultScreenWidth / 2) - (_camera.Width/2)*_scaleX);
-        _offsetY = (int)((_defaultScreenHeight / 2) - (_camera.Height/2)*_scaleY);
-        
+        _offsetX = (int)((_defaultScreenWidth / 2) - (_camera.Width / 2) * _scaleX);
+        _offsetY = (int)((_defaultScreenHeight / 2) - (_camera.Height / 2) * _scaleY);
+
         _camera_rect = new SDL_Rect
         {
             x = _offsetX,
@@ -63,21 +69,25 @@ public class RenderManager
             h = ((int)(_camera.Height * _scaleY))
         };
 
+        _mapTexture = SDL_CreateTextureFromSurface(_renderer, SDL_image.IMG_Load("assets/map.png"));
+
     }
 
     public void SetGameObjects(List<GameObject> gameObjects)
-    { 
+    {
         this.gameObjects = gameObjects;
+        gameObjects.Add(_map);
         foreach (GameObject gameObject in gameObjects)
         {
-            setGameObjectBoundingBox(gameObject);  
+            SetGameObjectBoundingBox(gameObject);
         }
 
     }
 
-    private void setGameObjectBoundingBox(GameObject gameObject)
-    { 
-        ((RenderingComponent)gameObject.Components.Where(t => t.GetType().Name == "RenderingComponent").First()).BoundingBox = 
+    private void SetGameObjectBoundingBox(GameObject gameObject)
+    {
+        ((RenderingComponent)gameObject.Components.Where(t => t.GetType().Name == "RenderingComponent").First())
+            .BoundingBox =
             new SDL_Rect
             {
                 x = ((int)((gameObject.CoordX - _camera.CoordX) * _scaleX)) + _offsetX,
@@ -85,7 +95,6 @@ public class RenderManager
                 w = ((int)(gameObject.Width * _scaleX)),
                 h = ((int)(gameObject.Height * _scaleY))
             };
-
     }
 
     public void WipeScreen()
@@ -94,38 +103,42 @@ public class RenderManager
         SDL_RenderClear(_renderer);
     }
 
-    private void drawGameObject(GameObject gameObject)
+    private void DrawGameObject(GameObject gameObject)
     {
-
         SDL_SetRenderDrawColor(_renderer, 0, 0, 255, 255);
         SDL_RenderDrawRect(_renderer, ref _camera_rect);
 
         //first, we check if the gameObject is inside the camera's view
-        if (_alwaysRender || isInsideCameraView(gameObject))
+        if (_alwaysRender || IsInsideCameraView(gameObject))
         {
-            
             SDL_SetRenderDrawColor(_renderer, 255, 255, 255, 255);
-            SDL_RenderDrawRect(_renderer, ref ((RenderingComponent)gameObject.Components.Where(t => t.GetType().Name == "RenderingComponent").First()).BoundingBox);            
+            SDL_RenderDrawRect(_renderer,
+                ref ((RenderingComponent)gameObject.Components.Where(t => t.GetType().Name == "RenderingComponent")
+                    .First()).BoundingBox);
 
         }
-
     }
 
     public void RenderGameObjects()
     {
+
+        SDL_RenderCopy(_renderer, _mapTexture, (nint)null, ref ((RenderingComponent)_map.Components.Where(t => t.GetType().Name == "RenderingComponent")
+            .First()).BoundingBox);
+
+
         foreach (GameObject gameObject in gameObjects)
         {
-            if (gameObject.Components.Find(t => t.GetType().Name == "MovableComponent") != null)
+            if (gameObject.Components.Find(t => t.GetType().Name == "RenderingComponent") != null)
             {
-                setGameObjectBoundingBox(gameObject);
+                SetGameObjectBoundingBox(gameObject);
             }
-            drawGameObject(gameObject);
+            DrawGameObject(gameObject);
         }
         SDL_RenderPresent(_renderer);
     }
 
     public void SwitchRenderMode()
-    { 
+    {
         _alwaysRender = !_alwaysRender;
     }
 
@@ -133,17 +146,17 @@ public class RenderManager
     {
         _camera.CoordX += distanceX;
         _camera.CoordY += distanceY;
-        if (_camera.CoordX + _camera.Width > _map.Width)
+        if (_camera.CoordX + _camera.Width > _border.Width)
         {
-            _camera.CoordX = _map.Width - _camera.Width;
+            _camera.CoordX = _border.Width - _camera.Width;
         }
         if (_camera.CoordX < 0)
         {
             _camera.CoordX = 0;
         }
-        if (_camera.CoordY + _camera.Height > _map.Height)
+        if (_camera.CoordY + _camera.Height > _border.Height)
         {
-            _camera.CoordY = _map.Height - _camera.Height;
+            _camera.CoordY = _border.Width - _camera.Height;
         }
         if (_camera.CoordY < 0)
         {
@@ -151,7 +164,7 @@ public class RenderManager
         }
         foreach (GameObject gameObject in gameObjects)
         {
-            setGameObjectBoundingBox(gameObject);
+            SetGameObjectBoundingBox(gameObject);
         }
     }
 
@@ -174,14 +187,12 @@ public class RenderManager
 
         foreach (GameObject gameObject in gameObjects)
         {
-            setGameObjectBoundingBox(gameObject);
+            SetGameObjectBoundingBox(gameObject);
         }
-
     }
 
-    private bool isInsideCameraView(GameObject gameObject)
+    private bool IsInsideCameraView(GameObject gameObject)
     {
-        
         SDL_Rect gameObject_rect = new SDL_Rect
         {
             x = ((int)((gameObject.CoordX - _camera.CoordX) * _scaleX)) + _offsetX,
