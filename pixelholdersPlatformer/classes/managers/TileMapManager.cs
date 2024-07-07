@@ -1,4 +1,5 @@
-﻿using SDL2;
+﻿using pixelholdersPlatformer.classes.gameObjects;
+using SDL2;
 using TiledCSPlus;
 using static SDL2.SDL;
 
@@ -8,6 +9,9 @@ public class TileMapManager
 {
     private TiledMap _map;
     private Dictionary<int, TiledTileset> _tilesets;
+
+    private int[] _collidableTiles = [21, 22, 23, 25, 40, 42, 44, 59, 60, 61, 63, 84, 85, 87, 88, 90, 91, 93, 94, 97, 98, 99, 101, 103, 104, 106, 107, 109, 110, 112, 113, 
+        265, 266, 267, 268];
 
     public TileMapManager()
     {
@@ -28,5 +32,26 @@ public class TileMapManager
                     Console.WriteLine($"entry: {entry}");
             }
         }
+    }
+
+    public List<GameObject> GetEnvironmentCollidables()
+    {
+        List<GameObject> boxes = new List<GameObject>();
+
+        foreach (var layer in _map.Layers)
+        {
+            int index = 0; //yes this is stupid, but i couldn't think of a better way
+            foreach (var entry in layer.Data)
+            {
+                if (_collidableTiles.Contains(entry))
+                {
+                    boxes.Add( new GameObject( 3.34f*(index%layer.Width), 2.5f*(index/layer.Width), 3.34f, 2.5f ));
+                }
+
+                index++;
+            }
+        }
+        Console.WriteLine("Boxes: "+boxes.Count);
+        return boxes;
     }
 }

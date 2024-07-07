@@ -14,6 +14,8 @@ public class Game
 {
     private List<GameObject> gameObjects;
 
+    private List<GameObject> _collidableObjects;
+
     Stopwatch stopwatch = new Stopwatch();
     private bool _quit;
 
@@ -41,6 +43,15 @@ public class Game
         _gamepad = new Gamepad();
         _tileMapManager = new TileMapManager();
 
+        _collidableObjects = _tileMapManager.GetEnvironmentCollidables();
+        foreach (var box in _collidableObjects)
+        {
+            box.AddComponent(new MovableComponent(box));
+            box.AddComponent(new PhysicsComponent(box));
+            box.AddComponent(new CollisionComponent(box));
+            gameObjects.Add(box);
+        }
+
         GameObject border = new GameObject(0, 0, 100, 100);
         GameObject platform = new GameObject(50, 50, 10, 2);
         platform.AddComponent(new MovableComponent(platform));
@@ -58,7 +69,7 @@ public class Game
         ceiling.AddComponent(new MovableComponent(ceiling));
         ceiling.AddComponent(new PhysicsComponent(ceiling));
         ceiling.AddComponent(new CollisionComponent(ceiling));
-        _player = new Player(52, 52, 1, 1);
+        _player = new Player(52, 32, 1, 1);
 
 
         gameObjects.Add(border);
