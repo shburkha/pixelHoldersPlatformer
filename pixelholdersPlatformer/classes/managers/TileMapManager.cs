@@ -11,7 +11,7 @@ public class TileMapManager
     private Dictionary<int, TiledTileset> _tilesets;
 
     private int[] _collidableTiles = [21, 22, 23, 25, 40, 42, 44, 59, 60, 61, 63, 84, 85, 87, 88, 90, 91, 93, 94, 97, 98, 99, 101, 103, 104, 106, 107, 109, 110, 112, 113, 
-        265, 266, 267, 268];
+        264, 265, 266, 267];
 
     public TileMapManager()
     {
@@ -40,7 +40,7 @@ public class TileMapManager
 
         foreach (var layer in _map.Layers)
         {
-            int index = 0; //yes this is stupid, but i couldn't think of a better way
+            int index = 0;
             foreach (var entry in layer.Data)
             {
                 if (_collidableTiles.Contains(entry))
@@ -54,4 +54,16 @@ public class TileMapManager
         Console.WriteLine("Boxes: "+boxes.Count);
         return boxes;
     }
+
+    public MapData GetMapData()
+    {
+        return new MapData { Map = _map, Tilesets = _tilesets, LevelIndex = 0};
+    }
+}
+
+public struct MapData
+{
+    public TiledMap Map;
+    public Dictionary<int, TiledTileset> Tilesets;
+    public int LevelIndex;
 }

@@ -43,6 +43,8 @@ public class Game
         _gamepad = new Gamepad();
         _tileMapManager = new TileMapManager();
 
+        _renderManager.SetMapData(_tileMapManager.GetMapData());
+
         _collidableObjects = _tileMapManager.GetEnvironmentCollidables();
         foreach (var box in _collidableObjects)
         {
