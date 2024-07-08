@@ -160,7 +160,7 @@ public class RenderManager
         }
         if (_camera.CoordY + _camera.Height > _border.Height)
         {
-            _camera.CoordY = _border.Width - _camera.Height;
+            _camera.CoordY = _border.Height - _camera.Height;
         }
         if (_camera.CoordY < 0)
         {
