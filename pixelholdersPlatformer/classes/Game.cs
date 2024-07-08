@@ -54,31 +54,31 @@ public class Game
             gameObjects.Add(box);
         }
 
-        GameObject border = new GameObject(0, 0, 100, 100);
-        GameObject platform = new GameObject(50, 50, 10, 2);
-        platform.AddComponent(new MovableComponent(platform));
-        platform.AddComponent(new PhysicsComponent(platform));
-        platform.AddComponent(new CollisionComponent(platform));
-        GameObject wall = new GameObject(49.5f, 50, 1, 7);
-        wall.AddComponent(new MovableComponent(wall));
-        wall.AddComponent(new PhysicsComponent(wall));
-        wall.AddComponent(new CollisionComponent(wall));
-        GameObject wall2 = new GameObject(59.5f, 50, 1, 7);
-        wall2.AddComponent(new MovableComponent(wall2));
-        wall2.AddComponent(new PhysicsComponent(wall2));
-        wall2.AddComponent(new CollisionComponent(wall2));
-        GameObject ceiling = new GameObject(50, 55, 10, 2);
-        ceiling.AddComponent(new MovableComponent(ceiling));
-        ceiling.AddComponent(new PhysicsComponent(ceiling));
-        ceiling.AddComponent(new CollisionComponent(ceiling));
+        //GameObject border = new GameObject(0, 0, 100, 100);
+        //GameObject platform = new GameObject(50, 50, 10, 2);
+        //platform.AddComponent(new MovableComponent(platform));
+        //platform.AddComponent(new PhysicsComponent(platform));
+        //platform.AddComponent(new CollisionComponent(platform));
+        //GameObject wall = new GameObject(49.5f, 50, 1, 7);
+        //wall.AddComponent(new MovableComponent(wall));
+        //wall.AddComponent(new PhysicsComponent(wall));
+        //wall.AddComponent(new CollisionComponent(wall));
+        //GameObject wall2 = new GameObject(59.5f, 50, 1, 7);
+        //wall2.AddComponent(new MovableComponent(wall2));
+        //wall2.AddComponent(new PhysicsComponent(wall2));
+        //wall2.AddComponent(new CollisionComponent(wall2));
+        //GameObject ceiling = new GameObject(50, 55, 10, 2);
+        //ceiling.AddComponent(new MovableComponent(ceiling));
+        //ceiling.AddComponent(new PhysicsComponent(ceiling));
+        //ceiling.AddComponent(new CollisionComponent(ceiling));
         _player = new Player(52, 32, 1, 1);
 
 
-        gameObjects.Add(border);
-        gameObjects.Add(platform);
-        gameObjects.Add(ceiling);
-        gameObjects.Add(wall);
-        gameObjects.Add(wall2);
+        //gameObjects.Add(border);
+        //gameObjects.Add(platform);
+        //gameObjects.Add(ceiling);
+        //gameObjects.Add(wall);
+        //gameObjects.Add(wall2);
         gameObjects.Add(_player);
 
         _renderManager.SetGameObjects(gameObjects);

@@ -33,6 +33,7 @@ public class RenderManager
     private IntPtr _mapTexture;
 
     private MapData _mapData;
+    private List<IntPtr> _tileSetTextures;
 
 
     private List<GameObject> gameObjects;
@@ -72,7 +73,7 @@ public class RenderManager
         };
 
         _mapTexture = SDL_CreateTextureFromSurface(_renderer, SDL_image.IMG_Load("assets/map.png"));
-
+        _tileSetTextures = new List<IntPtr>();
     }
 
     public void SetGameObjects(List<GameObject> gameObjects)
@@ -232,19 +233,6 @@ public class RenderManager
 
     private void RenderMapFromTilemap()
     {
-        List<IntPtr> tilesetTextures = new List<IntPtr>();
-
-        foreach (var layer in _mapData.Map.Layers)
-        {
-            if (layer == null || layer.Type != TiledLayerType.TileLayer) continue;
-            int key = layer.Id;
-            if (key == 2)
-            {
-                key = 248;
-            }
-            tilesetTextures.Add(SDL_image.IMG_LoadTexture(_renderer, "assets/TileSets/"+_mapData.Tilesets[key].Image.Source));
-        }
-
         int[] tilesetColumns = [_mapData.Tilesets[1].Columns, _mapData.Tilesets[248].Columns];
         int mapWidth = _mapData.Map.Width * _mapData.Tilesets[1].TileWidth;
         int mapHeight = _mapData.Map.Height * _mapData.Tilesets[1].TileHeight;
@@ -293,7 +281,7 @@ public class RenderManager
                         h = _mapData.Tilesets[key].TileHeight
                     };
 
-                    SDL_RenderCopy(_renderer, tilesetTextures[layer.Id - 1], ref srcRect, ref destRect);
+                    SDL_RenderCopy(_renderer, _tileSetTextures[layer.Id - 1], ref srcRect, ref destRect);
                 }
             }
         }
@@ -303,10 +291,24 @@ public class RenderManager
         SDL_Rect renderDestRect = ((RenderingComponent)_map.Components.Where(t => t.GetType().Name == "RenderingComponent").First()).BoundingBox;
 
         SDL_RenderCopy(_renderer, renderTarget, IntPtr.Zero, ref renderDestRect);
+
+        SDL_DestroyTexture(renderTarget);
     }
 
     public void SetMapData(MapData mapData)
     {
         _mapData = mapData;
+
+
+        foreach (var layer in _mapData.Map.Layers)
+        {
+            int key = layer.Id;
+            if (key == 2)
+            {
+                key = 248;
+            }
+
+            _tileSetTextures.Add(SDL_image.IMG_LoadTexture(_renderer, "assets/TileSets/" + _mapData.Tilesets[key].Image.Source));
+        }
     }
 }
