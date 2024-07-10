@@ -25,6 +25,7 @@ public class Game
     private RenderManager _renderManager;
     private InputManager _inputManager;
     private CollisionManager _collisionManager;
+    private AnimationManager _animationManager;
 
     Gamepad _gamepad;
     TileMapManager _tileMapManager;
@@ -32,6 +33,7 @@ public class Game
     public Game()
     {
         _renderManager = new RenderManager();
+        _animationManager = new AnimationManager(_renderManager);
         _inputManager = new InputManager();
         _collisionManager = new CollisionManager();
 
@@ -54,22 +56,23 @@ public class Game
         wall2.AddComponent(new MovableComponent(wall2));
         wall2.AddComponent(new PhysicsComponent(wall2));
         wall2.AddComponent(new CollisionComponent(wall2));
-        GameObject ceiling = new GameObject(50, 55, 10, 2);
+        GameObject ceiling = new GameObject(0, 38, 100, 2);
         ceiling.AddComponent(new MovableComponent(ceiling));
         ceiling.AddComponent(new PhysicsComponent(ceiling));
         ceiling.AddComponent(new CollisionComponent(ceiling));
-        _player = new Player(52, 52, 1, 1);
+        _player = new Player(50, 28, 2.6f, 2);
 
 
         gameObjects.Add(border);
-        gameObjects.Add(platform);
+        //gameObjects.Add(platform);
         gameObjects.Add(ceiling);
-        gameObjects.Add(wall);
-        gameObjects.Add(wall2);
+        //gameObjects.Add(wall);
+        //gameObjects.Add(wall2);
         gameObjects.Add(_player);
 
         _renderManager.SetGameObjects(gameObjects);
         _collisionManager.SetGameObjects(gameObjects);
+        _animationManager.SetGameObjects(gameObjects);
 
         SDL_DisplayMode _displayMode;
         SDL_GetCurrentDisplayMode(0, out _displayMode);
@@ -109,6 +112,7 @@ public class Game
 
         for (int i = 0; i < inputs.Count; i++)
         {
+            
             switch (inputs[i])
             {
                 case InputTypes.PlayerLeft:
@@ -216,12 +220,12 @@ public class Game
             gameObject.Update();
         }
         _collisionManager.HandleCollision();
+        _animationManager.AnimateObjects();
     }
 
     private void Render()
     {
         _renderManager.CenterCameraAroundPlayer();
-
         _renderManager.WipeScreen();
         _renderManager.RenderGameObjects();
     }

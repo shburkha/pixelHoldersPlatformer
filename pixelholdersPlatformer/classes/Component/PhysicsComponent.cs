@@ -97,7 +97,7 @@ public class PhysicsComponent : IComponent
             }
         }
         ((MovableComponent)_owner.Components.Where(t => t.GetType().Name == "MovableComponent").First()).MoveGameObject(Velocity.X, Velocity.Y);
-        SetVelocityX(0);
+        //SetVelocityX(0);
 
     }
 };
