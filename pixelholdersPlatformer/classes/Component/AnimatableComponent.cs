@@ -39,7 +39,7 @@ namespace pixelholdersPlatformer.classes.Component
             PhysicsComponent tmp = ((PhysicsComponent)_owner.Components.Where(t => t.GetType().Name == "PhysicsComponent").First());
 
             //when on the ground this is the default velocity
-            if (tmp.Velocity.Y == 0.0935f)
+            if (tmp.Velocity.Y < 0.2 && tmp.Velocity.Y > 0)
             {
                 if (tmp.Velocity.X < 0)
                 {
@@ -58,11 +58,36 @@ namespace pixelholdersPlatformer.classes.Component
             {
                 if (tmp.Velocity.Y < 0)
                 {
-                    SetAnimationType(AnimationType.Jump, isFlipped);
+                    if (tmp.Velocity.X < 0)
+                    {
+                        SetAnimationType(AnimationType.Jump, true);
+                    }
+                    else if (tmp.Velocity.X > 0)
+                    {
+                        SetAnimationType(AnimationType.Jump, false);
+                    }
+                    else
+                    {
+                        SetAnimationType(AnimationType.Jump, isFlipped);
+                    }
+                    
                 }
                 else if (tmp.Velocity.Y > 0)
                 {
-                    SetAnimationType(AnimationType.Fall, isFlipped);
+                    if (tmp.Velocity.X < 0)
+                    {
+                        SetAnimationType(AnimationType.Fall, true);
+                    }
+                
+                    else if (tmp.Velocity.X > 0)
+                    {
+                        SetAnimationType(AnimationType.Fall, false);
+                    }
+                    else
+                    {
+                        SetAnimationType(AnimationType.Fall, isFlipped);
+                    }
+                    
                 }
             
             }
