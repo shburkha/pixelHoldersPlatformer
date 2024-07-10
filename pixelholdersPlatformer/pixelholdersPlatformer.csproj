@@ -24,6 +24,7 @@
     </None>
     <None Update="assets\testLevel.tmx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="assets\sprites\01-King Human\Attack %2837x42%29.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
