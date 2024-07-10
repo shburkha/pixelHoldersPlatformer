@@ -27,11 +27,13 @@ public class RenderManager
     public nint _renderer;
 
     private GameObject _camera;
-    private GameObject _border;
     private GameObject _map;
 
 
     private IntPtr _mapTexture;
+
+    private MapData _mapData;
+    private List<IntPtr> _tileSetTextures;
 
 
     private List<GameObject> _gameObjects;
@@ -50,15 +52,12 @@ public class RenderManager
 
         _renderer = SDL_CreateRenderer(_window, -1, SDL_RendererFlags.SDL_RENDERER_ACCELERATED);
 
-        //SDL_image.IMG_Init(SDL_image.IMG_InitFlags.IMG_INIT_PNG);
-
-        _camera = new GameObject(50, 50, 32, 18);
-        _border = new GameObject(0, 0, 100, 100);
+        _camera = new GameObject(5, 5, 16, 9);
         _map = new GameObject(0, 0, 100, 50);
 
         _alwaysRender = true;
 
-        _zoomLevel = 10;
+        _zoomLevel = 1;
         _scaleX = (int)(_defaultScreenWidth / _camera.Width) / _zoomLevel;
         _scaleY = (int)(_defaultScreenWidth / _camera.Width) / _zoomLevel;
         _offsetX = (int)((_defaultScreenWidth / 2) - (_camera.Width / 2) * _scaleX);
@@ -73,7 +72,7 @@ public class RenderManager
         };
 
         _mapTexture = SDL_CreateTextureFromSurface(_renderer, SDL_image.IMG_Load("assets/map.png"));
-
+        _tileSetTextures = new List<IntPtr>();
     }
 
     public void SetGameObjects(List<GameObject> gameObjects)
@@ -145,8 +144,9 @@ public class RenderManager
     public void RenderGameObjects()
     {
 
-        SDL_RenderCopy(_renderer, _mapTexture, (nint)null, ref ((RenderingComponent)_map.Components.Where(t => t.GetType().Name == "RenderingComponent")
-            .First()).BoundingBox);
+        //SDL_RenderCopy(_renderer, _mapTexture, (nint)null, ref ((RenderingComponent)_map.Components.Where(t => t.GetType().Name == "RenderingComponent")
+        //    .First()).BoundingBox);
+        RenderMapFromTilemap();
 
 
         foreach (GameObject gameObject in _gameObjects)
@@ -179,17 +179,17 @@ public class RenderManager
     {
         _camera.CoordX += distanceX;
         _camera.CoordY += distanceY;
-        if (_camera.CoordX + _camera.Width > _border.Width)
+        if (_camera.CoordX + _camera.Width > _map.Width)
         {
-            _camera.CoordX = _border.Width - _camera.Width;
+            _camera.CoordX = _map.Width - _camera.Width;
         }
         if (_camera.CoordX < 0)
         {
             _camera.CoordX = 0;
         }
-        if (_camera.CoordY + _camera.Height > _border.Height)
+        if (_camera.CoordY + _camera.Height > _map.Height)
         {
-            _camera.CoordY = _border.Width - _camera.Height;
+            _camera.CoordY = _map.Height - _camera.Height;
         }
         if (_camera.CoordY < 0)
         {
@@ -258,5 +258,89 @@ public class RenderManager
         diff.Y = (player.CoordY + player.Height / 2 - _camera.Height / 2) - _camera.CoordY;
 
         MoveCamera(diff.X, diff.Y);
+    }
+
+    private void RenderMapFromTilemap()
+    {
+        int[] tilesetColumns = [_mapData.Tilesets[1].Columns, _mapData.Tilesets[248].Columns];
+        int mapWidth = _mapData.Map.Width * _mapData.Tilesets[1].TileWidth;
+        int mapHeight = _mapData.Map.Height * _mapData.Tilesets[1].TileHeight;
+        IntPtr renderTarget = SDL_CreateTexture(_renderer,
+            SDL_PIXELFORMAT_RGBA8888,
+            (int)SDL_TextureAccess.SDL_TEXTUREACCESS_TARGET,
+            mapWidth, 
+            mapHeight
+        );
+        SDL_SetRenderTarget(_renderer, renderTarget);
+
+        foreach (var layer in _mapData.Map.Layers)
+        {
+            int key = layer.Id;
+            if (key == 2)
+            {
+                key = 248;
+            }
+
+            for (int y = 0; y < layer.Height; y++)
+            {
+                for (int x = 0; x < layer.Width; x++)
+                {
+                    int tileIndex = layer.Data[y * layer.Width + x];
+                    if (tileIndex == 0) { continue; } //skip empty tiles
+
+                    tileIndex -= (layer.Id - 1) * 247;
+                    tileIndex--; // Tiled uses 1-based index, we need 0-based
+
+                    int tilesetX = (tileIndex % tilesetColumns[layer.Id - 1]) * _mapData.Tilesets[key].TileWidth;
+                    int tilesetY = (tileIndex / tilesetColumns[layer.Id - 1]) * _mapData.Tilesets[key].TileHeight;
+
+                    SDL_Rect srcRect = new SDL_Rect
+                    {
+                        x = tilesetX,
+                        y = tilesetY,
+                        w = _mapData.Tilesets[key].TileWidth,
+                        h = _mapData.Tilesets[key].TileHeight
+                    };
+
+                    SDL_Rect destRect = new SDL_Rect
+                    {
+                        x = x * _mapData.Tilesets[key].TileWidth,
+                        y = y * _mapData.Tilesets[key].TileHeight,
+                        w = _mapData.Tilesets[key].TileWidth,
+                        h = _mapData.Tilesets[key].TileHeight
+                    };
+
+                    SDL_RenderCopy(_renderer, _tileSetTextures[layer.Id - 1], ref srcRect, ref destRect);
+                }
+            }
+        }
+
+        SDL_SetRenderTarget(_renderer, IntPtr.Zero);
+
+        SDL_Rect renderDestRect = ((RenderingComponent)_map.Components.Where(t => t.GetType().Name == "RenderingComponent").First()).BoundingBox;
+
+        SDL_RenderCopy(_renderer, renderTarget, IntPtr.Zero, ref renderDestRect);
+
+        SDL_DestroyTexture(renderTarget);
+    }
+
+    public void SetMapData(MapData mapData)
+    {
+        _mapData = mapData;
+
+        _map.Width = _mapData.Map.Width;
+        _map.Height = _mapData.Map.Height;
+        SetGameObjectBoundingBox(_map);
+
+        foreach (var layer in _mapData.Map.Layers)
+        {
+            int key = layer.Id;
+            if (key == 2)
+            {
+                key = 248;
+            }
+
+            _tileSetTextures.Add(SDL_image.IMG_LoadTexture(_renderer, "assets/TileSets/" + _mapData.Tilesets[key].Image.Source));
+        }
     }
 }
