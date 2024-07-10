@@ -7,11 +7,11 @@ namespace pixelholdersPlatformer.classes.managers;
 
 public class CollisionManager
 {
-    private List<GameObject> gameObjects;
+    private List<GameObject> _gameObjects;
 
     public void SetGameObjects(List<GameObject> gameObjects)
     {
-        this.gameObjects = gameObjects;
+        this._gameObjects = gameObjects;
     }
 
     public CollisionManager()
@@ -24,12 +24,12 @@ public class CollisionManager
     private float overlapY;
     public void HandleCollision()
     { 
-        foreach(GameObject gameObject in gameObjects) 
+        foreach(GameObject gameObject in _gameObjects) 
         {
             
             if (gameObject.Components.Where(t => t.GetType().Name == "CollisionComponent").Count() != 0)
             {
-                foreach (GameObject other in gameObjects)
+                foreach (GameObject other in _gameObjects)
                 { 
                     if(!other.Equals(gameObject) && other.Components.Where(t => t.GetType().Name == "CollisionComponent").Count() != 0)
                     {

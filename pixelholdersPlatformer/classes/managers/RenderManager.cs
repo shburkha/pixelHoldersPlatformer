@@ -4,6 +4,7 @@ using SDL2;
 using TiledCSPlus;
 using System.Numerics;
 using static SDL2.SDL;
+using SharpDX.Multimedia;
 
 namespace pixelholdersPlatformer.classes.managers;
 
@@ -23,7 +24,7 @@ public class RenderManager
     private SDL_Rect _camera_rect;
 
     private nint _window;
-    private nint _renderer;
+    public nint _renderer;
 
     private GameObject _camera;
     private GameObject _map;
@@ -35,7 +36,7 @@ public class RenderManager
     private List<IntPtr> _tileSetTextures;
 
 
-    private List<GameObject> gameObjects;
+    private List<GameObject> _gameObjects;
 
     private int _zoomLevel;
     private bool _alwaysRender;
@@ -76,7 +77,7 @@ public class RenderManager
 
     public void SetGameObjects(List<GameObject> gameObjects)
     {
-        this.gameObjects = gameObjects;
+        this._gameObjects = gameObjects;
         gameObjects.Add(_map);
         foreach (GameObject gameObject in gameObjects)
         {
@@ -112,13 +113,33 @@ public class RenderManager
         //first, we check if the gameObject is inside the camera's view
         if (_alwaysRender || IsInsideCameraView(gameObject))
         {
+
             SDL_SetRenderDrawColor(_renderer, 255, 255, 255, 255);
             SDL_RenderDrawRect(_renderer,
                 ref ((RenderingComponent)gameObject.Components.Where(t => t.GetType().Name == "RenderingComponent")
                     .First()).BoundingBox);
-
         }
     }
+
+    private void DrawSprite(GameObject gameObject) 
+    {
+        //SDL_SetTextureBlendMode(((AnimatableComponent)gameObject.Components.Where(t => t.GetType().Name == "AnimatableComponent").First()).CurrentAnimationSprite, SDL_BlendMode.SDL_BLENDMODE_BLEND);
+        if (!((AnimatableComponent)gameObject.Components.Where(t => t.GetType().Name == "AnimatableComponent").First()).isFlipped)
+        {
+            SDL_RenderCopy(_renderer, ((AnimatableComponent)gameObject.Components.Where(t => t.GetType().Name == "AnimatableComponent").First()).CurrentAnimationSprite, (nint)null,
+            ref ((RenderingComponent)gameObject.Components.Where(t => t.GetType().Name == "RenderingComponent").First()).BoundingBox);
+        }
+        else
+        {
+            SDL_RenderCopyEx(_renderer, ((AnimatableComponent)gameObject.Components.Where(t => t.GetType().Name == "AnimatableComponent").First()).CurrentAnimationSprite, 
+                (nint)null, 
+                ref ((RenderingComponent)gameObject.Components.Where(t => t.GetType().Name == "RenderingComponent").First()).BoundingBox,
+                180,
+                (nint)null, 
+                SDL_RendererFlip.SDL_FLIP_VERTICAL);
+        }
+    }
+
 
     public void RenderGameObjects()
     {
@@ -128,13 +149,23 @@ public class RenderManager
         RenderMapFromTilemap();
 
 
-        foreach (GameObject gameObject in gameObjects)
+        foreach (GameObject gameObject in _gameObjects)
         {
             if (gameObject.Components.Find(t => t.GetType().Name == "RenderingComponent") != null)
             {
                 SetGameObjectBoundingBox(gameObject);
             }
-            DrawGameObject(gameObject);
+            if (gameObject.Components.Where(t => t.GetType().Name == "AnimatableComponent").Count() != 0)
+            {
+                DrawSprite(gameObject);
+                //DrawGameObject(gameObject);
+
+            }
+            else
+            {
+                DrawGameObject(gameObject);
+            }
+            
         }
         SDL_RenderPresent(_renderer);
     }
@@ -164,7 +195,7 @@ public class RenderManager
         {
             _camera.CoordY = 0;
         }
-        foreach (GameObject gameObject in gameObjects)
+        foreach (GameObject gameObject in _gameObjects)
         {
             SetGameObjectBoundingBox(gameObject);
         }
@@ -187,7 +218,7 @@ public class RenderManager
             h = ((int)(_camera.Height * _scaleY))
         };
 
-        foreach (GameObject gameObject in gameObjects)
+        foreach (GameObject gameObject in _gameObjects)
         {
             SetGameObjectBoundingBox(gameObject);
         }
@@ -217,7 +248,7 @@ public class RenderManager
 
     public void CenterCameraAroundPlayer()
     {
-        var player = gameObjects.Find(t => t.GetType().Name == "Player");
+        var player = _gameObjects.Find(t => t.GetType().Name == "Player");
 
         if (player == null) { return; }
 

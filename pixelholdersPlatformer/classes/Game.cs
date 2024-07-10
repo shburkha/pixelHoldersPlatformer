@@ -28,6 +28,7 @@ public class Game
     private RenderManager _renderManager;
     private InputManager _inputManager;
     private CollisionManager _collisionManager;
+    private AnimationManager _animationManager;
 
     Gamepad _gamepad;
     TileMapManager _tileMapManager;
@@ -35,6 +36,7 @@ public class Game
     public Game()
     {
         _renderManager = new RenderManager();
+        _animationManager = new AnimationManager(_renderManager);
         _inputManager = new InputManager();
         _collisionManager = new CollisionManager();
 
@@ -70,6 +72,7 @@ public class Game
 
         _renderManager.SetGameObjects(gameObjects);
         _collisionManager.SetGameObjects(gameObjects);
+        _animationManager.SetGameObjects(gameObjects);
 
         SDL_DisplayMode _displayMode;
         SDL_GetCurrentDisplayMode(0, out _displayMode);
@@ -109,6 +112,7 @@ public class Game
 
         for (int i = 0; i < inputs.Count; i++)
         {
+            
             switch (inputs[i])
             {
                 case InputTypes.PlayerLeft:
@@ -216,12 +220,12 @@ public class Game
             gameObject.Update();
         }
         _collisionManager.HandleCollision();
+        _animationManager.AnimateObjects();
     }
 
     private void Render()
     {
         _renderManager.CenterCameraAroundPlayer();
-
         _renderManager.WipeScreen();
         _renderManager.RenderGameObjects();
     }
