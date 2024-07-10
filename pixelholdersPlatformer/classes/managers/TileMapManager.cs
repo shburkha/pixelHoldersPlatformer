@@ -12,10 +12,11 @@ public class TileMapManager
 
     private int[] _collidableTiles = [21, 22, 23, 25, 40, 42, 44, 59, 60, 61, 63, 84, 85, 87, 88, 90, 91, 93, 94, 97, 98, 99, 101, 103, 104, 106, 107, 109, 110, 112, 113, 
         264, 265, 266, 267];
+    private int[] _winTiles = [256, 263, 270, 277];
 
     public TileMapManager()
     {
-        _map = new TiledMap("assets/map.tmx"); // tilesize is 32x32
+        _map = new TiledMap("assets/testLevel.tmx"); // tilesize is 32x32
         _tilesets = _map.GetTiledTilesets("assets/");
 
         foreach (var tileset in _tilesets)
@@ -45,7 +46,7 @@ public class TileMapManager
             {
                 if (_collidableTiles.Contains(entry))
                 {
-                    boxes.Add( new GameObject( 3.34f*(index%layer.Width), 2.5f*(index/layer.Width), 3.34f, 2.5f ));
+                    boxes.Add( new GameObject( index%layer.Width, index/layer.Width, 1, 1 ));
                 }
 
                 index++;
@@ -53,6 +54,27 @@ public class TileMapManager
         }
         Console.WriteLine("Boxes: "+boxes.Count);
         return boxes;
+    }
+
+    public List<SpecialTile> GetSpecialTiles()
+    {
+        List<SpecialTile> list = new List<SpecialTile>();
+
+        foreach (var layer in _map.Layers)
+        {
+            int index = 0;
+            foreach (var entry in layer.Data)
+            {
+                if (_winTiles.Contains(entry))
+                {
+                    list.Add(new SpecialTile(index % layer.Width, index / layer.Width, 1, 1, SpecialTileType.Goal));
+                }
+
+                index++;
+            }
+        }
+
+        return list;
     }
 
     public MapData GetMapData()

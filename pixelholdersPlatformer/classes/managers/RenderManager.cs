@@ -26,7 +26,6 @@ public class RenderManager
     private nint _renderer;
 
     private GameObject _camera;
-    private GameObject _border;
     private GameObject _map;
 
 
@@ -52,13 +51,12 @@ public class RenderManager
 
         _renderer = SDL_CreateRenderer(_window, -1, SDL_RendererFlags.SDL_RENDERER_ACCELERATED);
 
-        _camera = new GameObject(50, 50, 32, 18);
-        _border = new GameObject(0, 0, 100, 100);
+        _camera = new GameObject(5, 5, 16, 9);
         _map = new GameObject(0, 0, 100, 50);
 
         _alwaysRender = true;
 
-        _zoomLevel = 10;
+        _zoomLevel = 1;
         _scaleX = (int)(_defaultScreenWidth / _camera.Width) / _zoomLevel;
         _scaleY = (int)(_defaultScreenWidth / _camera.Width) / _zoomLevel;
         _offsetX = (int)((_defaultScreenWidth / 2) - (_camera.Width / 2) * _scaleX);
@@ -150,17 +148,17 @@ public class RenderManager
     {
         _camera.CoordX += distanceX;
         _camera.CoordY += distanceY;
-        if (_camera.CoordX + _camera.Width > _border.Width)
+        if (_camera.CoordX + _camera.Width > _map.Width)
         {
-            _camera.CoordX = _border.Width - _camera.Width;
+            _camera.CoordX = _map.Width - _camera.Width;
         }
         if (_camera.CoordX < 0)
         {
             _camera.CoordX = 0;
         }
-        if (_camera.CoordY + _camera.Height > _border.Height)
+        if (_camera.CoordY + _camera.Height > _map.Height)
         {
-            _camera.CoordY = _border.Height - _camera.Height;
+            _camera.CoordY = _map.Height - _camera.Height;
         }
         if (_camera.CoordY < 0)
         {
@@ -299,6 +297,9 @@ public class RenderManager
     {
         _mapData = mapData;
 
+        _map.Width = _mapData.Map.Width;
+        _map.Height = _mapData.Map.Height;
+        SetGameObjectBoundingBox(_map);
 
         foreach (var layer in _mapData.Map.Layers)
         {

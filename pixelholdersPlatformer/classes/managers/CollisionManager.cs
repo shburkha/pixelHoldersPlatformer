@@ -52,7 +52,7 @@ public class CollisionManager
 
         if (((CollisionComponent)gameObject.Components.Where(t => t.GetType().Name == "CollisionComponent").First()).IsCollidable && ((CollisionComponent)other.Components.Where(t => t.GetType().Name == "CollisionComponent").First()).IsCollidable)
         {
-
+            
 
             Vector2 velocity = ((PhysicsComponent)gameObject.Components.Where(t => t.GetType().Name == "PhysicsComponent").First()).Velocity;
             if (gameObject.CoordX + gameObject.Width + velocity.X > other.CoordX &&
@@ -90,7 +90,14 @@ public class CollisionManager
                     overlapX = -1 * (other.CoordX + other.Width - gameObject.CoordX);
                 }
 
-
+                if (gameObject.GetType().Name == "SpecialTile" && other.GetType().Name == "Player")
+                {
+                    ((SpecialTile)gameObject).SpecialCollision();
+                }
+                else if (other.GetType().Name == "SpecialTile" && gameObject.GetType().Name == "Player")
+                {
+                    ((SpecialTile)other).SpecialCollision();
+                }
 
                 //overlapX = other.CoordX + other.Width - gameObject.CoordX;
                 //overlapY = gameObject.CoordY + gameObject.Height - other.CoordY;
