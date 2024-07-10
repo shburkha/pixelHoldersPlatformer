@@ -9,9 +9,9 @@ public class PhysicsComponent : IComponent
     private GameObject _owner;
 
     private const float _terminalVelocityY = 1;
-    private const double GRAVITY = 5.5d;
-    private const double AIR_RESISTANCE = 1.5d;
-    private const double FRICTION = 5.0d;
+    public const double GRAVITY = 5.5d;
+    public const double AIR_RESISTANCE = 1.5d;
+    public const double FRICTION = 5.5d;
 
     public double DeltaT = 0.016d;
 
@@ -72,17 +72,17 @@ public class PhysicsComponent : IComponent
 
                 if (Velocity.X != 0)
                 {
-                    Velocity.X = 0;
+                    Velocity.X = 0f;
                 }
             }
             else
             {
-                if (Velocity.Y == 0) {
+                if (Velocity.Y == 0 || Velocity.Y == (float)(GRAVITY * DeltaT)) {
                     Velocity.X -= Math.Sign(Velocity.X) * (float)(FRICTION * DeltaT);
 
                     if (Math.Abs(Velocity.X) < (float)(FRICTION * DeltaT))
                     {
-                        Velocity.X = 0;
+                        Velocity.X = 0f;
                     }
                 }
                 else
@@ -91,13 +91,11 @@ public class PhysicsComponent : IComponent
 
                     if (Math.Abs(Velocity.X) < (float)(AIR_RESISTANCE * DeltaT))
                     {
-                        Velocity.X = 0;
+                        Velocity.X = 0f;
                     }
                 }
             }
         }
         ((MovableComponent)_owner.Components.Where(t => t.GetType().Name == "MovableComponent").First()).MoveGameObject(Velocity.X, Velocity.Y);
-        SetVelocityX(0);
-
     }
 };

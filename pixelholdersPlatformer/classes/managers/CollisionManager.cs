@@ -52,9 +52,8 @@ public class CollisionManager
 
         if (((CollisionComponent)gameObject.Components.Where(t => t.GetType().Name == "CollisionComponent").First()).IsCollidable && ((CollisionComponent)other.Components.Where(t => t.GetType().Name == "CollisionComponent").First()).IsCollidable)
         {
-            
-
             Vector2 velocity = ((PhysicsComponent)gameObject.Components.Where(t => t.GetType().Name == "PhysicsComponent").First()).Velocity;
+
             if (gameObject.CoordX + gameObject.Width + velocity.X > other.CoordX &&
                 gameObject.CoordX + velocity.X <= other.CoordX + other.Width &&
                 gameObject.CoordY + gameObject.Height + velocity.Y > other.CoordY &&
