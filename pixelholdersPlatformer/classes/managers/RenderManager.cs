@@ -127,7 +127,7 @@ public class RenderManager
         if (!((AnimatableComponent)gameObject.Components.Where(t => t.GetType().Name == "AnimatableComponent").First()).isFlipped)
         {
             SDL_RenderCopy(_renderer, ((AnimatableComponent)gameObject.Components.Where(t => t.GetType().Name == "AnimatableComponent").First()).CurrentAnimationSprite, (nint)null,
-            ref ((RenderingComponent)gameObject.Components.Where(t => t.GetType().Name == "RenderingComponent").First()).BoundingBox);
+            ref ((RenderingComponent)gameObject.Components.Where(t => t is RenderingComponent).First()).BoundingBox);
         }
         else
         {
