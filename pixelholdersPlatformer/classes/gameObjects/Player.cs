@@ -6,17 +6,20 @@ namespace pixelholdersPlatformer.gameObjects;
 public class Player : GameObject
 {
 
-    private float startPosX;
-    private float startPosY;
+    private float _startPosX;
+    private float _startPosY;
+    private int _playerHealth;
     public Player(float coordX, float coordY, float width, float height) : base(coordX, coordY, width, height)
     {
         this.Components.Add(new MovableComponent(this));
         this.Components.Add(new PhysicsComponent(this));
         this.Components.Add(new CollisionComponent(this));
+        this.Components.Add(new AnimatableComponent(this, "03-Pig"));
         ((PhysicsComponent)Components.Where(t => t.GetType().Name == "PhysicsComponent").First()).HasGravity = true;
         ((PhysicsComponent)Components.Where(t => t.GetType().Name == "PhysicsComponent").First()).CanMove = true;
-        startPosX = coordX;
-        startPosY = coordY;
+        _startPosX = coordX;
+        _startPosY = coordY;
+        _playerHealth = 3;
 
     }
 
@@ -35,8 +38,14 @@ public class Player : GameObject
 
     public void ResetPlayerPosition()
     {
-        CoordX = startPosX;
-        CoordY = startPosY;
+        CoordX = _startPosX;
+        CoordY = _startPosY;
+    }
+
+
+    public void HurtPlayer()
+    {
+        _playerHealth -= 1;
     }
 
     public void SetDeltaTime(double dt)

@@ -14,6 +14,9 @@ public class Game
 {
     private List<GameObject> gameObjects;
 
+    private List<GameObject> _collidableObjects;
+    private List<SpecialTile> _specialObjects;
+
     Stopwatch stopwatch = new Stopwatch();
     private bool _quit;
 
@@ -25,6 +28,7 @@ public class Game
     private RenderManager _renderManager;
     private InputManager _inputManager;
     private CollisionManager _collisionManager;
+    private AnimationManager _animationManager;
 
     Gamepad _gamepad;
     TileMapManager _tileMapManager;
@@ -32,6 +36,7 @@ public class Game
     public Game()
     {
         _renderManager = new RenderManager();
+        _animationManager = new AnimationManager(_renderManager);
         _inputManager = new InputManager();
         _collisionManager = new CollisionManager();
 
@@ -41,35 +46,33 @@ public class Game
         _gamepad = new Gamepad();
         _tileMapManager = new TileMapManager();
 
-        GameObject border = new GameObject(0, 0, 100, 100);
-        GameObject platform = new GameObject(50, 50, 10, 2);
-        platform.AddComponent(new MovableComponent(platform));
-        platform.AddComponent(new PhysicsComponent(platform));
-        platform.AddComponent(new CollisionComponent(platform));
-        GameObject wall = new GameObject(49.5f, 50, 1, 7);
-        wall.AddComponent(new MovableComponent(wall));
-        wall.AddComponent(new PhysicsComponent(wall));
-        wall.AddComponent(new CollisionComponent(wall));
-        GameObject wall2 = new GameObject(59.5f, 50, 1, 7);
-        wall2.AddComponent(new MovableComponent(wall2));
-        wall2.AddComponent(new PhysicsComponent(wall2));
-        wall2.AddComponent(new CollisionComponent(wall2));
-        GameObject ceiling = new GameObject(50, 55, 10, 2);
-        ceiling.AddComponent(new MovableComponent(ceiling));
-        ceiling.AddComponent(new PhysicsComponent(ceiling));
-        ceiling.AddComponent(new CollisionComponent(ceiling));
-        _player = new Player(52, 52, 1, 1);
+        _renderManager.SetMapData(_tileMapManager.GetMapData());
 
+        _collidableObjects = _tileMapManager.GetEnvironmentCollidables();
+        foreach (var box in _collidableObjects)
+        {
+            box.AddComponent(new MovableComponent(box));
+            box.AddComponent(new PhysicsComponent(box));
+            box.AddComponent(new CollisionComponent(box));
+            gameObjects.Add(box);
+        }
 
-        gameObjects.Add(border);
-        gameObjects.Add(platform);
-        gameObjects.Add(ceiling);
-        gameObjects.Add(wall);
-        gameObjects.Add(wall2);
+        _specialObjects = _tileMapManager.GetSpecialTiles();
+        foreach (var box in _specialObjects)
+        {
+            box.AddComponent(new MovableComponent(box));
+            box.AddComponent(new PhysicsComponent(box));
+            box.AddComponent(new CollisionComponent(box));
+            gameObjects.Add(box);
+        }
+
+        _player = new Player(5, 5, 1, 1);
+
         gameObjects.Add(_player);
 
         _renderManager.SetGameObjects(gameObjects);
         _collisionManager.SetGameObjects(gameObjects);
+        _animationManager.SetGameObjects(gameObjects);
 
         SDL_DisplayMode _displayMode;
         SDL_GetCurrentDisplayMode(0, out _displayMode);
@@ -172,12 +175,12 @@ public class Game
             gameObject.Update();
         }
         _collisionManager.HandleCollision();
+        _animationManager.AnimateObjects();
     }
 
     private void Render()
     {
         _renderManager.CenterCameraAroundPlayer();
-
         _renderManager.WipeScreen();
         _renderManager.RenderGameObjects();
     }

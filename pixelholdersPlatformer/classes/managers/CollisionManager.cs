@@ -7,11 +7,11 @@ namespace pixelholdersPlatformer.classes.managers;
 
 public class CollisionManager
 {
-    private List<GameObject> gameObjects;
+    private List<GameObject> _gameObjects;
 
     public void SetGameObjects(List<GameObject> gameObjects)
     {
-        this.gameObjects = gameObjects;
+        this._gameObjects = gameObjects;
     }
 
     public CollisionManager()
@@ -24,12 +24,12 @@ public class CollisionManager
     private float overlapY;
     public void HandleCollision()
     { 
-        foreach(GameObject gameObject in gameObjects) 
+        foreach(GameObject gameObject in _gameObjects) 
         {
             
             if (gameObject.Components.Where(t => t.GetType().Name == "CollisionComponent").Count() != 0)
             {
-                foreach (GameObject other in gameObjects)
+                foreach (GameObject other in _gameObjects)
                 { 
                     if(!other.Equals(gameObject) && other.Components.Where(t => t.GetType().Name == "CollisionComponent").Count() != 0)
                     {
@@ -52,9 +52,8 @@ public class CollisionManager
 
         if (((CollisionComponent)gameObject.Components.Where(t => t.GetType().Name == "CollisionComponent").First()).IsCollidable && ((CollisionComponent)other.Components.Where(t => t.GetType().Name == "CollisionComponent").First()).IsCollidable)
         {
-
-
             Vector2 velocity = ((PhysicsComponent)gameObject.Components.Where(t => t.GetType().Name == "PhysicsComponent").First()).Velocity;
+
             if (gameObject.CoordX + gameObject.Width + velocity.X > other.CoordX &&
                 gameObject.CoordX + velocity.X <= other.CoordX + other.Width &&
                 gameObject.CoordY + gameObject.Height + velocity.Y > other.CoordY &&
@@ -90,7 +89,14 @@ public class CollisionManager
                     overlapX = -1 * (other.CoordX + other.Width - gameObject.CoordX);
                 }
 
-
+                if (gameObject.GetType().Name == "SpecialTile" && other.GetType().Name == "Player")
+                {
+                    ((SpecialTile)gameObject).SpecialCollision();
+                }
+                else if (other.GetType().Name == "SpecialTile" && gameObject.GetType().Name == "Player")
+                {
+                    ((SpecialTile)other).SpecialCollision();
+                }
 
                 //overlapX = other.CoordX + other.Width - gameObject.CoordX;
                 //overlapY = gameObject.CoordY + gameObject.Height - other.CoordY;
