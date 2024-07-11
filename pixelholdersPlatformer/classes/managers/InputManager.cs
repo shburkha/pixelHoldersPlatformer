@@ -39,7 +39,8 @@ public class InputManager
         if (keyState[(int)SDL_Scancode.SDL_SCANCODE_0] != 0) {keysPressed.Add(InputTypes.CameraSetZoom2);}
         if (keyState[(int)SDL_Scancode.SDL_SCANCODE_C] != 0) {keysPressed.Add(InputTypes.CameraCenter);}
 
-        if(gamepad.JoystickGuid == Guid.Empty) return keysPressed;
+        Console.WriteLine(SDL_NumJoysticks());
+        if(SDL_NumJoysticks() < 1) return keysPressed;
 
         gamepad.Joystick.Poll();
         var state = gamepad.Joystick.GetCurrentState();
