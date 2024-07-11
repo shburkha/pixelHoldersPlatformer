@@ -15,8 +15,8 @@ public class Player : GameObject
         this.Components.Add(new PhysicsComponent(this));
         this.Components.Add(new CollisionComponent(this));
         this.Components.Add(new AnimatableComponent(this, "03-Pig"));
-        ((PhysicsComponent)Components.Where(t => t.GetType().Name == "PhysicsComponent").First()).HasGravity = true;
-        ((PhysicsComponent)Components.Where(t => t.GetType().Name == "PhysicsComponent").First()).CanMove = true;
+        ((PhysicsComponent)GetComponent(Component.Physics)).HasGravity = true;
+        ((PhysicsComponent)GetComponent(Component.Physics)).CanMove = true;
         _startPosX = coordX;
         _startPosY = coordY;
         _playerHealth = 3;
@@ -25,15 +25,15 @@ public class Player : GameObject
 
     public void MovePlayer(float amountX, float amountY)
     { 
-        ((PhysicsComponent)Components.Where(t => t.GetType().Name == "PhysicsComponent").First()).SetVelocity(amountX, amountY);
+        ((PhysicsComponent)GetComponent(Component.Physics)).SetVelocity(amountX, amountY);
     }
     public void MovePlayerX(float amountX)
     {
-        ((PhysicsComponent)Components.Where(t => t.GetType().Name == "PhysicsComponent").First()).SetVelocityX(amountX);
+        ((PhysicsComponent)GetComponent(Component.Physics)).SetVelocityX(amountX);
     }
     public void MovePlayerY(float amountY)
     {
-        ((PhysicsComponent)Components.Where(t => t.GetType().Name == "PhysicsComponent").First()).SetVelocityY(amountY);
+        ((PhysicsComponent)GetComponent(Component.Physics)).SetVelocityY(amountY);
     }
 
     public void ResetPlayerPosition()
@@ -50,6 +50,6 @@ public class Player : GameObject
 
     public void SetDeltaTime(double dt)
     {
-        ((PhysicsComponent)Components.Where(t => t.GetType().Name == "PhysicsComponent").First()).DeltaT = dt;
+        ((PhysicsComponent)GetComponent(Component.Physics)).DeltaT = dt;
     }
 }

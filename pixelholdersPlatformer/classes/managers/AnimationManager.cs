@@ -176,13 +176,13 @@ namespace pixelholdersPlatformer.classes.managers
             //here we change the sprite according to the AnimationComponent's AnimationType
             foreach (GameObject gameObject in _gameObjects)
             {
-                if (gameObject.Components.Where(t => t.GetType().Name == "AnimatableComponent").Count() != 0)
+                if (gameObject.GetComponent(gameObjects.Component.Animatable) != null)
                 {
                     //we need to check which spriteFolder it uses
                     //the we need to check the the animationType
 
 
-                    AnimatableComponent currentComponent = (AnimatableComponent)gameObject.Components.Where(t => t.GetType().Name == "AnimatableComponent").First();
+                    AnimatableComponent currentComponent = (AnimatableComponent)gameObject.GetComponent(gameObjects.Component.Animatable);
                     string spriteFolder = currentComponent.SpriteFolder;
                     AnimationType currentAnimationType = currentComponent.CurrentAnimationType;
                     string animationTypeInString = currentAnimationType.ToString();
@@ -215,18 +215,18 @@ namespace pixelholdersPlatformer.classes.managers
                         {
                             if (i == currentSprites[animationTypeInString].Length - 1)
                             {
-                                ((AnimatableComponent)gameObject.Components.Where(t => t.GetType().Name == "AnimatableComponent").First()).CurrentAnimationSprite = currentSprites[animationTypeInString][0];
+                                ((AnimatableComponent)gameObject.GetComponent(gameObjects.Component.Animatable)).CurrentAnimationSprite = currentSprites[animationTypeInString][0];
                                 break;
                             }
                             else
                             {
-                                ((AnimatableComponent)gameObject.Components.Where(t => t.GetType().Name == "AnimatableComponent").First()).CurrentAnimationSprite = currentSprites[animationTypeInString][i + 1];
+                                ((AnimatableComponent)gameObject.GetComponent(gameObjects.Component.Animatable)).CurrentAnimationSprite = currentSprites[animationTypeInString][i + 1];
                                 break;
                             }
                         }
                         else
                         {
-                            ((AnimatableComponent)gameObject.Components.Where(t => t.GetType().Name == "AnimatableComponent").First()).CurrentAnimationSprite = currentSprites[animationTypeInString][0];
+                            ((AnimatableComponent)gameObject.GetComponent(gameObjects.Component.Animatable)).CurrentAnimationSprite = currentSprites[animationTypeInString][0];
                             
                         }
                     }

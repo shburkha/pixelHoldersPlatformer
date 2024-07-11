@@ -88,7 +88,7 @@ public class RenderManager
 
     private void SetGameObjectBoundingBox(GameObject gameObject)
     {
-        ((RenderingComponent)gameObject.Components.Where(t => t.GetType().Name == "RenderingComponent").First())
+        ((RenderingComponent)gameObject.GetComponent(gameObjects.Component.Rendering))
             .BoundingBox =
             new SDL_Rect
             {
@@ -116,24 +116,23 @@ public class RenderManager
 
             SDL_SetRenderDrawColor(_renderer, 255, 255, 255, 255);
             SDL_RenderDrawRect(_renderer,
-                ref ((RenderingComponent)gameObject.Components.Where(t => t.GetType().Name == "RenderingComponent")
-                    .First()).BoundingBox);
+                ref ((RenderingComponent)gameObject.GetComponent(gameObjects.Component.Rendering)).BoundingBox);
         }
     }
 
     private void DrawSprite(GameObject gameObject) 
     {
         //SDL_SetTextureBlendMode(((AnimatableComponent)gameObject.Components.Where(t => t.GetType().Name == "AnimatableComponent").First()).CurrentAnimationSprite, SDL_BlendMode.SDL_BLENDMODE_BLEND);
-        if (!((AnimatableComponent)gameObject.Components.Where(t => t.GetType().Name == "AnimatableComponent").First()).isFlipped)
+        if (!((AnimatableComponent)gameObject.GetComponent(gameObjects.Component.Animatable)).isFlipped)
         {
-            SDL_RenderCopy(_renderer, ((AnimatableComponent)gameObject.Components.Where(t => t.GetType().Name == "AnimatableComponent").First()).CurrentAnimationSprite, (nint)null,
-            ref ((RenderingComponent)gameObject.Components.Where(t => t is RenderingComponent).First()).BoundingBox);
+            SDL_RenderCopy(_renderer, ((AnimatableComponent)gameObject.GetComponent(gameObjects.Component.Animatable)).CurrentAnimationSprite, (nint)null,
+            ref ((RenderingComponent)gameObject.GetComponent(gameObjects.Component.Rendering)).BoundingBox);
         }
         else
         {
-            SDL_RenderCopyEx(_renderer, ((AnimatableComponent)gameObject.Components.Where(t => t.GetType().Name == "AnimatableComponent").First()).CurrentAnimationSprite, 
+            SDL_RenderCopyEx(_renderer, ((AnimatableComponent)gameObject.GetComponent(gameObjects.Component.Animatable)).CurrentAnimationSprite, 
                 (nint)null, 
-                ref ((RenderingComponent)gameObject.Components.Where(t => t.GetType().Name == "RenderingComponent").First()).BoundingBox,
+                ref ((RenderingComponent)gameObject.GetComponent(gameObjects.Component.Rendering)).BoundingBox,
                 180,
                 (nint)null, 
                 SDL_RendererFlip.SDL_FLIP_VERTICAL);
@@ -151,11 +150,11 @@ public class RenderManager
 
         foreach (GameObject gameObject in _gameObjects)
         {
-            if (gameObject.Components.Find(t => t.GetType().Name == "RenderingComponent") != null)
+            if (gameObject.GetComponent(gameObjects.Component.Rendering) != null)
             {
                 SetGameObjectBoundingBox(gameObject);
             }
-            if (gameObject.Components.Where(t => t.GetType().Name == "AnimatableComponent").Count() != 0)
+            if (gameObject.GetComponent(gameObjects.Component.Animatable) != null)
             {
                 DrawSprite(gameObject);
                 //DrawGameObject(gameObject);
@@ -317,7 +316,7 @@ public class RenderManager
 
         SDL_SetRenderTarget(_renderer, IntPtr.Zero);
 
-        SDL_Rect renderDestRect = ((RenderingComponent)_map.Components.Where(t => t.GetType().Name == "RenderingComponent").First()).BoundingBox;
+        SDL_Rect renderDestRect = ((RenderingComponent)_map.GetComponent(gameObjects.Component.Rendering)).BoundingBox;
 
         SDL_RenderCopy(_renderer, renderTarget, IntPtr.Zero, ref renderDestRect);
 

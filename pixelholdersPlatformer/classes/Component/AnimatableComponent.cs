@@ -36,7 +36,7 @@ namespace pixelholdersPlatformer.classes.Component
 
         public void Update()
         {
-            PhysicsComponent tmp = ((PhysicsComponent)_owner.Components.Where(t => t.GetType().Name == "PhysicsComponent").First());
+            PhysicsComponent tmp = (PhysicsComponent)_owner.GetComponent(gameObjects.Component.Physics);
 
             //when on the ground this is the default velocity
             if (tmp.Velocity.Y < 0.2 && tmp.Velocity.Y > 0)

@@ -121,7 +121,7 @@ public class Game
                     _player.MovePlayerX(0.5f);
                     break;
                 case InputTypes.PlayerJump:
-                    if (((PhysicsComponent)_player.Components.Where(t => t.GetType().Name == "PhysicsComponent").First()).Velocity.Y == 0)
+                    if (((PhysicsComponent)_player.GetComponent(Component.Physics)).Velocity.Y == 0)
                     {
                         _player.MovePlayerY(-1);
                     }

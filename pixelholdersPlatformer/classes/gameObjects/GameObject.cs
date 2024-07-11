@@ -31,23 +31,51 @@ public class GameObject
 
     public IComponent GetComponent(Component type)
     {
-        switch (type)
+        foreach (IComponent component in Components)
         {
-            case Component.Animatable:
-                return Components.Where(t => t is AnimatableComponent) as AnimatableComponent;
-            case Component.Audio:
-                return Components.Where(t => t is AudioComponent) as AudioComponent;
-            case Component.Collision:
-                return Components.Where(t => t is CollisionComponent) as CollisionComponent;
-            case Component.Movable:
-                return Components.Where(t => t is MovableComponent) as MovableComponent;
-            case Component.Physics:
-                return Components.Where(t => t is PhysicsComponent) as PhysicsComponent;
-            case Component.Rendering:
-                return Components.Where(t => t is RenderingComponent) as RenderingComponent;
-            default:
-                return null;
+            switch (type)
+            {
+                case Component.Animatable:
+                    if (component is AnimatableComponent)
+                    {
+                        return component as AnimatableComponent;
+                    }
+                    break;
+                case Component.Audio:
+                    if (component is AudioComponent)
+                    {
+                        return component as AudioComponent;
+                    }
+                    break;
+                case Component.Collision:
+                    if (component is CollisionComponent)
+                    {
+                        return component as CollisionComponent;
+                    }
+                    break;
+                case Component.Movable:
+                    if (component is MovableComponent)
+                    {
+                        return component as MovableComponent;
+                    }
+                    break;
+                case Component.Physics:
+                    if (component is PhysicsComponent)
+                    {
+                        return component as PhysicsComponent;
+                    }
+                    break;
+                case Component.Rendering:
+                    if (component is RenderingComponent)
+                    {
+                        return component as RenderingComponent;
+                    }
+                    break;
+                default:
+                    return null;
+            }
         }
+        return null;
     }
 
     public void Update()

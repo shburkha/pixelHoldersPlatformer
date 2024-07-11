@@ -25,22 +25,22 @@ namespace pixelholdersPlatformer.classes.Component
 
         public void Collide(float overlapX, float overlapY)
         {
-            if (overlapY != 0f && ((PhysicsComponent)_owner.Components.Where(t => t.GetType().Name == "PhysicsComponent").First()).HasGravity)
+            if (overlapY != 0f && ((PhysicsComponent)_owner.GetComponent(gameObjects.Component.Physics)).HasGravity)
             {
-                ((MovableComponent)_owner.Components.Where(t => t.GetType().Name == "MovableComponent").First()).MoveGameObject(0, -overlapY);
-                if (((PhysicsComponent)_owner.Components.Where(t => t.GetType().Name == "PhysicsComponent").First()).Velocity.Y < 0)
+                ((MovableComponent)_owner.GetComponent(gameObjects.Component.Movable)).MoveGameObject(0, -overlapY);
+                if (((PhysicsComponent)_owner.GetComponent(gameObjects.Component.Physics)).Velocity.Y < 0)
                 {
-                    ((PhysicsComponent)_owner.Components.Where(t => t.GetType().Name == "PhysicsComponent").First()).Velocity.Y = 0.001f;
+                    ((PhysicsComponent)_owner.GetComponent(gameObjects.Component.Physics)).Velocity.Y = 0.001f;
                 }
                 else
                 {
-                    ((PhysicsComponent)_owner.Components.Where(t => t.GetType().Name == "PhysicsComponent").First()).Velocity.Y = 0;
+                    ((PhysicsComponent)_owner.GetComponent(gameObjects.Component.Physics)).Velocity.Y = 0;
                 }
             }
-            if (overlapX != 0f && ((PhysicsComponent)_owner.Components.Where(t => t.GetType().Name == "PhysicsComponent").First()).CanMove)
+            if (overlapX != 0f && ((PhysicsComponent)_owner.GetComponent(gameObjects.Component.Physics)).CanMove)
             {
-                ((MovableComponent)_owner.Components.Where(t => t.GetType().Name == "MovableComponent").First()).MoveGameObject(-overlapX, 0);
-                ((PhysicsComponent)_owner.Components.Where(t => t.GetType().Name == "PhysicsComponent").First()).Velocity.X = 0;
+                ((MovableComponent)_owner.GetComponent(gameObjects.Component.Movable)).MoveGameObject(-overlapX, 0);
+                ((PhysicsComponent)_owner.GetComponent(gameObjects.Component.Physics)).Velocity.X = 0;
             }
         }
         public void Update()
