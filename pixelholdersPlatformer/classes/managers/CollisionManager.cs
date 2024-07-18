@@ -27,15 +27,15 @@ public class CollisionManager
         foreach(GameObject gameObject in _gameObjects) 
         {
             
-            if (gameObject.Components.Where(t => t.GetType().Name == "CollisionComponent").Count() != 0)
+            if (gameObject.GetComponent(gameObjects.Component.Collision) != null)
             {
                 foreach (GameObject other in _gameObjects)
                 { 
-                    if(!other.Equals(gameObject) && other.Components.Where(t => t.GetType().Name == "CollisionComponent").Count() != 0)
+                    if(!other.Equals(gameObject) && other.GetComponent(gameObjects.Component.Collision) != null)
                     {
                         if (isColliding(gameObject, other))
                         {
-                              ((CollisionComponent)gameObject.Components.Where(t => t.GetType().Name == "CollisionComponent").First()).Collide(overlapX, overlapY);
+                              ((CollisionComponent)gameObject.GetComponent(gameObjects.Component.Collision)).Collide(overlapX, overlapY);
 
                         }
                         overlapX = 0;
@@ -50,9 +50,9 @@ public class CollisionManager
     private bool isColliding(GameObject gameObject, GameObject other)
     {
 
-        if (((CollisionComponent)gameObject.Components.Where(t => t.GetType().Name == "CollisionComponent").First()).IsCollidable && ((CollisionComponent)other.Components.Where(t => t.GetType().Name == "CollisionComponent").First()).IsCollidable)
+        if (((CollisionComponent)gameObject.GetComponent(gameObjects.Component.Collision)).IsCollidable && ((CollisionComponent)other.GetComponent(gameObjects.Component.Collision)).IsCollidable)
         {
-            Vector2 velocity = ((PhysicsComponent)gameObject.Components.Where(t => t.GetType().Name == "PhysicsComponent").First()).Velocity;
+            Vector2 velocity = ((PhysicsComponent)gameObject.GetComponent(gameObjects.Component.Physics)).Velocity;
 
             if (gameObject.CoordX + gameObject.Width + velocity.X > other.CoordX &&
                 gameObject.CoordX + velocity.X <= other.CoordX + other.Width &&

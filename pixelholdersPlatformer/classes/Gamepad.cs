@@ -6,34 +6,35 @@ public class Gamepad
 {
     private DirectInput _directInput;
     public Joystick Joystick;
+    public Guid JoystickGuid;
 
     public Gamepad()
     {
         _directInput = new DirectInput();
+        JoystickGuid = Guid.Empty;
         InitializeGamepad();
     }
 
     private void InitializeGamepad()
     {
-        var joystickGuid = Guid.Empty;
-
         foreach (var deviceInstance in _directInput.GetDevices(DeviceType.Gamepad, DeviceEnumerationFlags.AllDevices))
         {
-            joystickGuid = deviceInstance.InstanceGuid;
+            JoystickGuid = deviceInstance.InstanceGuid;
         }
 
-        if (joystickGuid == Guid.Empty)
+        if (JoystickGuid == Guid.Empty)
         {
             foreach (var deviceInstance in _directInput.GetDevices(DeviceType.Joystick,
                          DeviceEnumerationFlags.AllDevices))
             {
-                joystickGuid = deviceInstance.InstanceGuid;
+                JoystickGuid = deviceInstance.InstanceGuid;
             }
         }
 
-        if (joystickGuid == Guid.Empty) return; // this fixes crash when no gamepad is connected
-        Joystick = new Joystick(_directInput, joystickGuid);
+        if (JoystickGuid == Guid.Empty) return; // this fixes crash when no gamepad is connected
+        Joystick = new Joystick(_directInput, JoystickGuid);
         Joystick.Properties.BufferSize = 128;
         Joystick.Acquire();
     }
+
 }

@@ -108,12 +108,11 @@ public class Game
 
     private void ProcessInput()
     {
-        List<InputTypes> inputs = _inputManager.GetInputs();
+        List<InputTypes> inputs = _inputManager.GetInputs(_gamepad);
 
-        for (int i = 0; i < inputs.Count; i++)
+        foreach (var input in inputs)
         {
-            
-            switch (inputs[i])
+            switch (input)
             {
                 case InputTypes.PlayerLeft:
                     _player.MovePlayerX(-0.5f);
@@ -122,7 +121,7 @@ public class Game
                     _player.MovePlayerX(0.5f);
                     break;
                 case InputTypes.PlayerJump:
-                    if (((PhysicsComponent)_player.Components.Where(t => t.GetType().Name == "PhysicsComponent").First()).Velocity.Y == 0)
+                    if (((PhysicsComponent)_player.GetComponent(Component.Physics)).Velocity.Y == 0)
                     {
                         _player.MovePlayerY(-1);
                     }
@@ -161,50 +160,6 @@ public class Game
                     _renderManager.CenterCameraAroundPlayer();
                     _renderManager.Zoom(1);
                     break;
-            }
-        }
-
-        if (_gamepad.Joystick != null)
-        {
-            List<InputTypes> gamepadInputs = _inputManager.GetGamepadInputs(_gamepad.Joystick);
-            foreach (var input in gamepadInputs)
-            {
-                switch (input)
-                {
-                    case InputTypes.PlayerLeft:
-                        _player.MovePlayerX(-1);
-                        break;
-                    case InputTypes.PlayerRight:
-                        _player.MovePlayerX(1);
-                        break;
-                    case InputTypes.PlayerJump:
-                        _player.MovePlayerY(-1);
-                        break;
-                    case InputTypes.Quit:
-                        _quit = true;
-                        break;
-                    case InputTypes.CameraRenderMode:
-                        _renderManager.SwitchRenderMode();
-                        break;
-                    case InputTypes.CameraUp:
-                        _renderManager.MoveCamera(0, -1);
-                        break;
-                    case InputTypes.CameraDown:
-                        _renderManager.MoveCamera(0, 1);
-                        break;
-                    case InputTypes.CameraLeft:
-                        _renderManager.MoveCamera(-1, 0);
-                        break;
-                    case InputTypes.CameraRight:
-                        _renderManager.MoveCamera(1, 0);
-                        break;
-                    case InputTypes.CameraZoomIn:
-                        _renderManager.Zoom(-2);
-                        break;
-                    case InputTypes.CameraZoomOut:
-                        _renderManager.Zoom(2);
-                        break;
-                }
             }
         }
     }

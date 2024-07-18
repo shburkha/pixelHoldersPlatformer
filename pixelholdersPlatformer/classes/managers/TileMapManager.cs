@@ -1,5 +1,6 @@
 ﻿using pixelholdersPlatformer.classes.gameObjects;
 using SDL2;
+using System.Drawing;
 using TiledCSPlus;
 using static SDL2.SDL;
 
@@ -39,6 +40,35 @@ public class TileMapManager
     {
         List<GameObject> boxes = new List<GameObject>();
 
+        //foreach (var layer in _map.Layers)
+        //{
+        //    int index = 0;
+        //    foreach (var entry in layer.Data)
+        //    {
+        //        if (_collidableTiles.Contains(entry))
+        //        {
+        //            boxes.Add( new GameObject( index%layer.Width, index/layer.Width, 1, 1 ));
+        //        }
+
+        //        index++;
+        //    }
+        //}
+
+        List<Tile> rects = ConsolidateCollisionBoxes( GenerateTerrainCollisionBoxes() );
+
+        foreach (var rect in rects)
+        {
+            boxes.Add(new GameObject(rect.x, rect.y, rect.w, rect.h));
+        }
+
+        Console.WriteLine("Boxes: "+boxes.Count);
+        return boxes;
+    }
+
+    private List<Tile> GenerateTerrainCollisionBoxes()
+    {
+        List<Tile> boxes = new List<Tile>();
+
         foreach (var layer in _map.Layers)
         {
             int index = 0;
@@ -46,18 +76,71 @@ public class TileMapManager
             {
                 if (_collidableTiles.Contains(entry))
                 {
-                    boxes.Add( new GameObject( index%layer.Width, index/layer.Width, 1, 1 ));
+                    boxes.Add(new Tile { x = index % layer.Width, y = index / layer.Width, w = 1, h = 1 });
                 }
 
                 index++;
             }
         }
-        Console.WriteLine("Boxes: "+boxes.Count);
+
         return boxes;
+    }
+
+    private List<Tile> ConsolidateCollisionBoxes(List<Tile> boxes)
+    {
+        List<Tile> newBoxes = [.. boxes];
+        do
+        {
+            boxes.Clear();
+            boxes.AddRange(newBoxes);
+            newBoxes.Clear();
+
+            for (int i = 1; i < boxes.Count(); i++)
+            {
+                if (boxes[i - 1].x + boxes[i - 1].w == boxes[i].x && boxes[i - 1].y == boxes[i].y && boxes[i - 1].h == boxes[i].h)
+                {
+                    newBoxes.Add(new Tile { x = boxes[i - 1].x, y = boxes[i - 1].y, w = boxes[i - 1].w + boxes[i].w, h = boxes[i - 1].h });
+                    i++;
+                }
+                else
+                {
+                    newBoxes.Add(boxes[i-1]);
+                }
+
+                if (i == boxes.Count() - 1)
+                {
+                    newBoxes.Add(boxes[i]);
+                }
+            }
+        } while (newBoxes.Count() < boxes.Count());
+
+        List<Tile> finalBoxes = new List<Tile>();
+
+        for (int i = 0; i < newBoxes.Count; i++)
+        {
+            Tile current = newBoxes[i];
+
+            for (int j = i + 1; j < newBoxes.Count; j++)
+            {
+                Tile next = newBoxes[j];
+
+                if (current.x == next.x && current.w == next.w && current.y + current.h == next.y)
+                {
+                    current.h += next.h;
+                    newBoxes.RemoveAt(j);
+                    j--;
+                }
+            }
+
+            finalBoxes.Add(current);
+        }
+
+        return finalBoxes;
     }
 
     public List<SpecialTile> GetSpecialTiles()
     {
+        List<Tile> boxes = new List<Tile>();
         List<SpecialTile> list = new List<SpecialTile>();
 
         foreach (var layer in _map.Layers)
@@ -67,11 +150,18 @@ public class TileMapManager
             {
                 if (_winTiles.Contains(entry))
                 {
-                    list.Add(new SpecialTile(index % layer.Width, index / layer.Width, 1, 1, SpecialTileType.Goal));
+                    boxes.Add(new Tile { x = index % layer.Width, y = index / layer.Width, w = 1, h = 1 });
                 }
 
                 index++;
             }
+        }
+
+        boxes = ConsolidateCollisionBoxes(boxes);
+
+        foreach (var box in boxes)
+        {
+            list.Add(new SpecialTile(box.x, box.y, box.w, box.h, SpecialTileType.Goal));
         }
 
         return list;
@@ -88,4 +178,12 @@ public struct MapData
     public TiledMap Map;
     public Dictionary<int, TiledTileset> Tilesets;
     public int LevelIndex;
+}
+
+public struct Tile
+{
+    public float x;
+    public float y;
+    public float w;
+    public float h;
 }
