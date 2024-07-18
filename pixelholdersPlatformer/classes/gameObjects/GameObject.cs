@@ -78,7 +78,7 @@ public class GameObject
         return null;
     }
 
-    public void Update()
+    public virtual void Update()
     {
         foreach (var component in Components)
         {

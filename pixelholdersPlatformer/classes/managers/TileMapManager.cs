@@ -19,7 +19,7 @@ public class TileMapManager
     {
         _map = new TiledMap("assets/testLevel.tmx"); // tilesize is 32x32
         _tilesets = _map.GetTiledTilesets("assets/");
-
+        /*
         foreach (var tileset in _tilesets)
         {
             Console.WriteLine($"key: {tileset.Key}, value: {tileset.Value.Name}");
@@ -33,7 +33,7 @@ public class TileMapManager
                 if (entry != 0)
                     Console.WriteLine($"entry: {entry}");
             }
-        }
+        }*/
     }
 
     public List<GameObject> GetEnvironmentCollidables()
@@ -61,7 +61,7 @@ public class TileMapManager
             boxes.Add(new GameObject(rect.x, rect.y, rect.w, rect.h));
         }
 
-        Console.WriteLine("Boxes: "+boxes.Count);
+        //Console.WriteLine("Boxes: "+boxes.Count);
         return boxes;
     }
 

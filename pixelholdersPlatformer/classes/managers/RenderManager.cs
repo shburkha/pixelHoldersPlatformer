@@ -342,4 +342,14 @@ public class RenderManager
             _tileSetTextures.Add(SDL_image.IMG_LoadTexture(_renderer, "assets/TileSets/" + _mapData.Tilesets[key].Image.Source));
         }
     }
+
+    public float GetMapWidth()
+    {
+        return _map.Width;
+    }
+
+    public float GetMapHeight()
+    {
+        return _map.Height;
+    }
 }
