@@ -9,9 +9,9 @@ public class PhysicsComponent : IComponent
     private GameObject _owner;
 
     private const float _terminalVelocityY = 1;
-    public const double GRAVITY = 5.5d;
+    public const double GRAVITY = 3.5d;
     public const double AIR_RESISTANCE = 1.5d;
-    public const double FRICTION = 5.5d;
+    public const double FRICTION = 2.5d;
 
     public double DeltaT = 0.016d;
 

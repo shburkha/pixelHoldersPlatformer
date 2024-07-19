@@ -115,15 +115,15 @@ public class Game
             switch (input)
             {
                 case InputTypes.PlayerLeft:
-                    _player.MovePlayerX(-0.5f);
+                    _player.MovePlayerX(-0.3f);
                     break;
                 case InputTypes.PlayerRight:
-                    _player.MovePlayerX(0.5f);
+                    _player.MovePlayerX(0.3f);
                     break;
                 case InputTypes.PlayerJump:
                     if (((PhysicsComponent)_player.GetComponent(Component.Physics)).Velocity.Y == 0)
                     {
-                        _player.MovePlayerY(-1);
+                        _player.MovePlayerY(-0.7f);
                     }
                     break;
                 case InputTypes.Quit:

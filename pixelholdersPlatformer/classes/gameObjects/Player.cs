@@ -14,7 +14,7 @@ public class Player : GameObject
         this.Components.Add(new MovableComponent(this));
         this.Components.Add(new PhysicsComponent(this));
         this.Components.Add(new CollisionComponent(this));
-        this.Components.Add(new AnimatableComponent(this, "03-Pig"));
+        this.Components.Add(new AnimatableComponent(this, "01-King Human"));
         ((PhysicsComponent)GetComponent(Component.Physics)).HasGravity = true;
         ((PhysicsComponent)GetComponent(Component.Physics)).CanMove = true;
         _startPosX = coordX;
