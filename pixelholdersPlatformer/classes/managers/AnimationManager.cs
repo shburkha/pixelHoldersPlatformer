@@ -74,7 +74,7 @@ namespace pixelholdersPlatformer.classes.managers
                     
                     foreach (string spriteName in spriteNames)
                     {
-                        //we get the big sprite's width so we can divide it accordingly
+                        //we get the big sprite's width, so we can divide it accordingly
                         Image img = Image.FromFile(spriteName);
 
                         //this is ever changing...

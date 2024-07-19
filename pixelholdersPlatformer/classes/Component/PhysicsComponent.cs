@@ -9,7 +9,7 @@ public class PhysicsComponent : IComponent
     private GameObject _owner;
 
     private const float _terminalVelocityY = 1;
-    public const double GRAVITY = 5.5d;
+    public const double GRAVITY = 8.5d;
     public const double AIR_RESISTANCE = 1.5d;
     public const double FRICTION = 5.5d;
 
@@ -66,9 +66,10 @@ public class PhysicsComponent : IComponent
                 Velocity.Y += (float)(GRAVITY * DeltaT);
             }
 
-            if (_owner.CoordX != Math.Clamp(_owner.CoordX, 0, 100 - _owner.Width))
+            //TODO change coordinates to be based on the tilemap
+            if (_owner.CoordX != Math.Clamp(_owner.CoordX, 0, 200 - _owner.Width))
             {
-                _owner.CoordX = Math.Clamp(_owner.CoordX, 0, 100 - _owner.Width);
+                _owner.CoordX = Math.Clamp(_owner.CoordX, 0, 200 - _owner.Width);
 
                 if (Velocity.X != 0)
                 {

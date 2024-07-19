@@ -53,7 +53,7 @@ public class RenderManager
         _renderer = SDL_CreateRenderer(_window, -1, SDL_RendererFlags.SDL_RENDERER_ACCELERATED);
 
         _camera = new GameObject(5, 5, 16, 9);
-        _map = new GameObject(0, 0, 100, 50);
+        _map = new GameObject(0, 0, 200, 50);
 
         _alwaysRender = true;
 
@@ -71,7 +71,6 @@ public class RenderManager
             h = ((int)(_camera.Height * _scaleY))
         };
 
-        _mapTexture = SDL_CreateTextureFromSurface(_renderer, SDL_image.IMG_Load("assets/map.png"));
         _tileSetTextures = new List<IntPtr>();
     }
 

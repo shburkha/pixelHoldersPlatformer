@@ -39,9 +39,7 @@ public class InputManager
         if (keyState[(int)SDL_Scancode.SDL_SCANCODE_0] != 0) {keysPressed.Add(InputTypes.CameraSetZoom2);}
         if (keyState[(int)SDL_Scancode.SDL_SCANCODE_C] != 0) {keysPressed.Add(InputTypes.CameraCenter);}
 
-        Console.WriteLine(SDL_NumJoysticks());
         if(SDL_NumJoysticks() < 1) return keysPressed;
-
         gamepad.Joystick.Poll();
         var state = gamepad.Joystick.GetCurrentState();
 
@@ -57,6 +55,7 @@ public class InputManager
         if (state.Buttons[0]) keysPressed.Add(InputTypes.PlayerJump); // Cross
         if (state.Buttons[1]) keysPressed.Add(InputTypes.Quit); // Circle
         if (state.Buttons[2]) keysPressed.Add(InputTypes.CameraRenderMode); // Square
+        if (state.Buttons[3]) keysPressed.Add(InputTypes.ResetPlayerPos); // Triangle
         if (state.Buttons[5]) keysPressed.Add(InputTypes.CameraZoomIn); // Right shoulder
         if (state.Buttons[4]) keysPressed.Add(InputTypes.CameraZoomOut); // Left shoulder
         // right stick input

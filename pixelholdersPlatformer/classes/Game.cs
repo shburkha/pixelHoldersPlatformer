@@ -66,7 +66,7 @@ public class Game
             gameObjects.Add(box);
         }
 
-        _player = new Player(5, 5, 1, 1);
+        _player = new Player(5, 10, 1, 1);
 
         gameObjects.Add(_player);
 
@@ -115,10 +115,10 @@ public class Game
             switch (input)
             {
                 case InputTypes.PlayerLeft:
-                    _player.MovePlayerX(-0.5f);
+                    _player.MovePlayerX(-0.4f);
                     break;
                 case InputTypes.PlayerRight:
-                    _player.MovePlayerX(0.5f);
+                    _player.MovePlayerX(0.4f);
                     break;
                 case InputTypes.PlayerJump:
                     if (((PhysicsComponent)_player.Components.Where(t => t.GetType().Name == "PhysicsComponent").First()).Velocity.Y == 0)
