@@ -24,6 +24,7 @@ public class InputManager
         if (keyState[(int)SDL_Scancode.SDL_SCANCODE_A] != 0) {keysPressed.Add(InputTypes.PlayerLeft);}
         if (keyState[(int)SDL_Scancode.SDL_SCANCODE_D] != 0) {keysPressed.Add(InputTypes.PlayerRight);}
         if (keyState[(int)SDL_Scancode.SDL_SCANCODE_SPACE] != 0) {keysPressed.Add(InputTypes.PlayerJump);}
+        if (keyState[(int)SDL_Scancode.SDL_SCANCODE_K] != 0) {keysPressed.Add(InputTypes.PlayerAttack);}
         if (keyState[(int)SDL_Scancode.SDL_SCANCODE_ESCAPE] != 0) {keysPressed.Add(InputTypes.Quit);}
         if (keyState[(int)SDL_Scancode.SDL_SCANCODE_R] != 0) {keysPressed.Add(InputTypes.ResetPlayerPos);}
         if (keyState[(int)SDL_Scancode.SDL_SCANCODE_F] != 0) {keysPressed.Add(InputTypes.CameraRenderMode);}
@@ -77,6 +78,7 @@ public enum InputTypes
     PlayerLeft,
     PlayerRight,
     PlayerJump,
+    PlayerAttack,
     Quit,
     CameraRenderMode,
     CameraUp,

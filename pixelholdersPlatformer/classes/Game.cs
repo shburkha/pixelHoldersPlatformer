@@ -17,7 +17,7 @@ public class Game
     private List<GameObject> _collidableObjects;
     private List<SpecialTile> _specialObjects;
 
-    Stopwatch stopwatch = new Stopwatch();
+    Stopwatch _gameStopwatch = new Stopwatch();
     private bool _quit;
 
     private Player _player;
@@ -29,6 +29,9 @@ public class Game
     private InputManager _inputManager;
     private CollisionManager _collisionManager;
     private AnimationManager _animationManager;
+
+    private const int _attackCooldown = 500;
+    private Stopwatch _attackStopWatch = new Stopwatch();
 
     Gamepad _gamepad;
     TileMapManager _tileMapManager;
@@ -80,7 +83,9 @@ public class Game
         int _refreshRate = _displayMode.refresh_rate;
         double targetFPS = _refreshRate * 1.0d;
         _frameInterval = 1000d / targetFPS;
-        stopwatch.Start();
+        
+        _gameStopwatch.Start();
+        _attackStopWatch.Start();
     }
 
     public void StartGame()
@@ -94,17 +99,20 @@ public class Game
                 _quit = true;
             }
 
-            double timeElapsed = (double)stopwatch.ElapsedMilliseconds;
+            double timeElapsed = (double)_gameStopwatch.ElapsedMilliseconds;
             if (timeElapsed > _frameInterval)
             {
                 _deltaT = timeElapsed;
                 ProcessInput();
                 Update();
                 Render();
-                stopwatch.Restart();
+                _gameStopwatch.Restart();
             }
         }
     }
+
+
+
 
     private void ProcessInput()
     {
@@ -126,6 +134,16 @@ public class Game
                         _player.MovePlayerY(-0.7f);
                     }
                     break;
+
+                case InputTypes.PlayerAttack:
+                    if (_attackStopWatch.ElapsedMilliseconds > _attackCooldown)
+                    {
+                        ((AnimatableComponent)_player.GetComponent(Component.Animatable)).SetAnimationType(AnimationType.Attack, ((AnimatableComponent)_player.GetComponent(Component.Animatable)).isFlipped);
+                        _attackStopWatch.Restart();
+                    }
+                    
+                    break;
+
                 case InputTypes.Quit:
                     _quit = true;
                     break;
