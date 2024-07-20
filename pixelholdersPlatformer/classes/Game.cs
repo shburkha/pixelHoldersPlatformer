@@ -7,6 +7,7 @@ using System.Diagnostics;
 using pixelholdersPlatformer.classes;
 using static SDL2.SDL;
 using TiledCSPlus;
+using pixelholdersPlatformer.classes.behaviours;
 
 namespace pixelholdersPlatformer;
 
@@ -21,6 +22,9 @@ public class Game
     private bool _quit;
 
     private Player _player;
+
+    private Enemy _testEnemy;
+
 
     private double _deltaT;
 
@@ -69,9 +73,13 @@ public class Game
             gameObjects.Add(box);
         }
 
+        //the sizes are important, don't change them please :)
         _player = new Player(5, 10, 1, 1);
+        _testEnemy = new Enemy(10, 10, 0.5f, 0.5f);
+        _testEnemy.AddComponent(new PigBehaviour(_testEnemy, _player));
 
         gameObjects.Add(_player);
+        gameObjects.Add(_testEnemy);
 
         _renderManager.SetGameObjects(gameObjects);
         _collisionManager.SetGameObjects(gameObjects);
@@ -120,10 +128,10 @@ public class Game
             switch (input)
             {
                 case InputTypes.PlayerLeft:
-                    _player.MovePlayerX(-0.4f);
+                    _player.MovePlayerX(-0.3f);
                     break;
                 case InputTypes.PlayerRight:
-                    _player.MovePlayerX(0.4f);
+                    _player.MovePlayerX(0.3f);
                     break;
                 case InputTypes.PlayerJump:
                     if (((PhysicsComponent)_player.GetComponent(Component.Physics)).Velocity.Y == 0)
@@ -172,6 +180,10 @@ public class Game
                 case InputTypes.CameraCenter:
                     _renderManager.CenterCameraAroundPlayer();
                     _renderManager.Zoom(1);
+                    break;
+
+                case InputTypes.DebugMode:
+                    _renderManager.SwitchDebugMode();
                     break;
             }
         }

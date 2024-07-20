@@ -1,4 +1,5 @@
-﻿using pixelholdersPlatformer.classes.Component;
+﻿using pixelholdersPlatformer.classes.behaviours;
+using pixelholdersPlatformer.classes.Component;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,11 +18,14 @@ namespace pixelholdersPlatformer.classes.gameObjects
             this.Components.Add(new PhysicsComponent(this));
             this.Components.Add(new CollisionComponent(this));
             this.Components.Add(new AnimatableComponent(this, _enemyType));
+            ((PhysicsComponent)GetComponent(Component.Physics)).HasGravity = true;
+            ((PhysicsComponent)GetComponent(Component.Physics)).CanMove = true;
         }
 
         public void SetEnemyType(string enemyType)
         { 
             _enemyType = enemyType;
+
         }
 
     }

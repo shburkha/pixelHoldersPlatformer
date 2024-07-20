@@ -22,14 +22,20 @@ namespace pixelholdersPlatformer.classes.Component
 
         public SDL_Rect SpriteBoundingBox;
 
-        private Stopwatch _attackTimer; 
-
+        private Stopwatch _attackTimer;
+        private int _attackCooldown = 150;
         public AnimatableComponent(GameObject owner, string spriteFolder)
         {
             _owner = owner;
             SpriteFolder = spriteFolder;
             CurrentAnimationType = AnimationType.Idle;
             _attackTimer = new Stopwatch();
+        }
+
+
+        public void SetAttackCooldown(int cooldown)
+        {
+            _attackCooldown = cooldown;
         }
 
         public void SetAnimationType(AnimationType animationType, bool flipped = false) 
@@ -69,7 +75,7 @@ namespace pixelholdersPlatformer.classes.Component
                         {
                             _attackTimer.Start();
                         }
-                        if (_attackTimer.ElapsedMilliseconds > 150)
+                        if (_attackTimer.ElapsedMilliseconds > _attackCooldown)
                         {
                             _attackTimer.Reset();
                             SetAnimationType(AnimationType.Idle, isFlipped);

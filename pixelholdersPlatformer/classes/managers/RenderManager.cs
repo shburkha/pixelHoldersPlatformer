@@ -5,6 +5,7 @@ using TiledCSPlus;
 using System.Numerics;
 using static SDL2.SDL;
 using SharpDX.Multimedia;
+using pixelholdersPlatformer.gameObjects;
 
 namespace pixelholdersPlatformer.classes.managers;
 
@@ -40,6 +41,7 @@ public class RenderManager
 
     private int _zoomLevel;
     private bool _alwaysRender;
+    private bool _debugMode;
 
 
 
@@ -54,7 +56,8 @@ public class RenderManager
 
     private const int _pigSpriteWidth = 34;
     private const int _pigSpriteHeight = 28;
-
+    private const int _pigTopPadding = 15;
+    private const int _pigLeftPadding = 20;
 
 
 
@@ -73,6 +76,7 @@ public class RenderManager
         _map = new GameObject(0, 0, 200, 50);
 
         _alwaysRender = true;
+        _debugMode = true;
 
         _zoomLevel = 1;
         _scaleX = (int)(_defaultScreenWidth / _camera.Width) / _zoomLevel;
@@ -141,8 +145,10 @@ public class RenderManager
                     break;
 
                 case "03-Pig":
-                    currentSpriteWidthInPixels = _humanKingSpriteWidth;
-                    currentSpriteHeightInPixels = _humanKingSpriteHeight;
+                    currentSpriteWidthInPixels = _pigSpriteWidth;
+                    currentSpriteHeightInPixels = _pigSpriteHeight;
+                    leftPadding = _pigLeftPadding;
+                    topPadding = _pigTopPadding;
                     break;
 
 
@@ -152,36 +158,71 @@ public class RenderManager
             //this way we can use the original sprites with the attack animation too
             //here we also set the sprites' boundingbox
 
-            if (!((AnimatableComponent)gameObject.GetComponent(gameObjects.Component.Animatable)).isFlipped)
+            if (gameObject is Player)
             {
-                ((AnimatableComponent)gameObject.GetComponent(gameObjects.Component.Animatable))
-                .SpriteBoundingBox =
-                new SDL_Rect
+                if (!((AnimatableComponent)gameObject.GetComponent(gameObjects.Component.Animatable)).isFlipped)
                 {
-                    x = (int)((int)(((int)((gameObject.CoordX - _camera.CoordX) * _scaleX)) + _offsetX) - leftPadding / _zoomLevel),
-                    y = (int)((int)(((int)((gameObject.CoordY - _camera.CoordY) * _scaleY)) + _offsetY) - topPadding / _zoomLevel),
-                    w = (int)(currentSpriteWidthInPixels / _zoomLevel * 2),
-                    h = (int)(currentSpriteHeightInPixels / _zoomLevel * 2)
+                    ((AnimatableComponent)gameObject.GetComponent(gameObjects.Component.Animatable))
+                    .SpriteBoundingBox =
+                    new SDL_Rect
+                    {
+                        x = (int)((int)(((int)((gameObject.CoordX - _camera.CoordX) * _scaleX)) + _offsetX) - leftPadding / _zoomLevel),
+                        y = (int)((int)(((int)((gameObject.CoordY - _camera.CoordY) * _scaleY)) + _offsetY) - topPadding / _zoomLevel),
+                        w = (int)(currentSpriteWidthInPixels / _zoomLevel * 2),
+                        h = (int)(currentSpriteHeightInPixels / _zoomLevel * 2)
 
-                };
+                    };
+
+                }
+                else
+                {
+                    ((AnimatableComponent)gameObject.GetComponent(gameObjects.Component.Animatable))
+                    .SpriteBoundingBox =
+                    new SDL_Rect
+                    {
+                        x = (int)((int)(((int)((gameObject.CoordX - _camera.CoordX) * _scaleX)) + _offsetX) - (currentSpriteWidthInPixels - leftPadding) / _zoomLevel),
+                        y = (int)((int)(((int)((gameObject.CoordY - _camera.CoordY) * _scaleY)) + _offsetY) - topPadding / _zoomLevel),
+                        w = (int)(currentSpriteWidthInPixels / _zoomLevel * 2),
+                        h = (int)(currentSpriteHeightInPixels / _zoomLevel * 2)
+
+                    };
+
+                }
 
             }
-            else
+            else if (gameObject is Enemy)
             {
-                ((AnimatableComponent)gameObject.GetComponent(gameObjects.Component.Animatable))
-                .SpriteBoundingBox =
-                new SDL_Rect
+                if (((AnimatableComponent)gameObject.GetComponent(gameObjects.Component.Animatable)).isFlipped)
                 {
-                    x = (int)((int)(((int)((gameObject.CoordX - _camera.CoordX) * _scaleX)) + _offsetX) - (currentSpriteWidthInPixels - leftPadding) / _zoomLevel),
-                    y = (int)((int)(((int)((gameObject.CoordY - _camera.CoordY) * _scaleY)) + _offsetY) - topPadding / _zoomLevel),
-                    w = (int)(currentSpriteWidthInPixels / _zoomLevel * 2),
-                    h = (int)(currentSpriteHeightInPixels / _zoomLevel * 2)
+                    ((AnimatableComponent)gameObject.GetComponent(gameObjects.Component.Animatable))
+                    .SpriteBoundingBox =
+                    new SDL_Rect
+                    {
+                        x = (int)((int)(((int)((gameObject.CoordX - _camera.CoordX) * _scaleX)) + _offsetX) - leftPadding / _zoomLevel),
+                        y = (int)((int)(((int)((gameObject.CoordY - _camera.CoordY) * _scaleY)) + _offsetY) - topPadding / _zoomLevel),
+                        w = (int)(currentSpriteWidthInPixels / _zoomLevel * 2),
+                        h = (int)(currentSpriteHeightInPixels / _zoomLevel * 2)
 
-                };
+                    };
+
+                }
+                else
+                {
+                    ((AnimatableComponent)gameObject.GetComponent(gameObjects.Component.Animatable))
+                    .SpriteBoundingBox =
+                    new SDL_Rect
+                    {
+                        x = (int)((int)(((int)((gameObject.CoordX - _camera.CoordX) * _scaleX)) + _offsetX) - (currentSpriteWidthInPixels - leftPadding) / _zoomLevel),
+                        y = (int)((int)(((int)((gameObject.CoordY - _camera.CoordY) * _scaleY)) + _offsetY) - topPadding / _zoomLevel),
+                        w = (int)(currentSpriteWidthInPixels / _zoomLevel * 2),
+                        h = (int)(currentSpriteHeightInPixels / _zoomLevel * 2)
+
+                    };
+
+                }
 
             }
-
-
+          
         }
 
     }
@@ -200,39 +241,63 @@ public class RenderManager
         //first, we check if the gameObject is inside the camera's view
         if (_alwaysRender || IsInsideCameraView(gameObject))
         {
-
-            SDL_SetRenderDrawColor(_renderer, 255, 255, 255, 255);
-            SDL_RenderDrawRect(_renderer,
-                ref ((RenderingComponent)gameObject.GetComponent(gameObjects.Component.Rendering)).BoundingBox);
-
-            if (gameObject.GetComponent(gameObjects.Component.Animatable) != null)
+            if (_debugMode) 
             {
-                SDL_SetRenderDrawColor(_renderer, 255, 0, 255, 255);
+                SDL_SetRenderDrawColor(_renderer, 255, 255, 255, 255);
                 SDL_RenderDrawRect(_renderer,
-                    ref ((AnimatableComponent)gameObject.GetComponent(gameObjects.Component.Animatable)).SpriteBoundingBox);
+                    ref ((RenderingComponent)gameObject.GetComponent(gameObjects.Component.Rendering)).BoundingBox);
+
+                if (gameObject.GetComponent(gameObjects.Component.Animatable) != null)
+                {
+                    SDL_SetRenderDrawColor(_renderer, 255, 0, 255, 255);
+                    SDL_RenderDrawRect(_renderer,
+                        ref ((AnimatableComponent)gameObject.GetComponent(gameObjects.Component.Animatable)).SpriteBoundingBox);
+                }
+
             }
-            
         }
     }
 
     private void DrawSprite(GameObject gameObject) 
     {
+        //the enemy sprites are opposite looking
+        //we could reshape it in GIMP but it is too tedious
+        if (gameObject is Player)
+        {
+            if (!((AnimatableComponent)gameObject.GetComponent(gameObjects.Component.Animatable)).isFlipped)
+            {
+                SDL_RenderCopy(_renderer, ((AnimatableComponent)gameObject.GetComponent(gameObjects.Component.Animatable)).CurrentAnimationSprite, (nint)null,
+                ref ((AnimatableComponent)gameObject.GetComponent(gameObjects.Component.Animatable)).SpriteBoundingBox);
+            }
+            else
+            {
+                SDL_RenderCopyEx(_renderer, ((AnimatableComponent)gameObject.GetComponent(gameObjects.Component.Animatable)).CurrentAnimationSprite,
+                    (nint)null,
+                    ref ((AnimatableComponent)gameObject.GetComponent(gameObjects.Component.Animatable)).SpriteBoundingBox,
+                    180,
+                    (nint)null,
+                    SDL_RendererFlip.SDL_FLIP_VERTICAL);
+            }
+        }
+        else if (gameObject is Enemy) 
+        {
+            if (((AnimatableComponent)gameObject.GetComponent(gameObjects.Component.Animatable)).isFlipped)
+            {
+                SDL_RenderCopy(_renderer, ((AnimatableComponent)gameObject.GetComponent(gameObjects.Component.Animatable)).CurrentAnimationSprite, (nint)null,
+                ref ((AnimatableComponent)gameObject.GetComponent(gameObjects.Component.Animatable)).SpriteBoundingBox);
+            }
+            else
+            {
+                SDL_RenderCopyEx(_renderer, ((AnimatableComponent)gameObject.GetComponent(gameObjects.Component.Animatable)).CurrentAnimationSprite,
+                    (nint)null,
+                    ref ((AnimatableComponent)gameObject.GetComponent(gameObjects.Component.Animatable)).SpriteBoundingBox,
+                    180,
+                    (nint)null,
+                    SDL_RendererFlip.SDL_FLIP_VERTICAL);
+            }
 
-        //SDL_SetTextureBlendMode(((AnimatableComponent)gameObject.Components.Where(t => t.GetType().Name == "AnimatableComponent").First()).CurrentAnimationSprite, SDL_BlendMode.SDL_BLENDMODE_BLEND);
-        if (!((AnimatableComponent)gameObject.GetComponent(gameObjects.Component.Animatable)).isFlipped)
-        {
-            SDL_RenderCopy(_renderer, ((AnimatableComponent)gameObject.GetComponent(gameObjects.Component.Animatable)).CurrentAnimationSprite, (nint)null,
-            ref ((AnimatableComponent)gameObject.GetComponent(gameObjects.Component.Animatable)).SpriteBoundingBox);
         }
-        else
-        {
-            SDL_RenderCopyEx(_renderer, ((AnimatableComponent)gameObject.GetComponent(gameObjects.Component.Animatable)).CurrentAnimationSprite, 
-                (nint)null, 
-                ref ((AnimatableComponent)gameObject.GetComponent(gameObjects.Component.Animatable)).SpriteBoundingBox,
-                180,
-                (nint)null, 
-                SDL_RendererFlip.SDL_FLIP_VERTICAL);
-        }
+
     }
 
 
@@ -270,6 +335,11 @@ public class RenderManager
     public void SwitchRenderMode()
     {
         _alwaysRender = !_alwaysRender;
+    }
+
+    public void SwitchDebugMode()
+    { 
+        _debugMode = !_debugMode;
     }
 
     public void MoveCamera(float distanceX, float distanceY)

@@ -39,8 +39,9 @@ public class InputManager
         if (keyState[(int)SDL_Scancode.SDL_SCANCODE_KP_0] != 0) {keysPressed.Add(InputTypes.CameraSetZoom2);}
         if (keyState[(int)SDL_Scancode.SDL_SCANCODE_0] != 0) {keysPressed.Add(InputTypes.CameraSetZoom2);}
         if (keyState[(int)SDL_Scancode.SDL_SCANCODE_C] != 0) {keysPressed.Add(InputTypes.CameraCenter);}
+        if (keyState[(int)SDL_Scancode.SDL_SCANCODE_F1] != 0) { keysPressed.Add(InputTypes.DebugMode); }
 
-        if(SDL_NumJoysticks() < 1) return keysPressed;
+        if (SDL_NumJoysticks() < 1) return keysPressed;
         gamepad.Joystick.Poll();
         var state = gamepad.Joystick.GetCurrentState();
 
@@ -88,5 +89,6 @@ public enum InputTypes
     CameraZoomOut,
     CameraSetZoom2,
     CameraCenter,
-    ResetPlayerPos
+    ResetPlayerPos,
+    DebugMode
 }
