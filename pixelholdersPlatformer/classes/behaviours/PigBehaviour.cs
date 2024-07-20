@@ -15,6 +15,7 @@ namespace pixelholdersPlatformer.classes.behaviours
 
         private Enemy _owner;
         private Player _player;
+        private List<GameObject> _collidableObjects;
 
         private const float aggroRange = 7;
         private const float attackRangeX = 0.8f;
@@ -22,12 +23,13 @@ namespace pixelholdersPlatformer.classes.behaviours
         private const int _attackCooldown = 250;
         private Stopwatch _attackStopWatch;
 
-        public PigBehaviour(Enemy owner, Player player)
+        public PigBehaviour(Enemy owner, Player player, List<GameObject> collidableObjects)
         {
             this._owner = owner;
             this._player = player;
             (_owner.GetComponent(gameObjects.Component.Animatable) as AnimatableComponent).SetAttackCooldown(_attackCooldown);
             _attackStopWatch = new Stopwatch();
+            _collidableObjects = collidableObjects;
         }
 
         bool _attackJustHappened = false;
@@ -64,18 +66,41 @@ namespace pixelholdersPlatformer.classes.behaviours
                     }
                     else
                     {
-                        //tries to walk up to player
-                        if (distanceX > 0)
+                        //tries to walk up to player but only if there is no ledge
+                        //how to check for ledge: the Enemy somehow needs to look in front AND under itself
+                        //idea2: using rays...
+                        //then we check if there is something under, where we still need all the gameobjects...
+
+                        bool wouldItFallNextTime = true;
+                        int direction = Math.Sign((_owner.GetComponent(gameObjects.Component.Physics) as PhysicsComponent).Velocity.X);
+                        float futureCenterPosX = _owner.CoordX + (_owner.Width * direction) / 2;
+                        float futureCenterPosY = _owner.CoordY + _owner.Height / 2;
+                        foreach (GameObject collidible in _collidableObjects) 
                         {
-                            ((PhysicsComponent)_owner.GetComponent(gameObjects.Component.Physics)).SetVelocityX(-0.1f);
+                            if (futureCenterPosX > collidible.CoordX)
+                            { 
+                                //continue here next time
+                            
+                            }
+                            
+
                         }
-                        else if (distanceX < 0)
+
+                        if (!wouldItFallNextTime)
                         {
-                            ((PhysicsComponent)_owner.GetComponent(gameObjects.Component.Physics)).SetVelocityX(0.1f);
+                            if (distanceX > 0)
+                            {
+                                ((PhysicsComponent)_owner.GetComponent(gameObjects.Component.Physics)).SetVelocityX(-0.1f);
+                            }
+                            else if (distanceX < 0)
+                            {
+                                ((PhysicsComponent)_owner.GetComponent(gameObjects.Component.Physics)).SetVelocityX(0.1f);
+                            }
                         }
+                        
                     }
                 }
-                //the attack pushes away and hurts the player
+                //the attack pushes away and hurts the player TODO: implement player getting hurt
                 //_attackCooldown/2 meaning: i want the player to get hit when the sprite shows it
                 if (_attackJustHappened && _attackStopWatch.ElapsedMilliseconds > _attackCooldown/2)
                 {
@@ -92,13 +117,11 @@ namespace pixelholdersPlatformer.classes.behaviours
                         ((PhysicsComponent)_player.GetComponent(gameObjects.Component.Physics)).SetVelocityX(0.5f);
 
                     }
+                    ((PhysicsComponent)_player.GetComponent(gameObjects.Component.Physics)).SetVelocityY(-0.2f);
                     _attackJustHappened = false;
                     _attackStopWatch.Reset();
                 }
-
-            }
-
-            
+            } 
         }
     }
 }

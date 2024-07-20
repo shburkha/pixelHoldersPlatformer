@@ -76,7 +76,7 @@ public class Game
         //the sizes are important, don't change them please :)
         _player = new Player(5, 10, 1, 1);
         _testEnemy = new Enemy(10, 10, 0.5f, 0.5f);
-        _testEnemy.AddComponent(new PigBehaviour(_testEnemy, _player));
+        _testEnemy.AddComponent(new PigBehaviour(_testEnemy, _player, _collidableObjects));
 
         gameObjects.Add(_player);
         gameObjects.Add(_testEnemy);
