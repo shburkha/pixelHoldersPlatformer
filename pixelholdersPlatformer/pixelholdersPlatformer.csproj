@@ -132,4 +132,8 @@
     </None>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="classes\behaviours\" />
+  </ItemGroup>
+
 </Project>
