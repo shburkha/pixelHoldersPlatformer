@@ -69,7 +69,7 @@ public class Game
             gameObjects.Add(box);
         }
 
-        _player = new Player(5, 5, 1, 1);
+        _player = new Player(5, 10, 1, 1);
 
         gameObjects.Add(_player);
 
@@ -83,7 +83,7 @@ public class Game
         int _refreshRate = _displayMode.refresh_rate;
         double targetFPS = _refreshRate * 1.0d;
         _frameInterval = 1000d / targetFPS;
-        
+
         _gameStopwatch.Start();
         _attackStopWatch.Start();
     }
@@ -111,9 +111,6 @@ public class Game
         }
     }
 
-
-
-
     private void ProcessInput()
     {
         List<InputTypes> inputs = _inputManager.GetInputs(_gamepad);
@@ -123,10 +120,10 @@ public class Game
             switch (input)
             {
                 case InputTypes.PlayerLeft:
-                    _player.MovePlayerX(-0.3f);
+                    _player.MovePlayerX(-0.4f);
                     break;
                 case InputTypes.PlayerRight:
-                    _player.MovePlayerX(0.3f);
+                    _player.MovePlayerX(0.4f);
                     break;
                 case InputTypes.PlayerJump:
                     if (((PhysicsComponent)_player.GetComponent(Component.Physics)).Velocity.Y == 0)
@@ -141,9 +138,7 @@ public class Game
                         ((AnimatableComponent)_player.GetComponent(Component.Animatable)).SetAnimationType(AnimationType.Attack, ((AnimatableComponent)_player.GetComponent(Component.Animatable)).isFlipped);
                         _attackStopWatch.Restart();
                     }
-                    
                     break;
-
                 case InputTypes.Quit:
                     _quit = true;
                     break;

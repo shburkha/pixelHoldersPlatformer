@@ -367,3 +367,7 @@ FodyWeavers.xsd
 
 # Jetbrains
 .idea
+
+# Tiled project files
+pixelholdersPlatformer/assets/levels.tiled-project
+pixelholdersPlatformer/assets/levels.tiled-session

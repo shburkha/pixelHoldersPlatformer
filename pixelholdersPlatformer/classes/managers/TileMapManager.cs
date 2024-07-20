@@ -10,14 +10,20 @@ public class TileMapManager
 {
     private TiledMap _map;
     private Dictionary<int, TiledTileset> _tilesets;
+    int currentLevel = 0;
 
-    private int[] _collidableTiles = [21, 22, 23, 25, 40, 42, 44, 59, 60, 61, 63, 84, 85, 87, 88, 90, 91, 93, 94, 97, 98, 99, 101, 103, 104, 106, 107, 109, 110, 112, 113, 
-        264, 265, 266, 267];
+    private int[] _collidableTiles =
+    [
+        21, 22, 23, 25, 40, 42, 44, 59, 60, 61, 63, 84, 85, 87, 88, 90,
+        91, 93, 94, 97, 98, 99, 101, 103, 104, 106, 107, 109, 110, 112, 113, 257, 258, 259, 260,
+        264, 265, 266, 267
+    ];
+
     private int[] _winTiles = [256, 263, 270, 277];
 
     public TileMapManager()
     {
-        _map = new TiledMap("assets/testLevel.tmx"); // tilesize is 32x32
+        _map = new TiledMap("assets/level1.tmx"); // tilesize is 32x32
         _tilesets = _map.GetTiledTilesets("assets/");
 
         foreach (var tileset in _tilesets)
@@ -152,7 +158,6 @@ public class TileMapManager
                 {
                     boxes.Add(new Tile { x = index % layer.Width, y = index / layer.Width, w = 1, h = 1 });
                 }
-
                 index++;
             }
         }
@@ -165,6 +170,29 @@ public class TileMapManager
         }
 
         return list;
+    }
+
+    public void AdvanceLevel()
+    {
+        string path = "assets/level1.tmx";
+
+        switch (currentLevel)
+        {
+            case 1:
+                path = "assets/level1.tmx";
+                break;
+            case 2:
+                path = "assets/level2.tmx";
+                break;
+            case 3:
+                path = "assets/level3.tmx";
+                break;
+            default:
+                Console.WriteLine("Invalid level number");
+                return;
+        }
+        _map = new TiledMap(path);
+        _tilesets = _map.GetTiledTilesets("assets/");
     }
 
     public MapData GetMapData()
