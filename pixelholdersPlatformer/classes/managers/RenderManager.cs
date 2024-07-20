@@ -41,6 +41,23 @@ public class RenderManager
     private int _zoomLevel;
     private bool _alwaysRender;
 
+
+
+    //sprite pixel values for rendering them correctly
+    private const int _humanKingSpriteWidth = 78;
+    private const int _humanKingSpriteHeight = 58;
+    private const int _humanKingTopPadding = 10;
+    private const int _humanKingLeftPadding = 15;
+
+    private const int _pigKingSpriteWidth = 38;
+    private const int _pigKingSpriteHeight = 28;
+
+    private const int _pigSpriteWidth = 34;
+    private const int _pigSpriteHeight = 28;
+
+
+
+
     public RenderManager()
     {
         _window = SDL_CreateWindow("Platformer",
@@ -87,7 +104,7 @@ public class RenderManager
 
     private void SetGameObjectBoundingBox(GameObject gameObject)
     {
-        ((RenderingComponent)gameObject.Components.Where(t => t.GetType().Name == "RenderingComponent").First())
+        ((RenderingComponent)gameObject.GetComponent(gameObjects.Component.Rendering))
             .BoundingBox =
             new SDL_Rect
             {
@@ -96,6 +113,77 @@ public class RenderManager
                 w = ((int)(gameObject.Width * _scaleX)),
                 h = ((int)(gameObject.Height * _scaleY))
             };
+
+        if (gameObject.GetComponent(gameObjects.Component.Animatable) != null)
+        {
+
+            AnimatableComponent currentComponent = (AnimatableComponent)gameObject.GetComponent(gameObjects.Component.Animatable);
+            string spriteFolder = currentComponent.SpriteFolder;
+
+
+            int currentSpriteWidthInPixels = 0;
+            int currentSpriteHeightInPixels = 0;
+            int leftPadding = 0;
+            int topPadding = 0;
+            switch (spriteFolder)
+            {
+                case "01-King Human":
+                    currentSpriteWidthInPixels = _humanKingSpriteWidth;
+                    currentSpriteHeightInPixels= _humanKingSpriteHeight;
+                    leftPadding = _humanKingLeftPadding;
+                    topPadding = _humanKingTopPadding;
+
+                    break;
+
+                case "02-King Pig":
+                    currentSpriteWidthInPixels = _pigKingSpriteWidth;
+                    currentSpriteHeightInPixels = _pigKingSpriteHeight;
+                    break;
+
+                case "03-Pig":
+                    currentSpriteWidthInPixels = _humanKingSpriteWidth;
+                    currentSpriteHeightInPixels = _humanKingSpriteHeight;
+                    break;
+
+
+            }
+            //we need a separate box for animation sprites, because they are bigger than the boundingbox of the player
+            //we need to position the sprites so the center point of it aligns with the center point of the collision box
+            //this way we can use the original sprites with the attack animation too
+            //here we also set the sprites' boundingbox
+
+            if (!((AnimatableComponent)gameObject.GetComponent(gameObjects.Component.Animatable)).isFlipped)
+            {
+                ((AnimatableComponent)gameObject.GetComponent(gameObjects.Component.Animatable))
+                .SpriteBoundingBox =
+                new SDL_Rect
+                {
+                    x = (int)((int)(((int)((gameObject.CoordX - _camera.CoordX) * _scaleX)) + _offsetX) - leftPadding / _zoomLevel),
+                    y = (int)((int)(((int)((gameObject.CoordY - _camera.CoordY) * _scaleY)) + _offsetY) - topPadding / _zoomLevel),
+                    w = (int)(currentSpriteWidthInPixels / _zoomLevel * 2),
+                    h = (int)(currentSpriteHeightInPixels / _zoomLevel * 2)
+
+                };
+
+            }
+            else
+            {
+                ((AnimatableComponent)gameObject.GetComponent(gameObjects.Component.Animatable))
+                .SpriteBoundingBox =
+                new SDL_Rect
+                {
+                    x = (int)((int)(((int)((gameObject.CoordX - _camera.CoordX) * _scaleX)) + _offsetX) - (currentSpriteWidthInPixels - leftPadding) / _zoomLevel),
+                    y = (int)((int)(((int)((gameObject.CoordY - _camera.CoordY) * _scaleY)) + _offsetY) - topPadding / _zoomLevel),
+                    w = (int)(currentSpriteWidthInPixels / _zoomLevel * 2),
+                    h = (int)(currentSpriteHeightInPixels / _zoomLevel * 2)
+
+                };
+
+            }
+
+
+        }
+
     }
 
     public void WipeScreen()
@@ -115,24 +203,32 @@ public class RenderManager
 
             SDL_SetRenderDrawColor(_renderer, 255, 255, 255, 255);
             SDL_RenderDrawRect(_renderer,
-                ref ((RenderingComponent)gameObject.Components.Where(t => t.GetType().Name == "RenderingComponent")
-                    .First()).BoundingBox);
+                ref ((RenderingComponent)gameObject.GetComponent(gameObjects.Component.Rendering)).BoundingBox);
+
+            if (gameObject.GetComponent(gameObjects.Component.Animatable) != null)
+            {
+                SDL_SetRenderDrawColor(_renderer, 255, 0, 255, 255);
+                SDL_RenderDrawRect(_renderer,
+                    ref ((AnimatableComponent)gameObject.GetComponent(gameObjects.Component.Animatable)).SpriteBoundingBox);
+            }
+            
         }
     }
 
     private void DrawSprite(GameObject gameObject) 
     {
+
         //SDL_SetTextureBlendMode(((AnimatableComponent)gameObject.Components.Where(t => t.GetType().Name == "AnimatableComponent").First()).CurrentAnimationSprite, SDL_BlendMode.SDL_BLENDMODE_BLEND);
-        if (!((AnimatableComponent)gameObject.Components.Where(t => t.GetType().Name == "AnimatableComponent").First()).isFlipped)
+        if (!((AnimatableComponent)gameObject.GetComponent(gameObjects.Component.Animatable)).isFlipped)
         {
-            SDL_RenderCopy(_renderer, ((AnimatableComponent)gameObject.Components.Where(t => t.GetType().Name == "AnimatableComponent").First()).CurrentAnimationSprite, (nint)null,
-            ref ((RenderingComponent)gameObject.Components.Where(t => t.GetType().Name == "RenderingComponent").First()).BoundingBox);
+            SDL_RenderCopy(_renderer, ((AnimatableComponent)gameObject.GetComponent(gameObjects.Component.Animatable)).CurrentAnimationSprite, (nint)null,
+            ref ((AnimatableComponent)gameObject.GetComponent(gameObjects.Component.Animatable)).SpriteBoundingBox);
         }
         else
         {
-            SDL_RenderCopyEx(_renderer, ((AnimatableComponent)gameObject.Components.Where(t => t.GetType().Name == "AnimatableComponent").First()).CurrentAnimationSprite, 
+            SDL_RenderCopyEx(_renderer, ((AnimatableComponent)gameObject.GetComponent(gameObjects.Component.Animatable)).CurrentAnimationSprite, 
                 (nint)null, 
-                ref ((RenderingComponent)gameObject.Components.Where(t => t.GetType().Name == "RenderingComponent").First()).BoundingBox,
+                ref ((AnimatableComponent)gameObject.GetComponent(gameObjects.Component.Animatable)).SpriteBoundingBox,
                 180,
                 (nint)null, 
                 SDL_RendererFlip.SDL_FLIP_VERTICAL);
@@ -150,14 +246,16 @@ public class RenderManager
 
         foreach (GameObject gameObject in _gameObjects)
         {
-            if (gameObject.Components.Find(t => t.GetType().Name == "RenderingComponent") != null)
+            if (gameObject.GetComponent(gameObjects.Component.Rendering) != null)
             {
+                //this shouldn't be called every time...
+                //TODO: make a boolean that checks for screen size changes
                 SetGameObjectBoundingBox(gameObject);
             }
-            if (gameObject.Components.Where(t => t.GetType().Name == "AnimatableComponent").Count() != 0)
+            if (gameObject.GetComponent(gameObjects.Component.Animatable) != null)
             {
                 DrawSprite(gameObject);
-                //DrawGameObject(gameObject);
+                DrawGameObject(gameObject);
 
             }
             else
@@ -316,7 +414,7 @@ public class RenderManager
 
         SDL_SetRenderTarget(_renderer, IntPtr.Zero);
 
-        SDL_Rect renderDestRect = ((RenderingComponent)_map.Components.Where(t => t.GetType().Name == "RenderingComponent").First()).BoundingBox;
+        SDL_Rect renderDestRect = ((RenderingComponent)_map.GetComponent(gameObjects.Component.Rendering)).BoundingBox;
 
         SDL_RenderCopy(_renderer, renderTarget, IntPtr.Zero, ref renderDestRect);
 

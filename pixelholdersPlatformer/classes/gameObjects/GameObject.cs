@@ -29,6 +29,55 @@ public class GameObject
         Components.Add(component);
     }
 
+    public IComponent GetComponent(Component type)
+    {
+        foreach (IComponent component in Components)
+        {
+            switch (type)
+            {
+                case Component.Animatable:
+                    if (component is AnimatableComponent)
+                    {
+                        return component as AnimatableComponent;
+                    }
+                    break;
+                case Component.Audio:
+                    if (component is AudioComponent)
+                    {
+                        return component as AudioComponent;
+                    }
+                    break;
+                case Component.Collision:
+                    if (component is CollisionComponent)
+                    {
+                        return component as CollisionComponent;
+                    }
+                    break;
+                case Component.Movable:
+                    if (component is MovableComponent)
+                    {
+                        return component as MovableComponent;
+                    }
+                    break;
+                case Component.Physics:
+                    if (component is PhysicsComponent)
+                    {
+                        return component as PhysicsComponent;
+                    }
+                    break;
+                case Component.Rendering:
+                    if (component is RenderingComponent)
+                    {
+                        return component as RenderingComponent;
+                    }
+                    break;
+                default:
+                    return null;
+            }
+        }
+        return null;
+    }
+
     public void Update()
     {
         foreach (var component in Components)
@@ -36,4 +85,9 @@ public class GameObject
             component.Update();
         }
     }
+}
+
+public enum Component
+{
+    Animatable, Audio, Collision, Movable, Physics, Rendering
 }

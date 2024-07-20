@@ -20,14 +20,18 @@ namespace pixelholdersPlatformer.classes.managers
         //the pig king's picture height is 38px is 28px
         //the pigs' picture height is 34px is 28px
 
-        private int _humanKingSpriteHeight;
-        private const int _humanKingSpriteWidth = 37;
-        //private const int _pigKingHeight = 28;
-        //private const int _pigKingSpriteWidth = 38;
-        private int _pigSpriteHeight;
-        private const int _pigSpriteWidth = 18;
+        private const int _humanKingSpriteWidth = 78;
+        private const int _humanKingSpriteHeight = 58;
+
+        private const int _pigKingSpriteWidth = 38;
+        private const int _pigKingSpriteHeight = 28;
+
+        private const int _pigSpriteWidth = 34;
+        private const int _pigSpriteHeight = 28;
+        
 
         private Dictionary<string, IntPtr[]> _humanKingSprites;
+        private Dictionary<string, IntPtr[]> _pigKingSprites;
         private Dictionary<string, IntPtr[]> _pigSprites;
         
         private RenderManager _renderManager;
@@ -77,9 +81,8 @@ namespace pixelholdersPlatformer.classes.managers
                         //we get the big sprite's width, so we can divide it accordingly
                         Image img = Image.FromFile(spriteName);
 
-                        //this is ever changing...
-                        _humanKingSpriteHeight = img.Height;
 
+                       
                         int currentManKingSpriteCount = img.Width / _humanKingSpriteWidth;
 
                         IntPtr[] currentSprites = new IntPtr[currentManKingSpriteCount];
@@ -98,8 +101,26 @@ namespace pixelholdersPlatformer.classes.managers
 
 
                 case "02-King Pig":
-                    
 
+                    _pigKingSprites = new Dictionary<string, IntPtr[]>();
+                    foreach (string spriteName in spriteNames)
+                    {
+                        //we get the big sprite's width so we can divide it accordingly
+                        Image img = Image.FromFile(spriteName);
+
+                        int currentPigSpriteCount = img.Width / _pigKingSpriteWidth;
+
+                        IntPtr[] currentSprites = new IntPtr[currentPigSpriteCount];
+
+                        IntPtr imgSurface = SDL_image.IMG_Load(spriteName);
+                        for (int i = 0; i < currentPigSpriteCount; i++)
+                        {
+                            IntPtr surface = CreateSDLSurfaceFromImage(imgSurface, i, _pigKingSpriteWidth, _pigKingSpriteHeight);
+                            currentSprites[i] = CreateTextureFromSurface(surface);
+                        }
+                        _pigKingSprites.Add(spriteName.Split("\\")[spriteName.Split("\\").Length - 1].Split(" (")[0], currentSprites);
+
+                    }
 
                     break;
 
@@ -110,9 +131,6 @@ namespace pixelholdersPlatformer.classes.managers
                     {
                         //we get the big sprite's width so we can divide it accordingly
                         Image img = Image.FromFile(spriteName);
-
-                        //this is ever changing...
-                        _pigSpriteHeight = img.Height;
 
                         int currentPigSpriteCount = img.Width / _pigSpriteWidth;
 
@@ -176,13 +194,13 @@ namespace pixelholdersPlatformer.classes.managers
             //here we change the sprite according to the AnimationComponent's AnimationType
             foreach (GameObject gameObject in _gameObjects)
             {
-                if (gameObject.Components.Where(t => t.GetType().Name == "AnimatableComponent").Count() != 0)
+                if (gameObject.GetComponent(gameObjects.Component.Animatable) != null)
                 {
                     //we need to check which spriteFolder it uses
                     //the we need to check the the animationType
 
 
-                    AnimatableComponent currentComponent = (AnimatableComponent)gameObject.Components.Where(t => t.GetType().Name == "AnimatableComponent").First();
+                    AnimatableComponent currentComponent = (AnimatableComponent)gameObject.GetComponent(gameObjects.Component.Animatable);
                     string spriteFolder = currentComponent.SpriteFolder;
                     AnimationType currentAnimationType = currentComponent.CurrentAnimationType;
                     string animationTypeInString = currentAnimationType.ToString();
@@ -198,7 +216,7 @@ namespace pixelholdersPlatformer.classes.managers
                             break;
 
                         case "02-King Pig":
-
+                            currentSprites = _pigKingSprites;
                             break;
 
                         case "03-Pig":
@@ -215,18 +233,18 @@ namespace pixelholdersPlatformer.classes.managers
                         {
                             if (i == currentSprites[animationTypeInString].Length - 1)
                             {
-                                ((AnimatableComponent)gameObject.Components.Where(t => t.GetType().Name == "AnimatableComponent").First()).CurrentAnimationSprite = currentSprites[animationTypeInString][0];
+                                ((AnimatableComponent)gameObject.GetComponent(gameObjects.Component.Animatable)).CurrentAnimationSprite = currentSprites[animationTypeInString][0];
                                 break;
                             }
                             else
                             {
-                                ((AnimatableComponent)gameObject.Components.Where(t => t.GetType().Name == "AnimatableComponent").First()).CurrentAnimationSprite = currentSprites[animationTypeInString][i + 1];
+                                ((AnimatableComponent)gameObject.GetComponent(gameObjects.Component.Animatable)).CurrentAnimationSprite = currentSprites[animationTypeInString][i + 1];
                                 break;
                             }
                         }
                         else
                         {
-                            ((AnimatableComponent)gameObject.Components.Where(t => t.GetType().Name == "AnimatableComponent").First()).CurrentAnimationSprite = currentSprites[animationTypeInString][0];
+                            ((AnimatableComponent)gameObject.GetComponent(gameObjects.Component.Animatable)).CurrentAnimationSprite = currentSprites[animationTypeInString][0];
                             
                         }
                     }

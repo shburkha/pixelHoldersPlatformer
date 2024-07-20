@@ -11,7 +11,7 @@ public class PhysicsComponent : IComponent
     private const float _terminalVelocityY = 1;
     public const double GRAVITY = 8.5d;
     public const double AIR_RESISTANCE = 1.5d;
-    public const double FRICTION = 5.5d;
+    public const double FRICTION = 2.5d;
 
     public double DeltaT = 0.016d;
 
@@ -97,6 +97,6 @@ public class PhysicsComponent : IComponent
                 }
             }
         }
-        ((MovableComponent)_owner.Components.Where(t => t.GetType().Name == "MovableComponent").First()).MoveGameObject(Velocity.X, Velocity.Y);
+        ((MovableComponent)_owner.GetComponent(gameObjects.Component.Movable)).MoveGameObject(Velocity.X, Velocity.Y);
     }
 };
