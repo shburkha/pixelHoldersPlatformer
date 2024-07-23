@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace pixelholdersPlatformer.classes.behaviours
 {
-    public class PigBehaviour : IComponent
+    public class PigBehaviour : IBehaviour
     {
 
         private Enemy _owner;
@@ -21,6 +21,12 @@ namespace pixelholdersPlatformer.classes.behaviours
         private const float attackRangeX = 0.8f;
         private const float attackRangeY = 0.5f;
         private const int _attackCooldown = 250;
+
+        //for debugging reasons
+
+        public float futureCenterPosX;
+        public float futureCenterPosY;
+
         private Stopwatch _attackStopWatch;
 
         public PigBehaviour(Enemy owner, Player player, List<GameObject> collidableObjects)
@@ -48,7 +54,7 @@ namespace pixelholdersPlatformer.classes.behaviours
                 float playerCenterY = (_player.CoordY + _player.Height) / 2;
 
                 float ownerCenterX = _owner.CoordX + _owner.Width / 2;
-                float ownerCenterY = (_owner.CoordY + _owner.Height) / 2;
+                float ownerCenterY = _owner.CoordY + _owner.Height / 2;
 
                 float distanceX = ownerCenterX - playerCenterX;
                 float distanceY = ownerCenterY - playerCenterY;
@@ -71,17 +77,44 @@ namespace pixelholdersPlatformer.classes.behaviours
                         //idea2: using rays...
                         //then we check if there is something under, where we still need all the gameobjects...
 
+
                         bool wouldItFallNextTime = true;
                         int direction = Math.Sign((_owner.GetComponent(gameObjects.Component.Physics) as PhysicsComponent).Velocity.X);
-                        float futureCenterPosX = _owner.CoordX + (_owner.Width * direction) / 2;
-                        float futureCenterPosY = _owner.CoordY + _owner.Height / 2;
+                        if (direction == 0)
+                        {
+                            direction = -1;
+                        }
+                        //b is the looking radius
+                        float b  = 3;
+                        int angleOfLooking = 45;
+                        double angleOfLookingInRadian = (angleOfLooking * (Math.PI/180));
+
+                        //futureCenterPosX = (float)(ownerCenterX + b * Math.Sin(angleOfLookingInRadian));
+                        //futureCenterPosY = (float)(ownerCenterY + b * Math.Cos(angleOfLookingInRadian));
+
                         foreach (GameObject collidible in _collidableObjects) 
                         {
-                            if (futureCenterPosX > collidible.CoordX)
-                            { 
-                                //continue here next time
-                            
+                            for (int i = 1; i < b; i++)
+                            {
+                                futureCenterPosX = (float)(ownerCenterX + i * Math.Sin(angleOfLookingInRadian));
+                                futureCenterPosY = (float)(ownerCenterY + i * Math.Cos(angleOfLookingInRadian));
+                                if (futureCenterPosX > collidible.CoordX &&
+                                futureCenterPosX < collidible.CoordX + collidible.Width &&
+                                futureCenterPosY > collidible.CoordY &&
+                                futureCenterPosY < collidible.CoordY + collidible.Height)
+                                {
+                                    //Collision happens
+                                    wouldItFallNextTime = false;
+                                    break;
+
+                                }
+                                if (!wouldItFallNextTime)
+                                {
+                                     break;
+                                }
+
                             }
+
                             
 
                         }
@@ -96,8 +129,7 @@ namespace pixelholdersPlatformer.classes.behaviours
                             {
                                 ((PhysicsComponent)_owner.GetComponent(gameObjects.Component.Physics)).SetVelocityX(0.1f);
                             }
-                        }
-                        
+                        }                       
                     }
                 }
                 //the attack pushes away and hurts the player TODO: implement player getting hurt

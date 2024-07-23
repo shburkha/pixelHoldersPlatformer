@@ -1,4 +1,5 @@
-﻿using pixelholdersPlatformer.classes.Component;
+﻿using pixelholdersPlatformer.classes.behaviours;
+using pixelholdersPlatformer.classes.Component;
 
 namespace pixelholdersPlatformer.classes.gameObjects;
 
@@ -71,6 +72,13 @@ public class GameObject
                         return component as RenderingComponent;
                     }
                     break;
+                case Component.Behaviour:
+                    if (component is IBehaviour)
+                    {
+                        return component as IBehaviour;
+                    }
+                    break;
+
                 default:
                     return null;
             }
@@ -89,5 +97,5 @@ public class GameObject
 
 public enum Component
 {
-    Animatable, Audio, Collision, Movable, Physics, Rendering
+    Animatable, Audio, Collision, Movable, Physics, Rendering, Behaviour
 }

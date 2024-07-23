@@ -6,6 +6,8 @@ using System.Numerics;
 using static SDL2.SDL;
 using SharpDX.Multimedia;
 using pixelholdersPlatformer.gameObjects;
+using pixelholdersPlatformer.classes.behaviours;
+using System.ComponentModel;
 
 namespace pixelholdersPlatformer.classes.managers;
 
@@ -136,7 +138,6 @@ public class RenderManager
                     currentSpriteHeightInPixels= _humanKingSpriteHeight;
                     leftPadding = _humanKingLeftPadding;
                     topPadding = _humanKingTopPadding;
-
                     break;
 
                 case "02-King Pig":
@@ -166,10 +167,10 @@ public class RenderManager
                     .SpriteBoundingBox =
                     new SDL_Rect
                     {
-                        x = (int)((int)(((int)((gameObject.CoordX - _camera.CoordX) * _scaleX)) + _offsetX) - leftPadding / _zoomLevel),
-                        y = (int)((int)(((int)((gameObject.CoordY - _camera.CoordY) * _scaleY)) + _offsetY) - topPadding / _zoomLevel),
-                        w = (int)(currentSpriteWidthInPixels / _zoomLevel * 2),
-                        h = (int)(currentSpriteHeightInPixels / _zoomLevel * 2)
+                        x = ((int)((gameObject.CoordX - _camera.CoordX) * _scaleX)) + _offsetX - leftPadding / _zoomLevel,
+                        y = ((int)((gameObject.CoordY - _camera.CoordY) * _scaleY)) + _offsetY - topPadding / _zoomLevel,
+                        w = currentSpriteWidthInPixels / _zoomLevel * 2,
+                        h = currentSpriteHeightInPixels / _zoomLevel * 2
 
                     };
 
@@ -180,10 +181,10 @@ public class RenderManager
                     .SpriteBoundingBox =
                     new SDL_Rect
                     {
-                        x = (int)((int)(((int)((gameObject.CoordX - _camera.CoordX) * _scaleX)) + _offsetX) - (currentSpriteWidthInPixels - leftPadding) / _zoomLevel),
-                        y = (int)((int)(((int)((gameObject.CoordY - _camera.CoordY) * _scaleY)) + _offsetY) - topPadding / _zoomLevel),
-                        w = (int)(currentSpriteWidthInPixels / _zoomLevel * 2),
-                        h = (int)(currentSpriteHeightInPixels / _zoomLevel * 2)
+                        x = ((int)((gameObject.CoordX - _camera.CoordX) * _scaleX)) + _offsetX - (currentSpriteWidthInPixels - leftPadding) / _zoomLevel,
+                        y = ((int)((gameObject.CoordY - _camera.CoordY) * _scaleY)) + _offsetY - topPadding / _zoomLevel,
+                        w = currentSpriteWidthInPixels / _zoomLevel * 2,
+                        h = currentSpriteHeightInPixels / _zoomLevel * 2
 
                     };
 
@@ -198,10 +199,10 @@ public class RenderManager
                     .SpriteBoundingBox =
                     new SDL_Rect
                     {
-                        x = (int)((int)(((int)((gameObject.CoordX - _camera.CoordX) * _scaleX)) + _offsetX) - leftPadding / _zoomLevel),
-                        y = (int)((int)(((int)((gameObject.CoordY - _camera.CoordY) * _scaleY)) + _offsetY) - topPadding / _zoomLevel),
-                        w = (int)(currentSpriteWidthInPixels / _zoomLevel * 2),
-                        h = (int)(currentSpriteHeightInPixels / _zoomLevel * 2)
+                        x = ((int)((gameObject.CoordX - _camera.CoordX) * _scaleX)) + _offsetX - leftPadding / _zoomLevel,
+                        y = ((int)((gameObject.CoordY - _camera.CoordY) * _scaleY)) + _offsetY - topPadding / _zoomLevel,
+                        w = currentSpriteWidthInPixels / _zoomLevel * 2,
+                        h = currentSpriteHeightInPixels / _zoomLevel * 2
 
                     };
 
@@ -212,10 +213,10 @@ public class RenderManager
                     .SpriteBoundingBox =
                     new SDL_Rect
                     {
-                        x = (int)((int)(((int)((gameObject.CoordX - _camera.CoordX) * _scaleX)) + _offsetX) - (currentSpriteWidthInPixels - leftPadding) / _zoomLevel),
-                        y = (int)((int)(((int)((gameObject.CoordY - _camera.CoordY) * _scaleY)) + _offsetY) - topPadding / _zoomLevel),
-                        w = (int)(currentSpriteWidthInPixels / _zoomLevel * 2),
-                        h = (int)(currentSpriteHeightInPixels / _zoomLevel * 2)
+                        x = ((int)((gameObject.CoordX - _camera.CoordX) * _scaleX)) + _offsetX - (currentSpriteWidthInPixels - leftPadding) / _zoomLevel,
+                        y = ((int)((gameObject.CoordY - _camera.CoordY) * _scaleY)) + _offsetY - topPadding / _zoomLevel,
+                        w = currentSpriteWidthInPixels / _zoomLevel * 2,
+                        h = currentSpriteHeightInPixels / _zoomLevel * 2
 
                     };
 
@@ -252,6 +253,23 @@ public class RenderManager
                     SDL_SetRenderDrawColor(_renderer, 255, 0, 255, 255);
                     SDL_RenderDrawRect(_renderer,
                         ref ((AnimatableComponent)gameObject.GetComponent(gameObjects.Component.Animatable)).SpriteBoundingBox);
+                }
+
+                if (gameObject.GetComponent(gameObjects.Component.Behaviour) as PigBehaviour != null)
+                {
+
+                    /*x = ((int)((gameObject.CoordX - _camera.CoordX) * _scaleX)) + _offsetX,
+                    y = ((int)((gameObject.CoordY - _camera.CoordY) * _scaleY)) + _offsetY,
+                    w = ((int)(gameObject.Width * _scaleX)),
+                    h = ((int)(gameObject.Height * _scaleY)) */
+
+                    PigBehaviour tmp = gameObject.GetComponent(gameObjects.Component.Behaviour) as PigBehaviour;
+                    SDL_SetRenderDrawColor(_renderer, 255, 0, 0, 255);
+                    int startX = ((int)((gameObject.CoordX  + gameObject.Width / 2 - _camera.CoordX) * _scaleX)) + _offsetX;
+                    int startY = ((int)((gameObject.CoordY + gameObject.Height / 2 - _camera.CoordY) * _scaleY)) + _offsetY;
+                    int endX = ((int)((tmp.futureCenterPosX - _camera.CoordX) * _scaleX)) + _offsetX;
+                    int endY = ((int)((tmp.futureCenterPosY - _camera.CoordY) * _scaleY)) + _offsetY;
+                    SDL_RenderDrawLine(_renderer, startX, startY, endX, endY);
                 }
 
             }
@@ -314,7 +332,7 @@ public class RenderManager
             if (gameObject.GetComponent(gameObjects.Component.Rendering) != null)
             {
                 //this shouldn't be called every time...
-                //TODO: make a boolean that checks for screen size changes
+                //TODO: make a boolean that checks for screen size or zoom changes
                 SetGameObjectBoundingBox(gameObject);
             }
             if (gameObject.GetComponent(gameObjects.Component.Animatable) != null)
