@@ -164,6 +164,8 @@ public class TileMapManager
             list.Add(new SpecialTile(box.x, box.y, box.w, box.h, SpecialTileType.Goal));
         }
 
+        list.Add(new SpecialTile(0, _map.Height, _map.Width, 0, SpecialTileType.Kill));
+
         return list;
     }
 
