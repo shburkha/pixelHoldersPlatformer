@@ -98,6 +98,9 @@ public class PhysicsComponent : IComponent
                 }
             }
         }
-        ((MovableComponent)_owner.GetComponent(gameObjects.Component.Movable)).MoveGameObject(Velocity.X, Velocity.Y);
+        if (CanMove || HasGravity)
+        {
+            ((MovableComponent)_owner.GetComponent(gameObjects.Component.Movable)).MoveGameObject(Velocity.X, Velocity.Y);
+        }
     }
 };

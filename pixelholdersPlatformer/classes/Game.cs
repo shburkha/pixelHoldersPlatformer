@@ -15,10 +15,12 @@ public class Game
 {
     private List<GameObject> gameObjects;
 
-    private List<GameObject> _collidableObjects;
-    private List<SpecialTile> _specialObjects;
+    private List<GameObject> _collidableTiles;
+    private List<SpecialTile> _specialTiles;
 
-    Stopwatch _gameStopwatch = new Stopwatch();
+    private List<Cannon> _cannons;
+
+    Stopwatch stopwatch = new Stopwatch();
     private bool _quit;
 
     private Player _player;
@@ -59,10 +61,10 @@ public class Game
 
         //_player = new Player(5, 10, 1, 1);
 
-        _specialObjects = _tileMapManager.GetSpecialTiles();
-        foreach (var box in _specialObjects)
+        _specialTiles = _tileMapManager.GetSpecialTiles();
+        foreach (var box in _specialTiles)
         {
-            box.AddComponent(new MovableComponent(box));
+            //box.AddComponent(new MovableComponent(box));
             box.AddComponent(new PhysicsComponent(box));
             box.AddComponent(new CollisionComponent(box));
             gameObjects.Add(box);
@@ -80,6 +82,14 @@ public class Game
         gameObjects.Add(_player);
         gameObjects.Add(_testEnemy);
         gameObjects.Add(_testEnemy2);
+
+        _cannons = new List<Cannon>();
+        _cannons.Add(new Cannon(7, 3, Direction.Right));
+
+        foreach (var cannon in _cannons)
+        {
+            gameObjects.Add(cannon);
+        }
 
         _renderManager.SetGameObjects(gameObjects);
         _collisionManager.SetGameObjects(gameObjects);
@@ -238,16 +248,42 @@ public class Game
 
     private void Update()
     {
+        List<GameObject> objectsToAdd = new List<GameObject>();
+        List<GameObject> objectsToRemove = new List<GameObject>();
         foreach (GameObject gameObject in gameObjects)
         {
-            if (gameObject.GetType().Name == "Player")
+            if (gameObject is Player)
             {
                 ((Player)gameObject).SetDeltaTime(_deltaT/1000d);
+            }
+            else if (gameObject is Cannon)
+            {
+                ((Cannon)gameObject).SetDeltaTime(_deltaT/1000d);
+                if (((Cannon)gameObject).CanShoot())
+                {
+                    objectsToAdd.Add(((Cannon)gameObject).Shoot());
+                }
+            }
+            else if (gameObject is Cannonball)
+            {
+                ((Cannonball)gameObject).SetDeltaTime(_deltaT / 1000d);
+                if (gameObject.CoordX > _renderManager.GetMapWidth() || gameObject.CoordX < 0)
+                {
+                    objectsToRemove.Add(gameObject);
+                }
             }
             gameObject.Update();
         }
         _collisionManager.HandleCollision();
         _animationManager.AnimateObjects();
+        foreach (GameObject gameObject in objectsToAdd)
+        {
+            gameObjects.Add(gameObject);
+        }
+        foreach (GameObject gameObject in objectsToRemove)
+        {
+            gameObjects.Remove(gameObject);
+        }
     }
 
     private void Render()
