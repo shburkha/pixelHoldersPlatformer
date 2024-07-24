@@ -42,6 +42,16 @@ public class Player : GameObject
         CoordY = _startPosY;
     }
 
+    public void PlayerToCheckpoint()
+    {
+        // TODO check current level and set checkpoint accordingly
+        // CoordX = 103;
+        // CoordY = 10;
+
+        CoordX = 198;
+        CoordY = 0;
+    }
+
 
     public void HurtPlayer()
     {

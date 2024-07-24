@@ -10,7 +10,11 @@ public class TileMapManager
 {
     private TiledMap _map;
     private Dictionary<int, TiledTileset> _tilesets;
-    int currentLevel = 0;
+    int currentLevel = 1;
+
+    public delegate void LevelAdvancedEventHandler();
+
+    public event LevelAdvancedEventHandler OnLevelAdvanced;
 
     private int[] _collidableTiles =
     [
@@ -21,6 +25,18 @@ public class TileMapManager
 
     private int[] _winTiles = [256, 263, 270, 277];
 
+    private static TileMapManager _instance;
+
+    public static TileMapManager Instance
+    {
+        get
+        {
+            if (_instance == null)
+                _instance = new TileMapManager();
+            return _instance;
+        }
+    }
+
     public TileMapManager()
     {
         _map = new TiledMap("assets/level1.tmx"); // tilesize is 32x32
@@ -28,7 +44,7 @@ public class TileMapManager
 
         foreach (var tileset in _tilesets)
         {
-            Console.WriteLine($"key: {tileset.Key}, value: {tileset.Value.Name}");
+            // Console.WriteLine($"key: {tileset.Key}, value: {tileset.Value.Name}");
         }
 
         foreach (var layer in _map.Layers)
@@ -37,7 +53,9 @@ public class TileMapManager
             foreach (var entry in layer.Data)
             {
                 if (entry != 0)
-                    Console.WriteLine($"entry: {entry}");
+                {
+                    // Console.WriteLine($"entry: {entry}");
+                }
             }
         }
     }
@@ -60,14 +78,14 @@ public class TileMapManager
         //    }
         //}
 
-        List<Tile> rects = ConsolidateCollisionBoxes( GenerateTerrainCollisionBoxes() );
+        List<Tile> rects = ConsolidateCollisionBoxes(GenerateTerrainCollisionBoxes());
 
         foreach (var rect in rects)
         {
             boxes.Add(new GameObject(rect.x, rect.y, rect.w, rect.h));
         }
 
-        Console.WriteLine("Boxes: "+boxes.Count);
+        // Console.WriteLine("Boxes: " + boxes.Count);
         return boxes;
     }
 
@@ -103,14 +121,18 @@ public class TileMapManager
 
             for (int i = 1; i < boxes.Count(); i++)
             {
-                if (boxes[i - 1].x + boxes[i - 1].w == boxes[i].x && boxes[i - 1].y == boxes[i].y && boxes[i - 1].h == boxes[i].h)
+                if (boxes[i - 1].x + boxes[i - 1].w == boxes[i].x && boxes[i - 1].y == boxes[i].y &&
+                    boxes[i - 1].h == boxes[i].h)
                 {
-                    newBoxes.Add(new Tile { x = boxes[i - 1].x, y = boxes[i - 1].y, w = boxes[i - 1].w + boxes[i].w, h = boxes[i - 1].h });
+                    newBoxes.Add(new Tile
+                    {
+                        x = boxes[i - 1].x, y = boxes[i - 1].y, w = boxes[i - 1].w + boxes[i].w, h = boxes[i - 1].h
+                    });
                     i++;
                 }
                 else
                 {
-                    newBoxes.Add(boxes[i-1]);
+                    newBoxes.Add(boxes[i - 1]);
                 }
 
                 if (i == boxes.Count() - 1)
@@ -158,6 +180,7 @@ public class TileMapManager
                 {
                     boxes.Add(new Tile { x = index % layer.Width, y = index / layer.Width, w = 1, h = 1 });
                 }
+
                 index++;
             }
         }
@@ -179,25 +202,25 @@ public class TileMapManager
         switch (currentLevel)
         {
             case 1:
-                path = "assets/level1.tmx";
-                break;
-            case 2:
                 path = "assets/level2.tmx";
                 break;
-            case 3:
+            case 2:
                 path = "assets/level3.tmx";
                 break;
             default:
                 Console.WriteLine("Invalid level number");
                 return;
         }
+
         _map = new TiledMap(path);
         _tilesets = _map.GetTiledTilesets("assets/");
+
+        OnLevelAdvanced?.Invoke();
     }
 
     public MapData GetMapData()
     {
-        return new MapData { Map = _map, Tilesets = _tilesets, LevelIndex = 0};
+        return new MapData { Map = _map, Tilesets = _tilesets, LevelIndex = 0 };
     }
 }
 
