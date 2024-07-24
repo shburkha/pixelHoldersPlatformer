@@ -166,7 +166,7 @@ public class RenderManager
 
                 case "10-Cannon":
                     currentSpriteWidthInPixels = _cannonSpriteWidth;
-                      currentSpriteHeightInPixels = _cannonSpriteHeight;
+                    currentSpriteHeightInPixels = _cannonSpriteHeight;
                     leftPadding = _cannonLeftPadding;
                     topPadding = _cannonTopPadding;
                     break;
@@ -185,7 +185,7 @@ public class RenderManager
             //this way we can use the original sprites with the attack animation too
             //here we also set the sprites' boundingbox
 
-            if (gameObject is Player)
+            if (gameObject is Player || gameObject is Cannon || gameObject is Cannonball)
             {
                 if (!((AnimatableComponent)gameObject.GetComponent(gameObjects.Component.Animatable)).isFlipped)
                 {
@@ -217,7 +217,7 @@ public class RenderManager
                 }
 
             }
-            else if (gameObject is Enemy || gameObject is Cannon || gameObject is Cannonball)
+            else if (gameObject is Enemy )
             {
                 if (((AnimatableComponent)gameObject.GetComponent(gameObjects.Component.Animatable)).isFlipped)
                 {
@@ -306,7 +306,7 @@ public class RenderManager
     {
         //the enemy sprites are opposite looking
         //we could reshape it in GIMP but it is too tedious
-        if (gameObject is Player)
+        if (gameObject is Player || gameObject is Cannon || gameObject is Cannonball)
         {
             if (!((AnimatableComponent)gameObject.GetComponent(gameObjects.Component.Animatable)).isFlipped)
             {
@@ -324,7 +324,7 @@ public class RenderManager
             }
         }
         //TODO: change cannon and cannonball to enemy
-        else if (gameObject is Enemy || gameObject is Cannon ||gameObject is Cannonball) 
+        else if (gameObject is Enemy ) 
         {
             if (((AnimatableComponent)gameObject.GetComponent(gameObjects.Component.Animatable)).isFlipped)
             {
