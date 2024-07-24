@@ -203,9 +203,17 @@ public class TileMapManager
         {
             case 1:
                 path = "assets/level2.tmx";
+                currentLevel++;
                 break;
             case 2:
                 path = "assets/level3.tmx";
+                currentLevel++;
+                break;
+            case 3:
+                Console.WriteLine("You have completed all levels!");
+                AudioManager.Instance.PlaySound("win");
+                SDL_Delay(5000);
+                SDL_Quit();
                 break;
             default:
                 Console.WriteLine("Invalid level number");

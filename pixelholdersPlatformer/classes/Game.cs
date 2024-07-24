@@ -52,10 +52,6 @@ public class Game
 
         LoadMap();
 
-        //_player = new Player(5, 10, 1, 1);
-
-        //gameObjects.Add(_player);
-
         _renderManager.SetGameObjects(gameObjects);
         _collisionManager.SetGameObjects(gameObjects);
         _animationManager.SetGameObjects(gameObjects);
@@ -99,10 +95,7 @@ public class Game
     {
         //change no. 1
         gameObjects = new List<GameObject>();
-        foreach (var obj in gameObjects)
-        {
-            Console.WriteLine($"gameObj: {obj}");
-        }
+
         _renderManager.SetMapData(_tileMapManager.GetMapData());
         _collidableObjects = _tileMapManager.GetEnvironmentCollidables();
 

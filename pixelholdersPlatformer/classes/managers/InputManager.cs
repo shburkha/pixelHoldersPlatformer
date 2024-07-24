@@ -59,8 +59,8 @@ public class InputManager
         if (state.Buttons[2]) keysPressed.Add(InputTypes.CameraRenderMode); // Square
         if (state.Buttons[5]) keysPressed.Add(InputTypes.CameraZoomIn); // Right shoulder
         if (state.Buttons[4]) keysPressed.Add(InputTypes.CameraZoomOut); // Left shoulder
-        if (state.Buttons[8]) keysPressed.Add(InputTypes.ResetPlayerPos); // L3 pressed
-        if (state.Buttons[9]) keysPressed.Add(InputTypes.Checkpoint); // R3 pressed
+        if (state.Buttons[2]) keysPressed.Add(InputTypes.ResetPlayerPos); // Square pressed
+        if (state.Buttons[3]) keysPressed.Add(InputTypes.Checkpoint); // Triangle pressed
         // right stick input
         if (normalizedCameraX < -0.1) keysPressed.Add(InputTypes.CameraLeft);
         if (normalizedCameraX < -0.8) keysPressed.Add(InputTypes.CameraLeft);
