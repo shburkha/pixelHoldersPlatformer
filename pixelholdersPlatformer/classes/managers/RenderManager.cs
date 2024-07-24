@@ -61,6 +61,18 @@ public class RenderManager
     private const int _pigTopPadding = 15;
     private const int _pigLeftPadding = 20;
 
+    private const int _cannonSpriteHeight = 28;
+    private const int _cannonSpriteWidth = 44;
+    private const int _cannonTopPadding = 0;
+    private const int _cannonLeftPadding = 0;
+
+
+    private const int _cannonballSpriteHeight = 11;
+    private const int _cannonballSpriteWidth = 11;
+    private const int _cannonballTopPadding = 0;
+    private const int _cannonballLeftPadding = 0;
+
+
 
 
     public RenderManager()
@@ -152,6 +164,20 @@ public class RenderManager
                     topPadding = _pigTopPadding;
                     break;
 
+                case "10-Cannon":
+                    currentSpriteWidthInPixels = _cannonSpriteWidth;
+                      currentSpriteHeightInPixels = _cannonSpriteHeight;
+                    leftPadding = _cannonLeftPadding;
+                    topPadding = _cannonTopPadding;
+                    break;
+
+                case "15-Cannonball":
+                    currentSpriteWidthInPixels = _cannonballSpriteWidth;
+                    currentSpriteHeightInPixels = _cannonballSpriteHeight;
+                    leftPadding = _cannonballLeftPadding;
+                    topPadding = _cannonballTopPadding;
+                    break;
+
 
             }
             //we need a separate box for animation sprites, because they are bigger than the boundingbox of the player
@@ -191,7 +217,7 @@ public class RenderManager
                 }
 
             }
-            else if (gameObject is Enemy)
+            else if (gameObject is Enemy || gameObject is Cannon || gameObject is Cannonball)
             {
                 if (((AnimatableComponent)gameObject.GetComponent(gameObjects.Component.Animatable)).isFlipped)
                 {
@@ -297,7 +323,8 @@ public class RenderManager
                     SDL_RendererFlip.SDL_FLIP_VERTICAL);
             }
         }
-        else if (gameObject is Enemy) 
+        //TODO: change cannon and cannonball to enemy
+        else if (gameObject is Enemy || gameObject is Cannon ||gameObject is Cannonball) 
         {
             if (((AnimatableComponent)gameObject.GetComponent(gameObjects.Component.Animatable)).isFlipped)
             {

@@ -20,7 +20,7 @@ public class Game
 
     private List<Cannon> _cannons;
 
-    Stopwatch stopwatch = new Stopwatch();
+    Stopwatch _gameStopwatch = new Stopwatch();
     private bool _quit;
 
     private Player _player;
@@ -73,10 +73,10 @@ public class Game
         //the sizes are important, don't change them please :)
 
         _testEnemy = new Enemy(10, 10, 0.5f, 0.5f);
-        _testEnemy.AddComponent(new PigBehaviour(_testEnemy, _player, _collidableObjects));
+        _testEnemy.AddComponent(new PigBehaviour(_testEnemy, _player, _collidableTiles));
 
         _testEnemy2 = new Enemy(30, 10, 0.5f, 0.5f);
-        _testEnemy2.AddComponent(new PigBehaviour(_testEnemy2, _player, _collidableObjects));
+        _testEnemy2.AddComponent(new PigBehaviour(_testEnemy2, _player, _collidableTiles));
 
 
         gameObjects.Add(_player);
@@ -84,7 +84,7 @@ public class Game
         gameObjects.Add(_testEnemy2);
 
         _cannons = new List<Cannon>();
-        _cannons.Add(new Cannon(7, 3, Direction.Right));
+        _cannons.Add(new Cannon(1, 11.9f, Direction.Right));
 
         foreach (var cannon in _cannons)
         {
@@ -139,9 +139,9 @@ public class Game
             Console.WriteLine($"gameObj: {obj}");
         }
         _renderManager.SetMapData(_tileMapManager.GetMapData());
-        _collidableObjects = _tileMapManager.GetEnvironmentCollidables();
+        _collidableTiles = _tileMapManager.GetEnvironmentCollidables();
 
-        foreach (var box in _collidableObjects)
+        foreach (var box in _collidableTiles)
         {
             box.AddComponent(new MovableComponent(box));
             box.AddComponent(new PhysicsComponent(box));
@@ -149,8 +149,8 @@ public class Game
             gameObjects.Add(box);
         }
 
-        _specialObjects = _tileMapManager.GetSpecialTiles();
-        foreach (var box in _specialObjects)
+        _specialTiles = _tileMapManager.GetSpecialTiles();
+        foreach (var box in _specialTiles)
         {
             box.AddComponent(new MovableComponent(box));
             box.AddComponent(new PhysicsComponent(box));

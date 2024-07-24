@@ -30,7 +30,13 @@ namespace pixelholdersPlatformer.classes.managers
 
         private const int _pigSpriteWidth = 34;
         private const int _pigSpriteHeight = 28;
-        
+
+        private const int _cannonSpriteHeight = 28;
+        private const int _cannonSpriteWidth = 44;
+
+        private const int _cannonballSpriteHeight = 11;
+        private const int _cannonballSpriteWidth = 11;
+
 
         private Dictionary<string, IntPtr[]> _humanKingSprites;
         private Dictionary<string, IntPtr[]> _pigKingSprites;
@@ -153,8 +159,6 @@ namespace pixelholdersPlatformer.classes.managers
                     foreach (string spriteName in spriteNames) 
                     {  
                         Image img = Image.FromFile(spriteName);
-
-                        _cannonSpriteHeight = img.Height;
 
                         int currentCannonSpriteCount = img.Width / _cannonSpriteWidth;
 
