@@ -10,7 +10,7 @@ public class TileMapManager
 {
     private TiledMap _map;
     private Dictionary<int, TiledTileset> _tilesets;
-    int currentLevel = 0;
+    int currentLevel = 1;
 
     private int[] _collidableTiles =
     [
@@ -20,6 +20,17 @@ public class TileMapManager
     ];
 
     private int[] _winTiles = [256, 263, 270, 277];
+
+    /*private static TileMapManager _instance;
+    public static TileMapManager Instance
+    {
+        get
+        {
+            if (_instance == null)
+                _instance = new TileMapManager();
+            return _instance;
+        }
+    }*/
 
     public TileMapManager()
     {

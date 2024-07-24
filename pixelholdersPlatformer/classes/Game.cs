@@ -120,10 +120,10 @@ public class Game
             switch (input)
             {
                 case InputTypes.PlayerLeft:
-                    _player.MovePlayerX(-0.4f);
+                    _player.MovePlayerX(-0.3f);
                     break;
                 case InputTypes.PlayerRight:
-                    _player.MovePlayerX(0.4f);
+                    _player.MovePlayerX(0.3f);
                     break;
                 case InputTypes.PlayerJump:
                     if (((PhysicsComponent)_player.GetComponent(Component.Physics)).Velocity.Y == 0)
@@ -144,6 +144,9 @@ public class Game
                     break;
                 case InputTypes.ResetPlayerPos:
                     _player.ResetPlayerPosition();
+                    break;
+                case InputTypes.Checkpoint:
+                    _player.PlayerToCheckpoint();
                     break;
                 case InputTypes.CameraRenderMode:
                     _renderManager.SwitchRenderMode();

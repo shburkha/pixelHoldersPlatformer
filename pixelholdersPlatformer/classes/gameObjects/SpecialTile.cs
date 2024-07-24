@@ -22,7 +22,7 @@ namespace pixelholdersPlatformer.classes.gameObjects
             switch (type)
             {
                 case SpecialTileType.Goal:
-                    Console.WriteLine("You Win!");
+                    // TileMapManager.Instance.AdvanceLevel();
                     SDL_Delay(500);
                     SDL_Quit();
                     break;

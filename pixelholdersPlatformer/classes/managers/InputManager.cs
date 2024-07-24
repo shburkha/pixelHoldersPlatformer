@@ -39,6 +39,7 @@ public class InputManager
         if (keyState[(int)SDL_Scancode.SDL_SCANCODE_KP_0] != 0) {keysPressed.Add(InputTypes.CameraSetZoom2);}
         if (keyState[(int)SDL_Scancode.SDL_SCANCODE_0] != 0) {keysPressed.Add(InputTypes.CameraSetZoom2);}
         if (keyState[(int)SDL_Scancode.SDL_SCANCODE_C] != 0) {keysPressed.Add(InputTypes.CameraCenter);}
+        if (keyState[(int)SDL_Scancode.SDL_SCANCODE_H] != 0) {keysPressed.Add(InputTypes.Checkpoint);}
 
         if(SDL_NumJoysticks() < 1) return keysPressed;
         gamepad.Joystick.Poll();
@@ -56,9 +57,10 @@ public class InputManager
         if (state.Buttons[0]) keysPressed.Add(InputTypes.PlayerJump); // Cross
         if (state.Buttons[1]) keysPressed.Add(InputTypes.Quit); // Circle
         if (state.Buttons[2]) keysPressed.Add(InputTypes.CameraRenderMode); // Square
-        if (state.Buttons[3]) keysPressed.Add(InputTypes.ResetPlayerPos); // Triangle
         if (state.Buttons[5]) keysPressed.Add(InputTypes.CameraZoomIn); // Right shoulder
         if (state.Buttons[4]) keysPressed.Add(InputTypes.CameraZoomOut); // Left shoulder
+        if (state.Buttons[8]) keysPressed.Add(InputTypes.ResetPlayerPos); // L3 pressed
+        if (state.Buttons[9]) keysPressed.Add(InputTypes.Checkpoint); // R3 pressed
         // right stick input
         if (normalizedCameraX < -0.1) keysPressed.Add(InputTypes.CameraLeft);
         if (normalizedCameraX < -0.8) keysPressed.Add(InputTypes.CameraLeft);
@@ -88,5 +90,6 @@ public enum InputTypes
     CameraZoomOut,
     CameraSetZoom2,
     CameraCenter,
-    ResetPlayerPos
+    ResetPlayerPos,
+    Checkpoint
 }
