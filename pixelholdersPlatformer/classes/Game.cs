@@ -47,27 +47,10 @@ public class Game
         _quit = false;
 
         _gamepad = new Gamepad();
-        _tileMapManager = new TileMapManager();
+        _tileMapManager = TileMapManager.Instance;
+        TileMapManager.Instance.OnLevelAdvanced += HandleLevelAdvanced;
 
-        _renderManager.SetMapData(_tileMapManager.GetMapData());
-
-        _collidableObjects = _tileMapManager.GetEnvironmentCollidables();
-        foreach (var box in _collidableObjects)
-        {
-            box.AddComponent(new MovableComponent(box));
-            box.AddComponent(new PhysicsComponent(box));
-            box.AddComponent(new CollisionComponent(box));
-            gameObjects.Add(box);
-        }
-
-        _specialObjects = _tileMapManager.GetSpecialTiles();
-        foreach (var box in _specialObjects)
-        {
-            box.AddComponent(new MovableComponent(box));
-            box.AddComponent(new PhysicsComponent(box));
-            box.AddComponent(new CollisionComponent(box));
-            gameObjects.Add(box);
-        }
+        LoadMap();
 
         _player = new Player(5, 10, 1, 1);
 
@@ -96,6 +79,7 @@ public class Game
         {
             if (e.type == SDL_EventType.SDL_QUIT)
             {
+                AudioManager.Instance.Dispose();
                 _quit = true;
             }
 
@@ -109,6 +93,38 @@ public class Game
                 _gameStopwatch.Restart();
             }
         }
+    }
+
+    private void LoadMap()
+    {
+        foreach (var obj in gameObjects)
+        {
+            Console.WriteLine($"gameObj: {obj}");
+        }
+        _renderManager.SetMapData(_tileMapManager.GetMapData());
+        _collidableObjects = _tileMapManager.GetEnvironmentCollidables();
+
+        foreach (var box in _collidableObjects)
+        {
+            box.AddComponent(new MovableComponent(box));
+            box.AddComponent(new PhysicsComponent(box));
+            box.AddComponent(new CollisionComponent(box));
+            gameObjects.Add(box);
+        }
+
+        _specialObjects = _tileMapManager.GetSpecialTiles();
+        foreach (var box in _specialObjects)
+        {
+            box.AddComponent(new MovableComponent(box));
+            box.AddComponent(new PhysicsComponent(box));
+            box.AddComponent(new CollisionComponent(box));
+            gameObjects.Add(box);
+        }
+    }
+
+    private void HandleLevelAdvanced()
+    {
+        LoadMap();
     }
 
     private void ProcessInput()
@@ -140,6 +156,7 @@ public class Game
                     }
                     break;
                 case InputTypes.Quit:
+                    AudioManager.Instance.Dispose();
                     _quit = true;
                     break;
                 case InputTypes.ResetPlayerPos:

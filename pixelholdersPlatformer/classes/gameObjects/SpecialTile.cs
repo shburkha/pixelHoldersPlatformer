@@ -22,9 +22,10 @@ namespace pixelholdersPlatformer.classes.gameObjects
             switch (type)
             {
                 case SpecialTileType.Goal:
-                    // TileMapManager.Instance.AdvanceLevel();
-                    SDL_Delay(500);
-                    SDL_Quit();
+                    TileMapManager.Instance.AdvanceLevel();
+                    // AudioManager.Instance.PlaySound("win");
+                    // SDL_Delay(500);
+                    // SDL_Quit();
                     break;
             }
         }
