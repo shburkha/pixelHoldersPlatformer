@@ -92,7 +92,6 @@ public enum InputTypes
     CameraSetZoom2,
     CameraCenter,
     ResetPlayerPos,
-    Checkpoint
-    ResetPlayerPos,
+    Checkpoint,
     DebugMode
 }
