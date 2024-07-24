@@ -24,6 +24,7 @@ public class Game
     private Player _player;
 
     private Enemy _testEnemy;
+    private Enemy _testEnemy2;
 
 
     private double _deltaT;
@@ -78,8 +79,13 @@ public class Game
         _testEnemy = new Enemy(10, 10, 0.5f, 0.5f);
         _testEnemy.AddComponent(new PigBehaviour(_testEnemy, _player, _collidableObjects));
 
+        _testEnemy2 = new Enemy(30, 10, 0.5f, 0.5f);
+        _testEnemy2.AddComponent(new PigBehaviour(_testEnemy2, _player, _collidableObjects));
+
+
         gameObjects.Add(_player);
         gameObjects.Add(_testEnemy);
+        gameObjects.Add(_testEnemy2);
 
         _renderManager.SetGameObjects(gameObjects);
         _collisionManager.SetGameObjects(gameObjects);

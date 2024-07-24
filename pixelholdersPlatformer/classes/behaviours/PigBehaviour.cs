@@ -17,17 +17,20 @@ namespace pixelholdersPlatformer.classes.behaviours
         private Player _player;
         private List<GameObject> _collidableObjects;
 
-        private const float aggroRange = 7;
-        private const float attackRangeX = 0.8f;
-        private const float attackRangeY = 0.5f;
+        private const float _aggroRange = 7;
+        private const float _attackRangeX = 0.8f;
+        private const float _attackRangeY = 0.5f;
         private const int _attackCooldown = 250;
 
         //for debugging reasons
-
         public float futureCenterPosX;
         public float futureCenterPosY;
 
         private Stopwatch _attackStopWatch;
+        bool _attackJustHappened = false;
+
+        private float _previousDistanceX;
+        private bool _isDirectionChanged;
 
         public PigBehaviour(Enemy owner, Player player, List<GameObject> collidableObjects)
         {
@@ -38,7 +41,7 @@ namespace pixelholdersPlatformer.classes.behaviours
             _collidableObjects = collidableObjects;
         }
 
-        bool _attackJustHappened = false;
+        
 
         //the pig checks for the player. If it is in range it performs an attack
         //the pig first walks to the player
@@ -51,20 +54,27 @@ namespace pixelholdersPlatformer.classes.behaviours
             if ((_owner.GetComponent(gameObjects.Component.Animatable) as AnimatableComponent).CurrentAnimationType != managers.AnimationType.Attack)
             {
                 float playerCenterX = _player.CoordX + _player.Width / 2;
-                float playerCenterY = (_player.CoordY + _player.Height) / 2;
+                float playerCenterY = _player.CoordY + _player.Height / 2;
 
                 float ownerCenterX = _owner.CoordX + _owner.Width / 2;
                 float ownerCenterY = _owner.CoordY + _owner.Height / 2;
 
                 float distanceX = ownerCenterX - playerCenterX;
                 float distanceY = ownerCenterY - playerCenterY;
-                if (Math.Abs(distanceX) <= aggroRange)
+
+                if (Math.Sign(distanceX) != Math.Sign(_previousDistanceX))
+                {
+                    _isDirectionChanged = true;
+                }
+                _previousDistanceX = distanceX;
+
+                if (Math.Abs(distanceX) <= _aggroRange)
                 {
                     //makes an attack
-                    if (Math.Abs(distanceX) < attackRangeX && Math.Abs(distanceY) < attackRangeY)
+                    if (Math.Abs(distanceX) < _attackRangeX && Math.Abs(distanceY) < _attackRangeY)
                     {
                         
-                        bool isFlipped = (_owner.GetComponent(gameObjects.Component.Animatable) as AnimatableComponent).isFlipped;
+                         bool isFlipped = (_owner.GetComponent(gameObjects.Component.Animatable) as AnimatableComponent).isFlipped;
                         (_owner.GetComponent(gameObjects.Component.Animatable) as AnimatableComponent).SetAnimationType(managers.AnimationType.Attack, isFlipped);
                         _attackJustHappened = true;
                         _attackStopWatch.Start();
@@ -79,14 +89,10 @@ namespace pixelholdersPlatformer.classes.behaviours
 
 
                         bool wouldItFallNextTime = true;
-                        int direction = Math.Sign((_owner.GetComponent(gameObjects.Component.Physics) as PhysicsComponent).Velocity.X);
-                        if (direction == 0)
-                        {
-                            direction = -1;
-                        }
+
                         //b is the looking radius
                         float b  = 3;
-                        int angleOfLooking = 45;
+                        int angleOfLooking = distanceX > 0 ? -30 : 30;  // Adjust angle based on direction
                         double angleOfLookingInRadian = (angleOfLooking * (Math.PI/180));
 
                         //futureCenterPosX = (float)(ownerCenterX + b * Math.Sin(angleOfLookingInRadian));
@@ -94,14 +100,17 @@ namespace pixelholdersPlatformer.classes.behaviours
 
                         foreach (GameObject collidible in _collidableObjects) 
                         {
-                            for (int i = 1; i < b; i++)
+                            //We check incrementally for collisions
+                            for (float i = 0.1f; i < b; i+= 0.1f)
                             {
                                 futureCenterPosX = (float)(ownerCenterX + i * Math.Sin(angleOfLookingInRadian));
                                 futureCenterPosY = (float)(ownerCenterY + i * Math.Cos(angleOfLookingInRadian));
-                                if (futureCenterPosX > collidible.CoordX &&
-                                futureCenterPosX < collidible.CoordX + collidible.Width &&
-                                futureCenterPosY > collidible.CoordY &&
-                                futureCenterPosY < collidible.CoordY + collidible.Height)
+                                if (
+                                    futureCenterPosX > collidible.CoordX &&
+                                    futureCenterPosX < collidible.CoordX + collidible.Width &&
+                                    futureCenterPosY > collidible.CoordY &&
+                                    futureCenterPosY < collidible.CoordY + collidible.Height
+                                )
                                 {
                                     //Collision happens
                                     wouldItFallNextTime = false;
@@ -112,14 +121,10 @@ namespace pixelholdersPlatformer.classes.behaviours
                                 {
                                      break;
                                 }
-
                             }
-
-                            
-
                         }
 
-                        if (!wouldItFallNextTime)
+                        if (!wouldItFallNextTime || _isDirectionChanged)
                         {
                             if (distanceX > 0)
                             {
@@ -129,6 +134,7 @@ namespace pixelholdersPlatformer.classes.behaviours
                             {
                                 ((PhysicsComponent)_owner.GetComponent(gameObjects.Component.Physics)).SetVelocityX(0.1f);
                             }
+                            _isDirectionChanged = false;
                         }                       
                     }
                 }
