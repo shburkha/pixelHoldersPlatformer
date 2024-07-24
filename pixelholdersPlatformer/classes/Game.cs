@@ -52,9 +52,9 @@ public class Game
 
         LoadMap();
 
-        _player = new Player(5, 10, 1, 1);
+        //_player = new Player(5, 10, 1, 1);
 
-        gameObjects.Add(_player);
+        //gameObjects.Add(_player);
 
         _renderManager.SetGameObjects(gameObjects);
         _collisionManager.SetGameObjects(gameObjects);
@@ -97,6 +97,8 @@ public class Game
 
     private void LoadMap()
     {
+        //change no. 1
+        gameObjects = new List<GameObject>();
         foreach (var obj in gameObjects)
         {
             Console.WriteLine($"gameObj: {obj}");
@@ -120,10 +122,18 @@ public class Game
             box.AddComponent(new CollisionComponent(box));
             gameObjects.Add(box);
         }
+
+        //change no. 2
+        _player = new Player(5, 10, 1, 1);
+        gameObjects.Add(_player);
+        _renderManager.SetGameObjects(gameObjects);
+        _collisionManager.SetGameObjects(gameObjects);
+        _animationManager.SetGameObjects(gameObjects);
     }
 
     private void HandleLevelAdvanced()
     {
+
         LoadMap();
     }
 

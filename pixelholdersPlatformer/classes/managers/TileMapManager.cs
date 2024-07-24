@@ -202,12 +202,9 @@ public class TileMapManager
         switch (currentLevel)
         {
             case 1:
-                path = "assets/level1.tmx";
-                break;
-            case 2:
                 path = "assets/level2.tmx";
                 break;
-            case 3:
+            case 2:
                 path = "assets/level3.tmx";
                 break;
             default:
