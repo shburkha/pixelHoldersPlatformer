@@ -2,9 +2,12 @@
 using pixelholdersPlatformer.classes.managers;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Reflection.Metadata.Ecma335;
 using System.Text;
 using System.Threading.Tasks;
+using static SDL2.SDL;
 
 namespace pixelholdersPlatformer.classes.Component
 {
@@ -16,11 +19,23 @@ namespace pixelholdersPlatformer.classes.Component
         public AnimationType CurrentAnimationType;
         public IntPtr CurrentAnimationSprite;
         public bool isFlipped;
+
+        public SDL_Rect SpriteBoundingBox;
+
+        private Stopwatch _attackTimer;
+        private int _attackCooldown = 150;
         public AnimatableComponent(GameObject owner, string spriteFolder)
         {
             _owner = owner;
             SpriteFolder = spriteFolder;
             CurrentAnimationType = AnimationType.Idle;
+            _attackTimer = new Stopwatch();
+        }
+
+
+        public void SetAttackCooldown(int cooldown)
+        {
+            _attackCooldown = cooldown;
         }
 
         public void SetAnimationType(AnimationType animationType, bool flipped = false) 
@@ -36,6 +51,8 @@ namespace pixelholdersPlatformer.classes.Component
 
         public void Update()
         {
+
+            
             PhysicsComponent tmp = (PhysicsComponent)_owner.GetComponent(gameObjects.Component.Physics);
 
             //when on the ground this is the default velocity
@@ -51,7 +68,24 @@ namespace pixelholdersPlatformer.classes.Component
                 }
                 else if (tmp.Velocity.X == 0)
                 {
-                    SetAnimationType(AnimationType.Idle, isFlipped);
+
+                    if (CurrentAnimationType == AnimationType.Attack)
+                    {
+                        if (!_attackTimer.IsRunning)
+                        {
+                            _attackTimer.Start();
+                        }
+                        if (_attackTimer.ElapsedMilliseconds > _attackCooldown)
+                        {
+                            _attackTimer.Reset();
+                            SetAnimationType(AnimationType.Idle, isFlipped);
+                        }
+
+                    }
+                    else
+                    {
+                        SetAnimationType(AnimationType.Idle, isFlipped);
+                    }
                 }
             }
             else

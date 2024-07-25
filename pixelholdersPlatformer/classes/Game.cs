@@ -7,6 +7,7 @@ using System.Diagnostics;
 using pixelholdersPlatformer.classes;
 using static SDL2.SDL;
 using TiledCSPlus;
+using pixelholdersPlatformer.classes.behaviours;
 
 namespace pixelholdersPlatformer;
 
@@ -19,10 +20,14 @@ public class Game
 
     private List<Cannon> _cannons;
 
-    Stopwatch stopwatch = new Stopwatch();
+    Stopwatch _gameStopwatch = new Stopwatch();
     private bool _quit;
 
     private Player _player;
+
+    private Enemy _testEnemy;
+    private Enemy _testEnemy2;
+
 
     private double _deltaT;
 
@@ -31,6 +36,9 @@ public class Game
     private InputManager _inputManager;
     private CollisionManager _collisionManager;
     private AnimationManager _animationManager;
+
+    private const int _attackCooldown = 500;
+    private Stopwatch _attackStopWatch = new Stopwatch();
 
     Gamepad _gamepad;
     TileMapManager _tileMapManager;
@@ -46,18 +54,12 @@ public class Game
         _quit = false;
 
         _gamepad = new Gamepad();
-        _tileMapManager = new TileMapManager();
+        _tileMapManager = TileMapManager.Instance;
+        TileMapManager.Instance.OnLevelAdvanced += HandleLevelAdvanced;
 
-        _renderManager.SetMapData(_tileMapManager.GetMapData());
+        LoadMap();
 
-        _collidableTiles = _tileMapManager.GetEnvironmentCollidables();
-        foreach (var box in _collidableTiles)
-        {
-            //box.AddComponent(new MovableComponent(box));
-            box.AddComponent(new PhysicsComponent(box));
-            box.AddComponent(new CollisionComponent(box));
-            gameObjects.Add(box);
-        }
+        //_player = new Player(5, 10, 1, 1);
 
         _specialTiles = _tileMapManager.GetSpecialTiles();
         foreach (var box in _specialTiles)
@@ -68,12 +70,21 @@ public class Game
             gameObjects.Add(box);
         }
 
-        _player = new Player(5, 5, 1, 1);
+        //the sizes are important, don't change them please :)
+
+        _testEnemy = new Enemy(10, 10, 0.5f, 0.5f);
+        _testEnemy.AddComponent(new PigBehaviour(_testEnemy, _player, _collidableTiles));
+
+        _testEnemy2 = new Enemy(30, 10, 0.5f, 0.5f);
+        _testEnemy2.AddComponent(new PigBehaviour(_testEnemy2, _player, _collidableTiles));
+
 
         gameObjects.Add(_player);
+        gameObjects.Add(_testEnemy);
+        gameObjects.Add(_testEnemy2);
 
         _cannons = new List<Cannon>();
-        _cannons.Add(new Cannon(7, 3, Direction.Right));
+        _cannons.Add(new Cannon(1, 11.9f, Direction.Right));
 
         foreach (var cannon in _cannons)
         {
@@ -90,7 +101,9 @@ public class Game
         int _refreshRate = _displayMode.refresh_rate;
         double targetFPS = _refreshRate * 1.0d;
         _frameInterval = 1000d / targetFPS;
-        stopwatch.Start();
+
+        _gameStopwatch.Start();
+        _attackStopWatch.Start();
     }
 
     public void StartGame()
@@ -101,19 +114,62 @@ public class Game
         {
             if (e.type == SDL_EventType.SDL_QUIT)
             {
+                AudioManager.Instance.Dispose();
                 _quit = true;
             }
 
-            double timeElapsed = (double)stopwatch.ElapsedMilliseconds;
+            double timeElapsed = (double)_gameStopwatch.ElapsedMilliseconds;
             if (timeElapsed > _frameInterval)
             {
                 _deltaT = timeElapsed;
                 ProcessInput();
                 Update();
                 Render();
-                stopwatch.Restart();
+                _gameStopwatch.Restart();
             }
         }
+    }
+
+    private void LoadMap()
+    {
+        //change no. 1
+        gameObjects = new List<GameObject>();
+        foreach (var obj in gameObjects)
+        {
+            Console.WriteLine($"gameObj: {obj}");
+        }
+        _renderManager.SetMapData(_tileMapManager.GetMapData());
+        _collidableTiles = _tileMapManager.GetEnvironmentCollidables();
+
+        foreach (var box in _collidableTiles)
+        {
+            box.AddComponent(new MovableComponent(box));
+            box.AddComponent(new PhysicsComponent(box));
+            box.AddComponent(new CollisionComponent(box));
+            gameObjects.Add(box);
+        }
+
+        _specialTiles = _tileMapManager.GetSpecialTiles();
+        foreach (var box in _specialTiles)
+        {
+            box.AddComponent(new MovableComponent(box));
+            box.AddComponent(new PhysicsComponent(box));
+            box.AddComponent(new CollisionComponent(box));
+            gameObjects.Add(box);
+        }
+
+        //change no. 2
+        _player = new Player(5, 10, 1, 1);
+        gameObjects.Add(_player);
+        _renderManager.SetGameObjects(gameObjects);
+        _collisionManager.SetGameObjects(gameObjects);
+        _animationManager.SetGameObjects(gameObjects);
+    }
+
+    private void HandleLevelAdvanced()
+    {
+
+        LoadMap();
     }
 
     private void ProcessInput()
@@ -125,22 +181,34 @@ public class Game
             switch (input)
             {
                 case InputTypes.PlayerLeft:
-                    _player.MovePlayerX(-0.5f);
+                    _player.MovePlayerX(-0.3f);
                     break;
                 case InputTypes.PlayerRight:
-                    _player.MovePlayerX(0.5f);
+                    _player.MovePlayerX(0.3f);
                     break;
                 case InputTypes.PlayerJump:
                     if (((PhysicsComponent)_player.GetComponent(Component.Physics)).Velocity.Y == 0)
                     {
-                        _player.MovePlayerY(-1);
+                        _player.MovePlayerY(-0.7f);
+                    }
+                    break;
+
+                case InputTypes.PlayerAttack:
+                    if (_attackStopWatch.ElapsedMilliseconds > _attackCooldown)
+                    {
+                        ((AnimatableComponent)_player.GetComponent(Component.Animatable)).SetAnimationType(AnimationType.Attack, ((AnimatableComponent)_player.GetComponent(Component.Animatable)).isFlipped);
+                        _attackStopWatch.Restart();
                     }
                     break;
                 case InputTypes.Quit:
+                    AudioManager.Instance.Dispose();
                     _quit = true;
                     break;
                 case InputTypes.ResetPlayerPos:
                     _player.ResetPlayerPosition();
+                    break;
+                case InputTypes.Checkpoint:
+                    _player.PlayerToCheckpoint();
                     break;
                 case InputTypes.CameraRenderMode:
                     _renderManager.SwitchRenderMode();
@@ -169,6 +237,10 @@ public class Game
                 case InputTypes.CameraCenter:
                     _renderManager.CenterCameraAroundPlayer();
                     _renderManager.Zoom(1);
+                    break;
+
+                case InputTypes.DebugMode:
+                    _renderManager.SwitchDebugMode();
                     break;
             }
         }

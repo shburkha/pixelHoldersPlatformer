@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using pixelholdersPlatformer.classes.managers;
 using static SDL2.SDL;
 using SDL2;
 
@@ -21,9 +22,10 @@ namespace pixelholdersPlatformer.classes.gameObjects
             switch (type)
             {
                 case SpecialTileType.Goal:
-                    Console.WriteLine("You Win!");
-                    SDL_Delay(500);
-                    SDL_Quit();
+                    TileMapManager.Instance.AdvanceLevel();
+                    // AudioManager.Instance.PlaySound("win");
+                    // SDL_Delay(500);
+                    // SDL_Quit();
                     break;
 
                 case SpecialTileType.Kill:

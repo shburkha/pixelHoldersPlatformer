@@ -24,6 +24,7 @@ public class InputManager
         if (keyState[(int)SDL_Scancode.SDL_SCANCODE_A] != 0) {keysPressed.Add(InputTypes.PlayerLeft);}
         if (keyState[(int)SDL_Scancode.SDL_SCANCODE_D] != 0) {keysPressed.Add(InputTypes.PlayerRight);}
         if (keyState[(int)SDL_Scancode.SDL_SCANCODE_SPACE] != 0) {keysPressed.Add(InputTypes.PlayerJump);}
+        if (keyState[(int)SDL_Scancode.SDL_SCANCODE_K] != 0) {keysPressed.Add(InputTypes.PlayerAttack);}
         if (keyState[(int)SDL_Scancode.SDL_SCANCODE_ESCAPE] != 0) {keysPressed.Add(InputTypes.Quit);}
         if (keyState[(int)SDL_Scancode.SDL_SCANCODE_R] != 0) {keysPressed.Add(InputTypes.ResetPlayerPos);}
         if (keyState[(int)SDL_Scancode.SDL_SCANCODE_F] != 0) {keysPressed.Add(InputTypes.CameraRenderMode);}
@@ -38,10 +39,10 @@ public class InputManager
         if (keyState[(int)SDL_Scancode.SDL_SCANCODE_KP_0] != 0) {keysPressed.Add(InputTypes.CameraSetZoom2);}
         if (keyState[(int)SDL_Scancode.SDL_SCANCODE_0] != 0) {keysPressed.Add(InputTypes.CameraSetZoom2);}
         if (keyState[(int)SDL_Scancode.SDL_SCANCODE_C] != 0) {keysPressed.Add(InputTypes.CameraCenter);}
+        if (keyState[(int)SDL_Scancode.SDL_SCANCODE_H] != 0) {keysPressed.Add(InputTypes.Checkpoint);}
+        if (keyState[(int)SDL_Scancode.SDL_SCANCODE_F1] != 0) { keysPressed.Add(InputTypes.DebugMode); }
 
-        //Console.WriteLine(SDL_NumJoysticks());
-        if(SDL_NumJoysticks() < 1) return keysPressed;
-
+        if (SDL_NumJoysticks() < 1) return keysPressed;
         gamepad.Joystick.Poll();
         var state = gamepad.Joystick.GetCurrentState();
 
@@ -59,6 +60,8 @@ public class InputManager
         if (state.Buttons[2]) keysPressed.Add(InputTypes.CameraRenderMode); // Square
         if (state.Buttons[5]) keysPressed.Add(InputTypes.CameraZoomIn); // Right shoulder
         if (state.Buttons[4]) keysPressed.Add(InputTypes.CameraZoomOut); // Left shoulder
+        if (state.Buttons[8]) keysPressed.Add(InputTypes.ResetPlayerPos); // L3 pressed
+        if (state.Buttons[9]) keysPressed.Add(InputTypes.Checkpoint); // R3 pressed
         // right stick input
         if (normalizedCameraX < -0.1) keysPressed.Add(InputTypes.CameraLeft);
         if (normalizedCameraX < -0.8) keysPressed.Add(InputTypes.CameraLeft);
@@ -77,6 +80,7 @@ public enum InputTypes
     PlayerLeft,
     PlayerRight,
     PlayerJump,
+    PlayerAttack,
     Quit,
     CameraRenderMode,
     CameraUp,
@@ -87,5 +91,7 @@ public enum InputTypes
     CameraZoomOut,
     CameraSetZoom2,
     CameraCenter,
-    ResetPlayerPos
+    ResetPlayerPos,
+    Checkpoint,
+    DebugMode
 }
