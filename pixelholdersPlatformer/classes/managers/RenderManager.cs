@@ -4,10 +4,12 @@ using SDL2;
 using TiledCSPlus;
 using System.Numerics;
 using static SDL2.SDL;
+using static SDL2.SDL_ttf;
 using SharpDX.Multimedia;
 using pixelholdersPlatformer.gameObjects;
 using pixelholdersPlatformer.classes.behaviours;
 using System.ComponentModel;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace pixelholdersPlatformer.classes.managers;
 
@@ -534,6 +536,24 @@ public class RenderManager
         SDL_RenderCopy(_renderer, renderTarget, IntPtr.Zero, ref renderDestRect);
 
         SDL_DestroyTexture(renderTarget);
+    }
+
+    public void RenderTextForScene(List<TextElement> elements, nint font)
+    {
+        // Create a surface for the text
+        var color = new SDL_Color { r = 128, g = 128, b = 128, a = 255 };
+
+        foreach (var element in elements)
+        {
+            var surface = TTF_RenderText_Solid(font, element.GetText(), color);
+
+            // Create a texture from the surface
+            var texture = SDL_CreateTextureFromSurface(_renderer, surface);
+            // Render the text
+            // Copy the texture to the current rendering target.
+            SDL_RenderCopy(_renderer, texture, (nint)null, ref ((RenderingComponent)element.GetComponent(gameObjects.Component.Rendering)).BoundingBox);
+            SDL_DestroyTexture(texture);
+        }
     }
 
     public void SetMapData(MapData mapData)

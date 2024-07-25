@@ -36,6 +36,7 @@ public class Game
     private InputManager _inputManager;
     private CollisionManager _collisionManager;
     private AnimationManager _animationManager;
+    private UIManager _uiManager;
 
     private const int _attackCooldown = 500;
     private Stopwatch _attackStopWatch = new Stopwatch();
@@ -49,6 +50,7 @@ public class Game
         _animationManager = new AnimationManager(_renderManager);
         _inputManager = new InputManager();
         _collisionManager = new CollisionManager();
+        _uiManager = new UIManager();
 
         gameObjects = new List<GameObject>();
         _quit = false;
@@ -288,8 +290,23 @@ public class Game
 
     private void Render()
     {
-        _renderManager.CenterCameraAroundPlayer();
         _renderManager.WipeScreen();
-        _renderManager.RenderGameObjects();
+
+        switch (_uiManager.CurrentScene)
+        {
+            case Scene.MainMenu:
+                _renderManager.RenderTextForScene(_uiManager.GetCurrentSceneTextElements(), _uiManager.Font);
+                break;
+            case Scene.Game:
+                _renderManager.CenterCameraAroundPlayer();
+                _renderManager.RenderGameObjects();
+                break;
+            case Scene.Settings:
+                break;
+            case Scene.GameOver:
+                break;
+            case Scene.Win: 
+                break;
+        }
     }
 }
