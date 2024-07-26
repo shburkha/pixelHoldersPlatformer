@@ -1,5 +1,6 @@
 ﻿using pixelholdersPlatformer.classes.behaviours;
 using pixelholdersPlatformer.classes.Component;
+using pixelholdersPlatformer.classes.managers;
 
 namespace pixelholdersPlatformer.classes.gameObjects;
 
@@ -93,6 +94,12 @@ public class GameObject
             component.Update();
         }
     }
+
+    public virtual void HandleInput(InputTypes input)
+    { 
+    
+    }
+
 }
 
 public enum Component

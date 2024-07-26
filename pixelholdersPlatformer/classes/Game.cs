@@ -178,28 +178,29 @@ public class Game
 
         foreach (var input in inputs)
         {
+            _player.HandleInput(input);
             switch (input)
             {
-                case InputTypes.PlayerLeft:
-                    _player.MovePlayerX(-0.22f);
-                    break;
-                case InputTypes.PlayerRight:
-                    _player.MovePlayerX(0.22f);
-                    break;
-                case InputTypes.PlayerJump:
-                    if (((PhysicsComponent)_player.GetComponent(Component.Physics)).Velocity.Y == 0)
-                    {
-                        _player.MovePlayerY(-0.5f);
-                    }
-                    break;
+                //case InputTypes.PlayerLeft:
+                //    _player.HandleInput(input);
+                //    break;
+                //case InputTypes.PlayerRight:
+                //    _player.HandleInput(input);
+                //    break;
+                //case InputTypes.PlayerJump:
+                //    if (((PhysicsComponent)_player.GetComponent(Component.Physics)).Velocity.Y == 0)
+                //    {
+                //        _player.MovePlayerY(-0.5f);
+                //    }
+                //    break;
 
-                case InputTypes.PlayerAttack:
-                    if (_attackStopWatch.ElapsedMilliseconds > _attackCooldown)
-                    {
-                        ((AnimatableComponent)_player.GetComponent(Component.Animatable)).SetAnimationType(AnimationType.Attack, ((AnimatableComponent)_player.GetComponent(Component.Animatable)).isFlipped);
-                        _attackStopWatch.Restart();
-                    }
-                    break;
+                //case InputTypes.PlayerAttack:
+                //    if (_attackStopWatch.ElapsedMilliseconds > _attackCooldown)
+                //    {
+                //        ((AnimatableComponent)_player.GetComponent(Component.Animatable)).SetAnimationType(AnimationType.Attack, ((AnimatableComponent)_player.GetComponent(Component.Animatable)).isFlipped);
+                //        _attackStopWatch.Restart();
+                //    }
+                //    break;
                 case InputTypes.Quit:
                     AudioManager.Instance.Dispose();
                     _quit = true;
