@@ -250,6 +250,8 @@ public class Game
 
     private void Update()
     {
+        if (_uiManager.CurrentScene != Scene.Game) { return; }
+
         List<GameObject> objectsToAdd = new List<GameObject>();
         List<GameObject> objectsToRemove = new List<GameObject>();
         foreach (GameObject gameObject in gameObjects)
@@ -297,14 +299,18 @@ public class Game
             case Scene.MainMenu:
                 _renderManager.RenderTextForScene(_uiManager.GetCurrentSceneTextElements(), _uiManager.Font);
                 break;
+
             case Scene.Game:
                 _renderManager.CenterCameraAroundPlayer();
                 _renderManager.RenderGameObjects();
                 break;
+
             case Scene.Settings:
                 break;
+
             case Scene.GameOver:
                 break;
+
             case Scene.Win: 
                 break;
         }

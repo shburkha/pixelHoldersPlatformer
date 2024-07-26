@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using static SDL2.SDL;
 using pixelholdersPlatformer.classes.managers;
+using pixelholdersPlatformer.classes.Component;
 
 namespace pixelholdersPlatformer.classes.gameObjects;
 

@@ -7,7 +7,7 @@ namespace pixelholdersPlatformer.classes.managers;
 public class UIManager
 {
     private const String _fontPath = "assets/fonts/slkscr.ttf";
-    public nint Font = TTF_OpenFont(_fontPath, 12);
+    public nint Font = TTF_OpenFont(_fontPath, 24);
 
     private Dictionary<Scene, List<TextElementSchema>> _textElementsByScene = new Dictionary<Scene, List<TextElementSchema>>();
 
@@ -23,7 +23,7 @@ public class UIManager
             new TextElementSchema( 5, 10, 5, 5, "Exit")
             ]));
 
-        CurrentScene = Scene.MainMenu;
+        ChangeScene(Scene.MainMenu);
     }
 
     public void CreateTextElement(float coordX, float coordY, float width, float height, String text)

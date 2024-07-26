@@ -541,7 +541,7 @@ public class RenderManager
     public void RenderTextForScene(List<TextElement> elements, nint font)
     {
         // Create a surface for the text
-        var color = new SDL_Color { r = 128, g = 128, b = 128, a = 255 };
+        var color = new SDL_Color { r = 255, g = 255, b = 255, a = 255 };
 
         foreach (var element in elements)
         {
@@ -551,7 +551,13 @@ public class RenderManager
             var texture = SDL_CreateTextureFromSurface(_renderer, surface);
             // Render the text
             // Copy the texture to the current rendering target.
-            SDL_RenderCopy(_renderer, texture, (nint)null, ref ((RenderingComponent)element.GetComponent(gameObjects.Component.Rendering)).BoundingBox);
+            var dest_rect = new SDL_Rect {
+                x = ((int)((element.CoordX - _camera.CoordX) * _scaleX)) + _offsetX,
+                y = ((int)((element.CoordY - _camera.CoordY) * _scaleY)) + _offsetY,
+                w = (int)(element.Width * _scaleX),
+                h = (int)(element.Height * _scaleY)
+            };
+            SDL_RenderCopy(_renderer, texture, (nint)null, ref dest_rect);
             SDL_DestroyTexture(texture);
         }
     }
