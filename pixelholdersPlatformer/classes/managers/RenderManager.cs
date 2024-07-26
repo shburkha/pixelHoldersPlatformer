@@ -541,11 +541,11 @@ public class RenderManager
     public void RenderTextForScene(List<TextElement> elements, nint font)
     {
         // Create a surface for the text
-        var color = new SDL_Color { r = 255, g = 255, b = 255, a = 255 };
+        var color = new SDL_Color { r = 255, g = 100, b = 255, a = 255 };
 
         foreach (var element in elements)
         {
-            var surface = TTF_RenderText_Solid(font, element.GetText(), color);
+            var surface = TTF_RenderText_Solid(font, element.GetText(), color); 
 
             // Create a texture from the surface
             var texture = SDL_CreateTextureFromSurface(_renderer, surface);
@@ -559,7 +559,9 @@ public class RenderManager
             };
             SDL_RenderCopy(_renderer, texture, (nint)null, ref dest_rect);
             SDL_DestroyTexture(texture);
+
         }
+        SDL_RenderPresent(_renderer);
     }
 
     public void SetMapData(MapData mapData)

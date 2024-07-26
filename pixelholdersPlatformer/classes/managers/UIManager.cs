@@ -33,7 +33,7 @@ public class UIManager
 
     public void ChangeScene(Scene scene)
     {
-        if (scene == CurrentScene) { return; }
+        //if (scene == CurrentScene) { return; }
 
         CurrentScene = scene;
         _textElements.Clear();
