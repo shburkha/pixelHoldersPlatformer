@@ -52,10 +52,14 @@ public class CollisionManager
         }
     }
 
-    
+
     private bool isColliding(GameObject gameObject, GameObject other)
     {
         if (gameObject is Cannonball)
+        {
+            return false;
+        }
+        if (gameObject is Enemy && other is Cannonball)
         {
             return false;
         }

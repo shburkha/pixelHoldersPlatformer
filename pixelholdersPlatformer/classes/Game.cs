@@ -84,7 +84,7 @@ public class Game
         gameObjects.Add(_testEnemy2);
 
         _cannons = new List<Cannon>();
-        _cannons.Add(new Cannon(1, 11.9f, Direction.Right));
+        _cannons.Add(new Cannon(1, 12.5f, Direction.Right));
 
         foreach (var cannon in _cannons)
         {
@@ -181,15 +181,15 @@ public class Game
             switch (input)
             {
                 case InputTypes.PlayerLeft:
-                    _player.MovePlayerX(-0.3f);
+                    _player.MovePlayerX(-0.22f);
                     break;
                 case InputTypes.PlayerRight:
-                    _player.MovePlayerX(0.3f);
+                    _player.MovePlayerX(0.22f);
                     break;
                 case InputTypes.PlayerJump:
                     if (((PhysicsComponent)_player.GetComponent(Component.Physics)).Velocity.Y == 0)
                     {
-                        _player.MovePlayerY(-0.7f);
+                        _player.MovePlayerY(-0.5f);
                     }
                     break;
 

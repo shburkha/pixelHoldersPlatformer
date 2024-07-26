@@ -10,13 +10,13 @@ namespace pixelholdersPlatformer.classes.gameObjects
 {
     public class Cannon : GameObject
     {
-        private const float _width = 1.5f;
-        private const float _height = 1.1f;
+        private const float _width = 0.6f;
+        private const float _height = 0.5f;
 
         private double _timeSinceLastShot = 0.0d; //in seconds
         private const double _shootSpeed = 1.5d; //in seconds
 
-        private float[] _cannonballOffset = [0.3f, 0.2f];
+        private float[] _cannonballOffset = [0.3f, 0.1f];
 
         private Direction _direction;
         private bool _isFlipped = false;
@@ -50,7 +50,7 @@ namespace pixelholdersPlatformer.classes.gameObjects
 
             ((AnimatableComponent)GetComponent(Component.Animatable)).SetAnimationType(managers.AnimationType.Attack, _isFlipped);
 
-            return new Cannonball(CoordX + _cannonballOffset[0], CoordY + _cannonballOffset[1], 0.4f, 0.4f, _direction);
+            return new Cannonball(CoordX + _cannonballOffset[0], CoordY + _cannonballOffset[1], 0.3f, 0.3f, _direction);
         }
 
         public bool CanShoot()

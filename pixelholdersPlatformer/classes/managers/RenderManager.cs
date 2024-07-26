@@ -50,7 +50,7 @@ public class RenderManager
     //sprite pixel values for rendering them correctly
     private const int _humanKingSpriteWidth = 78;
     private const int _humanKingSpriteHeight = 58;
-    private const int _humanKingTopPadding = 10;
+    private const int _humanKingTopPadding = 5;
     private const int _humanKingLeftPadding = 15;
 
     private const int _pigKingSpriteWidth = 38;
@@ -63,8 +63,8 @@ public class RenderManager
 
     private const int _cannonSpriteHeight = 28;
     private const int _cannonSpriteWidth = 44;
-    private const int _cannonTopPadding = 0;
-    private const int _cannonLeftPadding = 0;
+    private const int _cannonTopPadding = 10;
+    private const int _cannonLeftPadding = 36;
 
 
     private const int _cannonballSpriteHeight = 11;
@@ -462,7 +462,7 @@ public class RenderManager
     {
         var player = _gameObjects.Find(t => t.GetType().Name == "Player");
 
-        if (player == null) { return; }
+        if (player == null) { return; } 
 
         Vector2 diff = new Vector2 { X = 0, Y = 0 };
 
