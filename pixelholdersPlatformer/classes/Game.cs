@@ -148,6 +148,7 @@ public class Game
                     if (((PhysicsComponent)_player.GetComponent(Component.Physics)).Velocity.Y == 0)
                     {
                         _player.MovePlayerY(-0.7f);
+                        AudioManager.Instance.PlaySound("jump");
                     }
                     break;
 
@@ -155,6 +156,9 @@ public class Game
                     if (_attackStopWatch.ElapsedMilliseconds > _attackCooldown)
                     {
                         ((AnimatableComponent)_player.GetComponent(Component.Animatable)).SetAnimationType(AnimationType.Attack, ((AnimatableComponent)_player.GetComponent(Component.Animatable)).isFlipped);
+                        // TODO fix! Not always synced with animation
+                        AudioManager.Instance.PlaySound("attack");
+                        SDL_Delay(150);
                         _attackStopWatch.Restart();
                     }
                     break;

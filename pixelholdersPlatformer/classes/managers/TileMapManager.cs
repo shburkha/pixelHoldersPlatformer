@@ -10,7 +10,7 @@ public class TileMapManager
 {
     private TiledMap _map;
     private Dictionary<int, TiledTileset> _tilesets;
-    int currentLevel = 1;
+    int _currentLevel = 1;
 
     public delegate void LevelAdvancedEventHandler();
 
@@ -39,7 +39,7 @@ public class TileMapManager
 
     public TileMapManager()
     {
-        _map = new TiledMap("assets/level1.tmx"); // tilesize is 32x32
+        _map = new TiledMap("assets/level3.tmx"); // tilesize is 32x32
         _tilesets = _map.GetTiledTilesets("assets/");
 
         foreach (var tileset in _tilesets)
@@ -199,15 +199,15 @@ public class TileMapManager
     {
         string path = "assets/level1.tmx";
 
-        switch (currentLevel)
+        switch (_currentLevel)
         {
             case 1:
                 path = "assets/level2.tmx";
-                currentLevel++;
+                _currentLevel++;
                 break;
             case 2:
                 path = "assets/level3.tmx";
-                currentLevel++;
+                _currentLevel++;
                 break;
             case 3:
                 Console.WriteLine("You have completed all levels!");

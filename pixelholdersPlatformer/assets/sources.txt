@@ -1,0 +1,10 @@
+﻿<========= SFX =========>
+jump: https://pixabay.com/sound-effects/8-bit-jump-001-171817/
+hit: https://www.youtube.com/watch?v=08EqQPIvHOU
+win: https://www.youtube.com/watch?v=teUWsONJkk8
+gameOver: https://www.youtube.com/watch?v=r35qcOHUuZs
+attack: https://pixabay.com/sound-effects/swing-whoosh-weapon-1-189819/
+runWood: https://www.youtube.com/watch?v=OZzZuNfUfR0
+runStone:
+
+<========= SPRITES =========>

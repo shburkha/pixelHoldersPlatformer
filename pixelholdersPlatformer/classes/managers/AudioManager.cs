@@ -35,9 +35,12 @@ public class AudioManager
     private void LoadSounds()
     {
         // Load your sound files here
-        _sounds["jump"] = Mix_LoadWAV("assets/SFX/jump.wav");
+        _sounds["jump"] = Mix_LoadWAV("assets/SFX/jump2.wav");
         _sounds["gameOver"] = Mix_LoadWAV("assets/SFX/gameOver.wav");
         _sounds["win"] = Mix_LoadWAV("assets/SFX/win.wav");
+        _sounds["hit"] = Mix_LoadWAV("assets/SFX/hit.wav");
+        _sounds["attack"] = Mix_LoadWAV("assets/SFX/attack.wav");
+        _sounds["runWood"] = Mix_LoadWAV("assets/SFX/runWood.wav");
     }
 
     public void PlaySound(string soundName)
