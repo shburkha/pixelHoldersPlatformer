@@ -18,17 +18,19 @@ public class UIManager
     public UIManager()
     {
         _textElementsByScene.Add(Scene.MainMenu, new List<TextElementSchema>([
-            new TextElementSchema( 5, 5, 10, 5, "Title" ), 
-            new TextElementSchema( 5, 7.5f, 5, 5, "Start"),
-            new TextElementSchema( 5, 10, 5, 5, "Exit")
+            new TextElementSchema( 5, 5, 10, 3, "Platformer"), 
+            new TextElementSchema( 5, 9, 5, 2, "Start", true),
+            new TextElementSchema( 5, 10.5f, 5, 2, "Options", true),
+            new TextElementSchema( 5, 12, 5, 2, "Exit", true)
             ]));
+        _textElementsByScene.Add(Scene.Game, new List<TextElementSchema>());
 
         ChangeScene(Scene.MainMenu);
     }
 
-    public void CreateTextElement(float coordX, float coordY, float width, float height, String text)
+    public void CreateTextElement(float coordX, float coordY, float width, float height, String text, bool isClickable = false)
     {
-        _textElements.Add(new TextElement(coordX, coordY, width, height, text));
+        _textElements.Add(new TextElement(coordX, coordY, width, height, text, isClickable));
     }
 
     public void ChangeScene(Scene scene)
@@ -56,10 +58,12 @@ public struct TextElementSchema
     public float Width;
     public float Height;
     public String Text;
+    public bool IsClickable;
 
-    public TextElementSchema(float x, float y, float w, float h, String text)
+    public TextElementSchema(float x, float y, float w, float h, String text, bool isClickable = false)
     {
         CoordX = x; CoordY = y; Width = w; Height = h; Text = text;
+        IsClickable = isClickable;
     }
 }
 

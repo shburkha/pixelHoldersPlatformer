@@ -176,6 +176,33 @@ public class Game
 
     private void ProcessInput()
     {
+        if (_uiManager.CurrentScene != Scene.Game)
+        {
+            SDL_Point mousePos = new SDL_Point();
+            var mouseState = SDL_GetMouseState(out mousePos.x, out mousePos.y);
+
+            if (SDL_BUTTON(mouseState) == 1) //true if only left mouse button is pressed
+            {
+                var clickedElement = _renderManager.GetMouseOverTextElement(_uiManager.GetCurrentSceneTextElements(), mousePos.x, mousePos.y);
+                if (clickedElement != null)
+                {
+                    switch (clickedElement.GetText())
+                    {
+                        case "Start":
+                            _uiManager.ChangeScene(Scene.Game);
+                            break;
+                        case "Options":
+                            break;
+                        case "Exit":
+                            _quit = true;
+                            break;
+                    }
+                }
+            }
+
+            return;
+        }
+
         List<InputTypes> inputs = _inputManager.GetInputs(_gamepad);
 
         foreach (var input in inputs)

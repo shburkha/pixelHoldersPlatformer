@@ -1,4 +1,5 @@
-﻿using SDL2;
+﻿using pixelholdersPlatformer.classes.gameObjects;
+using SDL2;
 using SharpDX.DirectInput;
 using System.Diagnostics;
 using static SDL2.SDL;
@@ -74,6 +75,7 @@ public class InputManager
         return keysPressed;
     }
 }
+
 
 public enum InputTypes
 {

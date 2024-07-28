@@ -10,6 +10,7 @@ using pixelholdersPlatformer.gameObjects;
 using pixelholdersPlatformer.classes.behaviours;
 using System.ComponentModel;
 using static System.Net.Mime.MediaTypeNames;
+using System.Xml.Linq;
 
 namespace pixelholdersPlatformer.classes.managers;
 
@@ -541,7 +542,7 @@ public class RenderManager
     public void RenderTextForScene(List<TextElement> elements, nint font)
     {
         // Create a surface for the text
-        var color = new SDL_Color { r = 255, g = 100, b = 255, a = 255 };
+        var color = new SDL_Color { r = 255, g = 255, b = 255, a = 255 };
 
         foreach (var element in elements)
         {
@@ -562,6 +563,32 @@ public class RenderManager
 
         }
         SDL_RenderPresent(_renderer);
+    }
+
+    public bool IsMouseOverGameObject(GameObject gameObject, int mouseX,  int mouseY)
+    {
+        SDL_Rect rect = new SDL_Rect
+        {
+            x = ((int)((gameObject.CoordX - _camera.CoordX) * _scaleX)) + _offsetX,
+            y = ((int)((gameObject.CoordY - _camera.CoordY) * _scaleY)) + _offsetY,
+            w = (int)(gameObject.Width * _scaleX),
+            h = (int)(gameObject.Height * _scaleY)
+        };
+
+        return mouseX > rect.x && mouseX < rect.x + rect.w && mouseY > rect.y && mouseY < rect.y + rect.h;
+    }
+
+    public TextElement GetMouseOverTextElement(List<TextElement> elements, int mouseX, int mouseY)
+    {
+        foreach (TextElement element in elements)
+        {
+            if (element.IsClickable && IsMouseOverGameObject(element, mouseX, mouseY))
+            {
+                return element;
+            }
+        }
+
+        return null;
     }
 
     public void SetMapData(MapData mapData)

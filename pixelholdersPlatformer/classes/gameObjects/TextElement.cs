@@ -12,15 +12,18 @@ namespace pixelholdersPlatformer.classes.gameObjects;
 public class TextElement : GameObject
 {
     private String _text;
+    public bool IsClickable = false;
 
-    public TextElement(float coordX, float coordY, float width, float height, String text) : base(coordX, coordY, width, height)
+    public TextElement(float coordX, float coordY, float width, float height, String text, bool isClickable = false) : base(coordX, coordY, width, height)
     {
         _text = text;
+        IsClickable = isClickable; 
     }
 
     public TextElement(TextElementSchema schema) : base(schema.CoordX, schema.CoordY, schema.Width, schema.Height)
     {
         _text = schema.Text;
+        IsClickable = schema.IsClickable;
     }
 
     public String GetText()
