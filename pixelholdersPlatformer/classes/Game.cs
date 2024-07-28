@@ -80,11 +80,11 @@ public class Game
 
 
         gameObjects.Add(_player);
-        gameObjects.Add(_testEnemy);
+        //gameObjects.Add(_testEnemy);
         gameObjects.Add(_testEnemy2);
 
         _cannons = new List<Cannon>();
-        _cannons.Add(new Cannon(1, 12.5f, Direction.Right));
+        //_cannons.Add(new Cannon(1, 12.5f, Direction.Right));
 
         foreach (var cannon in _cannons)
         {
@@ -181,24 +181,17 @@ public class Game
             switch (input)
             {
                 case InputTypes.PlayerLeft:
-                    _player.MovePlayerX(-0.22f);
+                    _player.HandleInput(classes.states.PlayerInput.Left);
                     break;
                 case InputTypes.PlayerRight:
-                    _player.MovePlayerX(0.22f);
+                    _player.HandleInput(classes.states.PlayerInput.Right);
                     break;
                 case InputTypes.PlayerJump:
-                    if (((PhysicsComponent)_player.GetComponent(Component.Physics)).Velocity.Y == 0)
-                    {
-                        _player.MovePlayerY(-0.5f);
-                    }
+                    _player.HandleInput(classes.states.PlayerInput.Jump);
                     break;
-
                 case InputTypes.PlayerAttack:
-                    if (_attackStopWatch.ElapsedMilliseconds > _attackCooldown)
-                    {
-                        ((AnimatableComponent)_player.GetComponent(Component.Animatable)).SetAnimationType(AnimationType.Attack, ((AnimatableComponent)_player.GetComponent(Component.Animatable)).isFlipped);
-                        _attackStopWatch.Restart();
-                    }
+                    
+                    _player.HandleInput(classes.states.PlayerInput.Attack);
                     break;
                 case InputTypes.Quit:
                     AudioManager.Instance.Dispose();

@@ -53,79 +53,76 @@ namespace pixelholdersPlatformer.classes.Component
         {
 
             
-            PhysicsComponent tmp = (PhysicsComponent)_owner.GetComponent(gameObjects.Component.Physics);
+            //PhysicsComponent tmp = (PhysicsComponent)_owner.GetComponent(gameObjects.Component.Physics);
 
-            //when on the ground this is the default velocity
-            if (tmp.Velocity.Y < 0.2 && tmp.Velocity.Y > 0)
-            {
-                if (tmp.Velocity.X < 0)
-                {
-                    SetAnimationType(AnimationType.Run, true);
-                }
-                else if (tmp.Velocity.X > 0)
-                {
-                    SetAnimationType(AnimationType.Run, false);
-                }
-                else if (tmp.Velocity.X == 0)
-                {
+            ////when on the ground this is the default velocity
+            //if (tmp.Velocity.Y < 0.2 && tmp.Velocity.Y > 0)
+            //{
+            //    if (tmp.Velocity.X < 0)
+            //    {
+            //        SetAnimationType(AnimationType.Run, true);
+            //    }
+            //    else if (tmp.Velocity.X > 0)
+            //    {
+            //        SetAnimationType(AnimationType.Run, false);
+            //    }
+            //    else if (tmp.Velocity.X == 0)
+            //    {
 
-                    if (CurrentAnimationType == AnimationType.Attack)
-                    {
-                        if (!_attackTimer.IsRunning)
-                        {
-                            _attackTimer.Start();
-                        }
-                        if (_attackTimer.ElapsedMilliseconds > _attackCooldown)
-                        {
-                            _attackTimer.Reset();
-                            SetAnimationType(AnimationType.Idle, isFlipped);
-                        }
+            //        if (CurrentAnimationType == AnimationType.Attack)
+            //        {
+            //            if (!_attackTimer.IsRunning)
+            //            {
+            //                _attackTimer.Start();
+            //            }
+            //            if (_attackTimer.ElapsedMilliseconds > _attackCooldown)
+            //            {
+            //                _attackTimer.Reset();
+            //                SetAnimationType(AnimationType.Idle, isFlipped);
+            //            }
 
-                    }
-                    else
-                    {
-                        SetAnimationType(AnimationType.Idle, isFlipped);
-                    }
-                }
-            }
-            else
-            {
-                if (tmp.Velocity.Y < 0)
-                {
-                    if (tmp.Velocity.X < 0)
-                    {
-                        SetAnimationType(AnimationType.Jump, true);
-                    }
-                    else if (tmp.Velocity.X > 0)
-                    {
-                        SetAnimationType(AnimationType.Jump, false);
-                    }
-                    else
-                    {
-                        SetAnimationType(AnimationType.Jump, isFlipped);
-                    }
+            //        }
+            //        else
+            //        {
+            //            SetAnimationType(AnimationType.Idle, isFlipped);
+            //        }
+            //    }
+            //}
+            //else
+            //{
+            //    if (tmp.Velocity.Y < 0)
+            //    {
+            //        if (tmp.Velocity.X < 0)
+            //        {
+            //            SetAnimationType(AnimationType.Jump, true);
+            //        }
+            //        else if (tmp.Velocity.X > 0)
+            //        {
+            //            SetAnimationType(AnimationType.Jump, false);
+            //        }
+            //        else
+            //        {
+            //            SetAnimationType(AnimationType.Jump, isFlipped);
+            //        }
                     
-                }
-                else if (tmp.Velocity.Y > 0)
-                {
-                    if (tmp.Velocity.X < 0)
-                    {
-                        SetAnimationType(AnimationType.Fall, true);
-                    }
+            //    }
+            //    else if (tmp.Velocity.Y > 0)
+            //    {
+            //        if (tmp.Velocity.X < 0)
+            //        {
+            //            SetAnimationType(AnimationType.Fall, true);
+            //        }
                 
-                    else if (tmp.Velocity.X > 0)
-                    {
-                        SetAnimationType(AnimationType.Fall, false);
-                    }
-                    else
-                    {
-                        SetAnimationType(AnimationType.Fall, isFlipped);
-                    }
-                    
-                }
-            
-            }
-            
+            //        else if (tmp.Velocity.X > 0)
+            //        {
+            //            SetAnimationType(AnimationType.Fall, false);
+            //        }
+            //        else
+            //        {
+            //            SetAnimationType(AnimationType.Fall, isFlipped);
+            //        }   
+            //    }          
+            //}     
         }
     }
 }
