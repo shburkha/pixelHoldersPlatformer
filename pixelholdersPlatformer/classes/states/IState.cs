@@ -13,7 +13,7 @@ namespace pixelholdersPlatformer.classes.states
     //maybe this is redundant but I wanted to make a separate enum for playerInputs
     public enum PlayerInput
     { 
-        Left, Right, Jump, Attack, None, MoveJumpLeft, MoveJumpRight, MoveFallLeft, MoveFallRight
+        Left, Right, Jump, Attack, None, MoveJumpLeft, MoveJumpRight, MoveFallLeft, MoveFallRight, Hurt
     }
 
 

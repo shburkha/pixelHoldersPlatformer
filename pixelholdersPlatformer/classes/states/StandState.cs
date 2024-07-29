@@ -35,6 +35,10 @@ namespace pixelholdersPlatformer.classes.states
             {
                 return new AttackState();
             }
+            else if (input == PlayerInput.Hurt)
+            { 
+                return new HurtState();
+            }
             else
             {
                 return this;

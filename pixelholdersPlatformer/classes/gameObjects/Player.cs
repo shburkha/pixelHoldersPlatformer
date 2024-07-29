@@ -12,7 +12,7 @@ public class Player : GameObject
 
     private float _startPosX;
     private float _startPosY;
-    private int _playerHealth;
+    public int PlayerHealth;
     private const double _invincibleTime = 1.0d; //in seconds
     private double _timeSinceLastDamage = 0.0d; //in seconds
 
@@ -32,7 +32,7 @@ public class Player : GameObject
         ((PhysicsComponent)GetComponent(Component.Physics)).CanMove = true;
         _startPosX = coordX;
         _startPosY = coordY;
-        _playerHealth = 3;
+        PlayerHealth = 3;
         _state = new StandState();
 
     }
@@ -66,7 +66,7 @@ public class Player : GameObject
     public void HurtPlayer()
     {
         if (_timeSinceLastDamage <= _invincibleTime) { return; }
-        _playerHealth -= 1;
+        PlayerHealth -= 1;
         _timeSinceLastDamage = 0;
     }
     public void SetDeltaTime(double dt)
@@ -100,7 +100,7 @@ public class Player : GameObject
 
     public override void Update()
     {
-        if (_playerHealth <= 0) { SDL_Quit(); }
+        //if (PlayerHealth <= 0) { SDL_Quit(); }
 
         _timeSinceLastDamage += ((PhysicsComponent)GetComponent(Component.Physics)).DeltaT;
         _timeSinceLastAttack += ((PhysicsComponent)GetComponent(Component.Physics)).DeltaT; // Update the attack cooldown timer

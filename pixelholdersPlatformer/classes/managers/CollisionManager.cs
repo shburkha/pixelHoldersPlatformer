@@ -38,6 +38,7 @@ public class CollisionManager
                             if (gameObject is Player && other is Cannonball)
                             {
                                 ((Player)gameObject).HurtPlayer();
+                                (gameObject as Player).HandleInput(states.PlayerInput.Hurt);
                                 overlapX = 0;
                                 overlapY = 0;
                                 continue;
