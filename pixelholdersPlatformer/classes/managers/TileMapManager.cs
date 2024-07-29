@@ -214,6 +214,7 @@ public class TileMapManager
                 AudioManager.Instance.PlaySound("win");
                 SDL_Delay(5000);
                 UIManager.Instance.ChangeScene(Scene.Win);
+                CurrentLevel = 0;
                 break;
             default:
                 Console.WriteLine("Invalid level number");

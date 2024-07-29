@@ -260,6 +260,7 @@ public class Game
                             _player.ResetPlayerPosition();
                             _player.PlayerHealth = 3;
                             _uiManager.ChangeScene(Scene.Game);
+                            TileMapManager.Instance.CurrentLevel = 1;
                             break;
                         case "Main Menu":
                             _uiManager.ChangeScene(Scene.MainMenu);
