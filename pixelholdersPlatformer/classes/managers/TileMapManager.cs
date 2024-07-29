@@ -10,7 +10,7 @@ public class TileMapManager
 {
     private TiledMap _map;
     private Dictionary<int, TiledTileset> _tilesets;
-    int currentLevel = 1;
+    public int CurrentLevel = 1;
 
     public delegate void LevelAdvancedEventHandler();
 
@@ -199,13 +199,21 @@ public class TileMapManager
     {
         string path = "assets/level1.tmx";
 
-        switch (currentLevel)
+        switch (CurrentLevel)
         {
             case 1:
                 path = "assets/level2.tmx";
+                CurrentLevel++;
                 break;
             case 2:
                 path = "assets/level3.tmx";
+                CurrentLevel++;
+                break;
+            case 3:
+                Console.WriteLine("You have completed all levels!");
+                AudioManager.Instance.PlaySound("win");
+                SDL_Delay(5000);
+                SDL_Quit();
                 break;
             default:
                 Console.WriteLine("Invalid level number");
