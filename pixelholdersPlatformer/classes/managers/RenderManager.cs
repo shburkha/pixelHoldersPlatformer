@@ -98,12 +98,10 @@ public class RenderManager
         _debugMode = true;
 
         _zoomLevel = 1;
-        int[] windowsize = new int[2];
-        SDL_GetWindowSize(_window, out windowsize[0], out windowsize[1]);
-        _scaleX = (int)(windowsize[0] / _camera.Width) / _zoomLevel;
-        _scaleY = (int)(windowsize[0] / _camera.Width) / _zoomLevel;
-        _offsetX = (int)((windowsize[0] / 2) - (_camera.Width / 2) * _scaleX);
-        _offsetY = (int)((windowsize[1] / 2) - (_camera.Height / 2) * _scaleY);
+        _scaleX = (int)(_defaultScreenWidth / _camera.Width) / _zoomLevel;
+        _scaleY = (int)(_defaultScreenWidth / _camera.Width) / _zoomLevel;
+        _offsetX = (int)((_defaultScreenWidth / 2) - (_camera.Width / 2) * _scaleX);
+        _offsetY = (int)((_defaultScreenHeight / 2) - (_camera.Height / 2) * _scaleY);
 
         _camera_rect = new SDL_Rect
         {
