@@ -50,7 +50,8 @@ public class Game
         _animationManager = new AnimationManager(_renderManager);
         _inputManager = new InputManager();
         _collisionManager = new CollisionManager();
-        _uiManager = new UIManager();
+
+        _uiManager = UIManager.Instance;
 
         gameObjects = new List<GameObject>();
         _quit = false;
@@ -170,7 +171,6 @@ public class Game
 
     private void HandleLevelAdvanced()
     {
-
         LoadMap();
     }
 
@@ -192,6 +192,24 @@ public class Game
                             _uiManager.ChangeScene(Scene.Game);
                             break;
                         case "Options":
+                            _uiManager.ChangeScene(Scene.Settings);
+                            break;
+                        case "Play Again":
+                            //TODO: add reset game method
+                            _uiManager.ChangeScene(Scene.Game);
+                            break;
+                        case "Main Menu":
+                            _uiManager.ChangeScene(Scene.MainMenu);
+                            break;
+                        case "Off":
+                            //toggle fullscreen
+                            clickedElement.SetText("On");
+                            SDL_Delay(200);
+                            break;
+                        case "On":
+                            //toggle fullscreen
+                            clickedElement.SetText("Off");
+                            SDL_Delay(200);
                             break;
                         case "Exit":
                             _quit = true;
@@ -277,7 +295,14 @@ public class Game
 
     private void Update()
     {
-        if (_uiManager.CurrentScene != Scene.Game) { return; }
+        if (_uiManager.CurrentScene != Scene.Game) //don't update game while not in the game scene
+        {
+            if (!_renderManager.IsCameraReset()) //make sure the camera is in the correct position for displaying menu ui
+            {
+                _renderManager.ResetCameraPos();
+            }
+            return;
+        }
 
         List<GameObject> objectsToAdd = new List<GameObject>();
         List<GameObject> objectsToRemove = new List<GameObject>();
@@ -323,22 +348,16 @@ public class Game
 
         switch (_uiManager.CurrentScene)
         {
-            case Scene.MainMenu:
-                _renderManager.RenderTextForScene(_uiManager.GetCurrentSceneTextElements(), _uiManager.Font);
-                break;
-
             case Scene.Game:
                 _renderManager.CenterCameraAroundPlayer();
                 _renderManager.RenderGameObjects();
                 break;
 
+            case Scene.MainMenu:
             case Scene.Settings:
-                break;
-
             case Scene.GameOver:
-                break;
-
-            case Scene.Win: 
+            case Scene.Win:
+                _renderManager.RenderTextForScene(_uiManager.GetCurrentSceneTextElements(), _uiManager.Font);
                 break;
         }
     }

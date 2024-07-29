@@ -475,6 +475,17 @@ public class RenderManager
         MoveCamera(diff.X, diff.Y);
     }
 
+    public void ResetCameraPos()
+    {
+        _camera.CoordX = 5;
+        _camera.CoordY = 5;
+    }
+
+    public bool IsCameraReset()
+    {
+        return (_camera.CoordX == 5 && _camera.CoordY == 5);
+    }
+
     private void RenderMapFromTilemap()
     {
         int[] tilesetColumns = [_mapData.Tilesets[1].Columns, _mapData.Tilesets[248].Columns];

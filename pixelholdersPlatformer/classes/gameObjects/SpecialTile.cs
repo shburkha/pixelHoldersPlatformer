@@ -29,9 +29,10 @@ namespace pixelholdersPlatformer.classes.gameObjects
                     break;
 
                 case SpecialTileType.Kill:
-                    Console.WriteLine("You Died.");
-                    SDL_Delay(500);
-                    SDL_Quit();
+                    UIManager.Instance.ChangeScene(Scene.GameOver);
+                    //Console.WriteLine("You Died.");
+                    //SDL_Delay(500);
+                    //SDL_Quit();
                     break;
             }
         }

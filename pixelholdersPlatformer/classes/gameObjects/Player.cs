@@ -1,5 +1,6 @@
 ﻿using pixelholdersPlatformer.classes.Component;
 using pixelholdersPlatformer.classes.gameObjects;
+using pixelholdersPlatformer.classes.managers;
 using static SDL2.SDL;
 
 namespace pixelholdersPlatformer.gameObjects;
@@ -70,7 +71,7 @@ public class Player : GameObject
 
     public override void Update()
     {
-        if (_playerHealth <= 0) { SDL_Quit(); }
+        if (_playerHealth <= 0) { UIManager.Instance.ChangeScene(Scene.GameOver); }
 
         _timeSinceLastDamage += ((PhysicsComponent)GetComponent(Component.Physics)).DeltaT;
 

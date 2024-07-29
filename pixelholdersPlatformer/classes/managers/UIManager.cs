@@ -15,15 +15,45 @@ public class UIManager
 
     public Scene CurrentScene;
 
+    private static UIManager _instance;
+
+    public static UIManager Instance
+    {
+        get
+        {
+            if (_instance == null)
+                _instance = new UIManager();
+            return _instance;
+        }
+    }
+
     public UIManager()
     {
         _textElementsByScene.Add(Scene.MainMenu, new List<TextElementSchema>([
             new TextElementSchema( 5, 5, 10, 3, "Platformer"), 
             new TextElementSchema( 5, 9, 5, 2, "Start", true),
             new TextElementSchema( 5, 10.5f, 5, 2, "Options", true),
-            new TextElementSchema( 5, 12, 5, 2, "Exit", true)
+            new TextElementSchema( 15, 12, 5, 2, "Exit", true)
             ]));
-        _textElementsByScene.Add(Scene.Game, new List<TextElementSchema>());
+        _textElementsByScene.Add(Scene.Game, new List<TextElementSchema>([]));
+        _textElementsByScene.Add(Scene.GameOver, new List<TextElementSchema>([
+            new TextElementSchema( 5, 5, 10, 3, "Game Over"),
+            new TextElementSchema( 5, 9, 5, 2, "Play Again", true),
+            new TextElementSchema( 5, 12, 5, 2, "Main Menu", true),
+            new TextElementSchema( 15, 12, 5, 2, "Exit", true)
+            ]));
+        _textElementsByScene.Add(Scene.Win, new List<TextElementSchema>([
+            new TextElementSchema( 5, 5, 10, 3, "You Win!"),
+            new TextElementSchema( 5, 9, 5, 2, "Play Again", true),
+            new TextElementSchema( 5, 12, 5, 2, "Main Menu", true),
+            new TextElementSchema( 15, 12, 5, 2, "Exit", true)
+            ]));
+        _textElementsByScene.Add(Scene.Settings, new List<TextElementSchema>([
+            new TextElementSchema( 5, 5, 10, 3, "Options"),
+            new TextElementSchema( 5, 9, 5, 2, "Fullscreen:"),
+            new TextElementSchema( 10.5f, 9, 3, 2, "Off", true),
+            new TextElementSchema( 5, 12, 5, 2, "Main Menu", true)
+            ]));
 
         ChangeScene(Scene.MainMenu);
     }
