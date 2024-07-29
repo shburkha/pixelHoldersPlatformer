@@ -55,13 +55,11 @@ public class CollisionManager
 
     private bool isColliding(GameObject gameObject, GameObject other)
     {
-        if (gameObject is Cannonball)
+        switch (gameObject)
         {
-            return false;
-        }
-        if (gameObject is Enemy && other is Cannonball)
-        {
-            return false;
+            case Cannonball when other is Cannonball or Enemy or Cannon or Player:
+            case Enemy when other is Cannonball:
+                return false;
         }
 
         if (((CollisionComponent)gameObject.GetComponent(gameObjects.Component.Collision)).IsCollidable && ((CollisionComponent)other.GetComponent(gameObjects.Component.Collision)).IsCollidable)
@@ -110,6 +108,12 @@ public class CollisionManager
                 else if (other is SpecialTile && gameObject is Player)
                 {
                     ((SpecialTile)other).SpecialCollision();
+                }
+
+                if(gameObject is Cannonball && other is not Player && other is not Cannonball && other is not Enemy && other is not Cannon)
+                {
+                    gameObject.CoordX = -100;
+                    gameObject.CoordY = -100;
                 }
 
                 //overlapX = other.CoordX + other.Width - gameObject.CoordX;

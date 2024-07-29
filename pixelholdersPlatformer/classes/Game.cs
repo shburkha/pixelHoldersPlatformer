@@ -19,6 +19,7 @@ public class Game
     private List<SpecialTile> _specialTiles;
 
     private List<Cannon> _cannons;
+    private List<Enemy> _enemies;
 
     Stopwatch _gameStopwatch = new Stopwatch();
     private bool _quit;
@@ -71,24 +72,20 @@ public class Game
         }
 
         //the sizes are important, don't change them please :)
-
-        _testEnemy = new Enemy(10, 10, 0.5f, 0.5f);
-        _testEnemy.AddComponent(new PigBehaviour(_testEnemy, _player, _collidableTiles));
-
-        _testEnemy2 = new Enemy(30, 10, 0.5f, 0.5f);
-        _testEnemy2.AddComponent(new PigBehaviour(_testEnemy2, _player, _collidableTiles));
-
-
         gameObjects.Add(_player);
-        gameObjects.Add(_testEnemy);
-        gameObjects.Add(_testEnemy2);
 
         _cannons = new List<Cannon>();
-        _cannons.Add(new Cannon(1, 12.5f, Direction.Right));
+        _enemies = new List<Enemy>();
+        AddEntities();
 
         foreach (var cannon in _cannons)
         {
             gameObjects.Add(cannon);
+        }
+
+        foreach (var enemy in _enemies)
+        {
+            gameObjects.Add(enemy);
         }
 
         _renderManager.SetGameObjects(gameObjects);
@@ -163,15 +160,57 @@ public class Game
         _animationManager.SetGameObjects(gameObjects);
     }
 
+    private void AddEntities()
+    {
+        // TODO remove | just for testing
+        // TileMapManager.Instance.CurrentLevel = 3;
+
+        switch (TileMapManager.Instance.CurrentLevel)
+        {
+            case 2:
+                _enemies.Add(CreatePig(28, 16));
+                _enemies.Add(CreatePig(44, 16));
+                _enemies.Add(CreatePig(58, 16));
+                _enemies.Add(CreatePig(72, 15));
+                _enemies.Add(CreatePig(81, 15));
+                break;
+            case 3:
+                _enemies.Add(CreatePig(30, 15));
+                _enemies.Add(CreatePig(45, 15));
+                _enemies.Add(CreatePig(111, 17));
+                _enemies.Add(CreatePig(121, 16));
+                _enemies.Add(CreatePig(139, 14));
+                _enemies.Add(CreatePig(147, 14));
+                _cannons.Add(new Cannon(79.5f, 10.5f, Direction.Left));
+                _cannons.Add(new Cannon(82, 11.5f, Direction.Right));
+                _cannons.Add(new Cannon(86, 12.5f, Direction.Right));
+                _cannons.Add(new Cannon(90, 13.5f, Direction.Right));
+                _cannons.Add(new Cannon(94, 14.5f, Direction.Right));
+                _cannons.Add(new Cannon(135.5f, 15.5f, Direction.Left));
+                _cannons.Add(new Cannon(154.5f, 14.5f, Direction.Left));
+                break;
+        }
+    }
+
+    private Enemy CreatePig(float x, float y)
+    {
+        Enemy enemy = new Enemy(x, y, 0.5f, 0.5f);
+        enemy.AddComponent(new PigBehaviour(enemy, _player, _collidableTiles));
+        return enemy;
+    }
+
     private void HandleLevelAdvanced()
     {
-
         LoadMap();
+        AddEntities();
     }
 
     private void ProcessInput()
     {
         List<InputTypes> inputs = _inputManager.GetInputs(_gamepad);
+
+        if (!inputs.Contains(InputTypes.PlayerLeft)
+            && !inputs.Contains(InputTypes.PlayerRight)) AudioManager.Instance.StopRunning();
 
         foreach (var input in inputs)
         {
@@ -179,9 +218,11 @@ public class Game
             {
                 case InputTypes.PlayerLeft:
                     _player.MovePlayerX(-0.22f);
+                    AudioManager.Instance.StartRunning();
                     break;
                 case InputTypes.PlayerRight:
                     _player.MovePlayerX(0.22f);
+                    AudioManager.Instance.StartRunning();
                     break;
                 case InputTypes.PlayerJump:
                     if (((PhysicsComponent)_player.GetComponent(Component.Physics)).Velocity.Y == 0)
@@ -190,6 +231,7 @@ public class Game
                         // _player.MovePlayerY(-0.7f);
                         AudioManager.Instance.PlaySound("jump");
                     }
+
                     break;
 
                 case InputTypes.PlayerAttack:
@@ -198,9 +240,9 @@ public class Game
                         ((AnimatableComponent)_player.GetComponent(Component.Animatable)).SetAnimationType(AnimationType.Attack, ((AnimatableComponent)_player.GetComponent(Component.Animatable)).isFlipped);
                         // TODO fix! Not always synced with animation
                         AudioManager.Instance.PlaySound("attack");
-                        SDL_Delay(150);
                         _attackStopWatch.Restart();
                     }
+
                     break;
                 case InputTypes.Quit:
                     AudioManager.Instance.Dispose();
@@ -255,11 +297,11 @@ public class Game
         {
             if (gameObject is Player)
             {
-                ((Player)gameObject).SetDeltaTime(_deltaT/1000d);
+                ((Player)gameObject).SetDeltaTime(_deltaT / 1000d);
             }
             else if (gameObject is Cannon)
             {
-                ((Cannon)gameObject).SetDeltaTime(_deltaT/1000d);
+                ((Cannon)gameObject).SetDeltaTime(_deltaT / 1000d);
                 if (((Cannon)gameObject).CanShoot())
                 {
                     objectsToAdd.Add(((Cannon)gameObject).Shoot());
@@ -273,14 +315,17 @@ public class Game
                     objectsToRemove.Add(gameObject);
                 }
             }
+
             gameObject.Update();
         }
+
         _collisionManager.HandleCollision();
         _animationManager.AnimateObjects();
         foreach (GameObject gameObject in objectsToAdd)
         {
             gameObjects.Add(gameObject);
         }
+
         foreach (GameObject gameObject in objectsToRemove)
         {
             gameObjects.Remove(gameObject);

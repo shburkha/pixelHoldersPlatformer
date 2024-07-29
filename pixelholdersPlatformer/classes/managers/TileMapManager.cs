@@ -10,7 +10,7 @@ public class TileMapManager
 {
     private TiledMap _map;
     private Dictionary<int, TiledTileset> _tilesets;
-    int _currentLevel = 1;
+    public int CurrentLevel = 1;
 
     public delegate void LevelAdvancedEventHandler();
 
@@ -199,15 +199,15 @@ public class TileMapManager
     {
         string path = "assets/level1.tmx";
 
-        switch (_currentLevel)
+        switch (CurrentLevel)
         {
             case 1:
                 path = "assets/level2.tmx";
-                _currentLevel++;
+                CurrentLevel++;
                 break;
             case 2:
                 path = "assets/level3.tmx";
-                _currentLevel++;
+                CurrentLevel++;
                 break;
             case 3:
                 Console.WriteLine("You have completed all levels!");
