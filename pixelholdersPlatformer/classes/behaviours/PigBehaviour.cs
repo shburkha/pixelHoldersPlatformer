@@ -76,7 +76,7 @@ namespace pixelholdersPlatformer.classes.behaviours
 
                 if (_hurtStopWatch.ElapsedMilliseconds > _hurtCooldown)
                 {
-                    AudioManager.Instance.PlaySound("hit");
+                    AudioManager.Instance.PlaySound("pigHit");
                     if (distanceX > 0)
                     {
                         
