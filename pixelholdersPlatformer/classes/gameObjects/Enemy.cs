@@ -24,7 +24,9 @@ namespace pixelholdersPlatformer.classes.gameObjects
         }
 
         public void SetEnemyType(string enemyType)
-        { 
+        {
+            Components.Remove(this.GetComponent(Component.Animatable) as AnimatableComponent);
+            Components.Add(new AnimatableComponent(this, enemyType));
             _enemyType = enemyType;
 
         }

@@ -264,7 +264,6 @@ namespace pixelholdersPlatformer.classes.managers
                             break;
 
                         case "03-Pig":
-
                             currentSprites = _pigSprites;
                             break;
 

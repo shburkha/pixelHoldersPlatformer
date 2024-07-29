@@ -53,8 +53,11 @@ public class RenderManager
     private const int _humanKingTopPadding = 5;
     private const int _humanKingLeftPadding = 15;
 
+
     private const int _pigKingSpriteWidth = 38;
     private const int _pigKingSpriteHeight = 28;
+    private const int _pigKingTopPadding = 4;
+    private const int _pigKingLeftPadding = 15;
 
     private const int _pigSpriteWidth = 34;
     private const int _pigSpriteHeight = 28;
@@ -155,6 +158,8 @@ public class RenderManager
                 case "02-King Pig":
                     currentSpriteWidthInPixels = _pigKingSpriteWidth;
                     currentSpriteHeightInPixels = _pigKingSpriteHeight;
+                    leftPadding = _pigKingLeftPadding;
+                    topPadding = _pigKingTopPadding;
                     break;
 
                 case "03-Pig":

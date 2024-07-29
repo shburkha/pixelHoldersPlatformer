@@ -10,6 +10,7 @@ using TiledCSPlus;
 using pixelholdersPlatformer.classes.behaviours;
 using pixelholdersPlatformer.classes.states;
 using System.Numerics;
+using System;
 
 namespace pixelholdersPlatformer;
 
@@ -157,6 +158,13 @@ public class Game
         switch (TileMapManager.Instance.CurrentLevel)
         {
             case 2:
+
+
+                Enemy kingPig = new Enemy(10, 10, 0.6f, 0.6f);
+                kingPig.SetEnemyType("02-King Pig");
+                kingPig.AddComponent(new PigBehaviour(kingPig, _player, _collidableTiles));
+                _enemies.Add(kingPig);
+
                 _enemies.Add(CreatePig(28, 16));
                 _enemies.Add(CreatePig(44, 16));
                 _enemies.Add(CreatePig(58, 16));
