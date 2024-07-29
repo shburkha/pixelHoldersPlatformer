@@ -161,13 +161,6 @@ public class Game
         switch (TileMapManager.Instance.CurrentLevel)
         {
             case 2:
-
-
-                Enemy kingPig = new Enemy(10, 10, 0.6f, 0.6f);
-                kingPig.SetEnemyType("02-King Pig");
-                kingPig.AddComponent(new PigBehaviour(kingPig, _player, _collidableTiles));
-                _enemies.Add(kingPig);
-
                 _enemies.Add(CreatePig(28, 16));
                 _enemies.Add(CreatePig(44, 16));
                 _enemies.Add(CreatePig(58, 16));
@@ -204,7 +197,12 @@ public class Game
                 _cannons.Add(new Cannon(90, 13.5f, Direction.Right));
                 _cannons.Add(new Cannon(94, 14.5f, Direction.Right));
                 _cannons.Add(new Cannon(135.5f, 15.5f, Direction.Left));
-                _cannons.Add(new Cannon(154.5f, 14.5f, Direction.Left));
+                _cannons.Add(new Cannon(155.5f, 14.5f, Direction.Left));
+
+                Enemy kingPig = new Enemy(185, 16, 0.6f, 0.6f);
+                kingPig.SetEnemyType("02-King Pig");
+                kingPig.AddComponent(new PigBehaviour(kingPig, _player, _collidableTiles));
+                _enemies.Add(kingPig);
                 break;
         }
 
