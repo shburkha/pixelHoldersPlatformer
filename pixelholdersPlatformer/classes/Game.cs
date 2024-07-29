@@ -87,7 +87,7 @@ public class Game
         gameObjects.Add(_testEnemy2);
 
         _cannons = new List<Cannon>();
-        _cannons.Add(new Cannon(1, 11.9f, Direction.Right));
+        _cannons.Add(new Cannon(1, 12.2f, Direction.Right));
 
         foreach (var cannon in _cannons)
         {

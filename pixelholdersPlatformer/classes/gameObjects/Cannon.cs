@@ -10,13 +10,13 @@ namespace pixelholdersPlatformer.classes.gameObjects
 {
     public class Cannon : GameObject
     {
-        private const float _width = 1.5f;
-        private const float _height = 1.1f;
+        private const float _width = 1f;
+        private const float _height = 0.8f;
 
         private double _timeSinceLastShot = 0.0d; //in seconds
         private const double _shootSpeed = 1.5d; //in seconds
 
-        private float[] _cannonballOffset = [0.3f, 0.2f];
+        private float[] _cannonballOffset = [0.3f, 0.3f];
 
         private Direction _direction;
         private bool _isFlipped = false;

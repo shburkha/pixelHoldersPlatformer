@@ -280,6 +280,19 @@ public class RenderManager
                 }
 
             }
+
+            if (gameObject is Cannon || gameObject is Cannonball)
+            {
+                ((AnimatableComponent)gameObject.GetComponent(gameObjects.Component.Animatable)).SpriteBoundingBox 
+                    = ((RenderingComponent)gameObject.GetComponent(gameObjects.Component.Rendering)).BoundingBox;
+                if (gameObject is Cannon)
+                {
+                    ((AnimatableComponent)gameObject.GetComponent(gameObjects.Component.Animatable)).SpriteBoundingBox.x -= 5;
+                    ((AnimatableComponent)gameObject.GetComponent(gameObjects.Component.Animatable)).SpriteBoundingBox.y -= 20;
+                    ((AnimatableComponent)gameObject.GetComponent(gameObjects.Component.Animatable)).SpriteBoundingBox.w += 60;
+                    ((AnimatableComponent)gameObject.GetComponent(gameObjects.Component.Animatable)).SpriteBoundingBox.h += 30;
+                }
+            }
           
         }
 
