@@ -257,7 +257,8 @@ public class Game
                             _uiManager.ChangeScene(Scene.Settings);
                             break;
                         case "Play Again":
-                            //TODO: add reset game method
+                            _player.ResetPlayerPosition();
+                            _player.PlayerHealth = 3;
                             _uiManager.ChangeScene(Scene.Game);
                             break;
                         case "Main Menu":
