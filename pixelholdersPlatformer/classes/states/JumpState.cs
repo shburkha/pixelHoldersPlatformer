@@ -1,4 +1,5 @@
-﻿using pixelholdersPlatformer.classes.managers;
+﻿using pixelholdersPlatformer.classes.Component;
+using pixelholdersPlatformer.classes.managers;
 using pixelholdersPlatformer.gameObjects;
 using System;
 using System.Collections.Generic;
@@ -16,7 +17,8 @@ namespace pixelholdersPlatformer.classes.states
         public void Enter(Player player)
         {
             _player = player;
-            _player.PlayAnimation(AnimationType.Jump);
+            bool isFlipped = (_player.GetComponent(gameObjects.Component.Animatable) as AnimatableComponent).isFlipped;
+            _player.PlayAnimation(AnimationType.Jump, isFlipped);
             _player.MovePlayerY(-0.5f); // Initial jump impulse
         }
 
@@ -40,6 +42,9 @@ namespace pixelholdersPlatformer.classes.states
             return this;
         }
 
-        public void Update(float timeStep) { }
+        public void Update(float timeStep) 
+        { 
+        
+        }
     }
 }

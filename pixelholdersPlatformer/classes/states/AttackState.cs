@@ -1,4 +1,5 @@
-﻿using pixelholdersPlatformer.gameObjects;
+﻿using pixelholdersPlatformer.classes.Component;
+using pixelholdersPlatformer.gameObjects;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,7 +16,9 @@ namespace pixelholdersPlatformer.classes.states
 
         public void Enter(Player player)
         {
-            player.PlayAnimation(managers.AnimationType.Attack);
+            bool isFlipped = (player.GetComponent(gameObjects.Component.Animatable) as AnimatableComponent).isFlipped;
+            player.PlayAnimation(managers.AnimationType.Attack, isFlipped);
+
             _elapsedTime = 0; // Reset the elapsed time on entering the state
         }
 

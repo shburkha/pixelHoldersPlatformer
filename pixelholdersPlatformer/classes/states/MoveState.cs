@@ -16,39 +16,45 @@ namespace pixelholdersPlatformer.classes.states
 
         public void Enter(Player player)
         {
-            _player = player;
-            _player.PlayAnimation(AnimationType.Run);
+            _player = player;     
         }
 
         public IState HandleInput(PlayerInput input)
         {
-            Vector2 vel = _player.GetPlayerVelocity();
 
             if (input == PlayerInput.Left)
             {
                 _player.MovePlayerX(-_player.Speed);
-                vel = _player.GetPlayerVelocity();
+                _player.PlayAnimation(AnimationType.Run, true);
+                
             }
             else if (input == PlayerInput.Right)
             {
                 _player.MovePlayerX(_player.Speed);
-                vel = _player.GetPlayerVelocity();
+                _player.PlayAnimation(AnimationType.Run, false);
+                
             }
-
-            if (input == PlayerInput.Jump)
+            else if (input == PlayerInput.Jump)
             {
                 return new JumpState();
             }
-            else if (input == PlayerInput.Attack)
+
+            if (_player.GetPlayerVelocity().Y > 0)
             {
-                return new AttackState();
+                return new FallState();
             }
-            else if (vel.X == 0)
+
+            else if (input == PlayerInput.None)
             {
                 return new StandState();
             }
 
+
+
+
+
             return this;
+            
         }
 
         public void Update(float timeStep) { }

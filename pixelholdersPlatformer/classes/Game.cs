@@ -8,6 +8,7 @@ using pixelholdersPlatformer.classes;
 using static SDL2.SDL;
 using TiledCSPlus;
 using pixelholdersPlatformer.classes.behaviours;
+using pixelholdersPlatformer.classes.states;
 
 namespace pixelholdersPlatformer;
 
@@ -37,8 +38,11 @@ public class Game
     private CollisionManager _collisionManager;
     private AnimationManager _animationManager;
 
-    private const int _attackCooldown = 500;
+    private const int _attackCooldown = 1000;
     private Stopwatch _attackStopWatch = new Stopwatch();
+
+    private const int _jumpCooldown = 100;
+    private Stopwatch _jumpStopWatch = new Stopwatch(); 
 
     Gamepad _gamepad;
     TileMapManager _tileMapManager;
@@ -104,6 +108,7 @@ public class Game
 
         _gameStopwatch.Start();
         _attackStopWatch.Start();
+        _jumpStopWatch.Start();
     }
 
     public void StartGame()
@@ -172,6 +177,9 @@ public class Game
         LoadMap();
     }
 
+
+    private PlayerInput _currentPlayerInput = PlayerInput.None;
+
     private void ProcessInput()
     {
         List<InputTypes> inputs = _inputManager.GetInputs(_gamepad);
@@ -180,19 +188,31 @@ public class Game
         {
             switch (input)
             {
+                case InputTypes.PlayerJump:
+                    if (_jumpStopWatch.ElapsedMilliseconds > _jumpCooldown)
+                    {
+                        _currentPlayerInput = PlayerInput.Jump;
+                        _jumpStopWatch.Restart();
+                    }
+                   
+                    break;
                 case InputTypes.PlayerLeft:
-                    _player.HandleInput(classes.states.PlayerInput.Left);
+                    _currentPlayerInput = PlayerInput.Left;
                     break;
                 case InputTypes.PlayerRight:
-                    _player.HandleInput(classes.states.PlayerInput.Right);
-                    break;
-                case InputTypes.PlayerJump:
-                    _player.HandleInput(classes.states.PlayerInput.Jump);
+                    _currentPlayerInput = PlayerInput.Right;
                     break;
                 case InputTypes.PlayerAttack:
-                    
-                    _player.HandleInput(classes.states.PlayerInput.Attack);
+                    if (_attackStopWatch.ElapsedMilliseconds > _attackCooldown)
+                    {
+                        _currentPlayerInput = PlayerInput.Attack;
+                        _attackStopWatch.Restart();
+                    }
+
                     break;
+
+
+
                 case InputTypes.Quit:
                     AudioManager.Instance.Dispose();
                     _quit = true;
@@ -237,6 +257,8 @@ public class Game
                     break;
             }
         }
+        _player.HandleInput(_currentPlayerInput);
+        _currentPlayerInput = PlayerInput.None;
     }
 
     private void Update()

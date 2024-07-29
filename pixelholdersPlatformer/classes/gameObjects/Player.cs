@@ -109,10 +109,9 @@ public class Player : GameObject
     }
 
 
-    public void PlayAnimation(AnimationType animation)
+    public void PlayAnimation(AnimationType animation, bool isFlipped)
     {
-        AnimatableComponent tmp = this.GetComponent(Component.Animatable) as AnimatableComponent;
-        tmp.SetAnimationType(animation, tmp.isFlipped);
+        (this.GetComponent(Component.Animatable) as AnimatableComponent).SetAnimationType(animation, isFlipped);
     }
 
     public Vector2 GetPlayerVelocity()

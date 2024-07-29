@@ -17,7 +17,8 @@ namespace pixelholdersPlatformer.classes.states
         public void Enter(Player player)
         {
             _player = player;
-            _player.PlayAnimation(AnimationType.Idle);
+            bool isFlipped = (_player.GetComponent(gameObjects.Component.Animatable) as AnimatableComponent).isFlipped;
+            _player.PlayAnimation(AnimationType.Idle, isFlipped);
         }
 
         public IState HandleInput(PlayerInput input)

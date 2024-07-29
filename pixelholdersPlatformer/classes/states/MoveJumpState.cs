@@ -1,4 +1,5 @@
-﻿using pixelholdersPlatformer.gameObjects;
+﻿using pixelholdersPlatformer.classes.Component;
+using pixelholdersPlatformer.gameObjects;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,20 +22,25 @@ namespace pixelholdersPlatformer.classes.states
         {
             Vector2 vel = _player.GetPlayerVelocity();
 
-            if (vel.Y >= 0)
+            if (input == PlayerInput.Left)
+            {
+                _player.MovePlayerX(-_player.Speed);
+                (_player.GetComponent(gameObjects.Component.Animatable) as AnimatableComponent).isFlipped = true;
+            }
+            else if (input == PlayerInput.Right)
+            {
+                _player.MovePlayerX(_player.Speed);
+                (_player.GetComponent(gameObjects.Component.Animatable) as AnimatableComponent).isFlipped = false;
+            }
+
+
+            if (vel.Y > 0)
             {
                 return new FallState();
             }
             else
             {
-                if (input == PlayerInput.Left)
-                {
-                    _player.MovePlayerX(-_player.Speed);
-                }
-                else if (input == PlayerInput.Right)
-                {
-                    _player.MovePlayerX(_player.Speed);
-                }
+                
                 return this;
             }
         }
