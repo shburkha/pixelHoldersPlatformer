@@ -4,7 +4,7 @@ hit: https://www.youtube.com/watch?v=08EqQPIvHOU
 win: https://www.youtube.com/watch?v=teUWsONJkk8
 gameOver: https://www.youtube.com/watch?v=r35qcOHUuZs
 attack: https://pixabay.com/sound-effects/swing-whoosh-weapon-1-189819/
-runWood: https://www.youtube.com/watch?v=OZzZuNfUfR0
-runStone:
+run: https://www.youtube.com/watch?v=4u8bCzEfxJM
 
 <========= SPRITES =========>
+All Sprites are taken from https://pixelfrog-assets.itch.io/kings-and-pigs

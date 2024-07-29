@@ -76,17 +76,8 @@ public class Game
 
         _cannons = new List<Cannon>();
         _enemies = new List<Enemy>();
+
         AddEntities();
-
-        foreach (var cannon in _cannons)
-        {
-            gameObjects.Add(cannon);
-        }
-
-        foreach (var enemy in _enemies)
-        {
-            gameObjects.Add(enemy);
-        }
 
         _renderManager.SetGameObjects(gameObjects);
         _collisionManager.SetGameObjects(gameObjects);
@@ -190,6 +181,16 @@ public class Game
                 _cannons.Add(new Cannon(154.5f, 14.5f, Direction.Left));
                 break;
         }
+
+        foreach (var cannon in _cannons)
+        {
+            gameObjects.Add(cannon);
+        }
+
+        foreach (var enemy in _enemies)
+        {
+            gameObjects.Add(enemy);
+        }
     }
 
     private Enemy CreatePig(float x, float y)
@@ -209,8 +210,8 @@ public class Game
     {
         List<InputTypes> inputs = _inputManager.GetInputs(_gamepad);
 
-        if (!inputs.Contains(InputTypes.PlayerLeft)
-            && !inputs.Contains(InputTypes.PlayerRight)) AudioManager.Instance.StopRunning();
+        if (!inputs.Contains(InputTypes.PlayerLeft) && !inputs.Contains(InputTypes.PlayerRight)
+            || ((PhysicsComponent)_player.GetComponent(Component.Physics)).Velocity.Y != 0) AudioManager.Instance.StopRunning();
 
         foreach (var input in inputs)
         {
