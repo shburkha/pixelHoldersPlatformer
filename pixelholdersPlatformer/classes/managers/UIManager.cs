@@ -9,7 +9,8 @@ public class UIManager
     private const String _fontPath = "assets/fonts/slkscr.ttf";
     public nint Font = TTF_OpenFont(_fontPath, 24);
 
-    private Dictionary<Scene, List<TextElementSchema>> _textElementsByScene = new Dictionary<Scene, List<TextElementSchema>>();
+    private Dictionary<Scene, List<TextElementSchema>> _textElementsByScene =
+        new Dictionary<Scene, List<TextElementSchema>>();
 
     private List<TextElement> _textElements = new List<TextElement>();
 
@@ -30,35 +31,36 @@ public class UIManager
     public UIManager()
     {
         _textElementsByScene.Add(Scene.MainMenu, new List<TextElementSchema>([
-            new TextElementSchema( 5, 5, 10, 3, "Platformer"), 
-            new TextElementSchema( 5, 9, 5, 2, "Start", true),
-            new TextElementSchema( 5, 10.5f, 5, 2, "Options", true),
-            new TextElementSchema( 15, 12, 5, 2, "Exit", true)
-            ]));
+            new TextElementSchema(5, 5, 10, 3, "Platformer"),
+            new TextElementSchema(5, 9, 5, 2, "Start", true),
+            new TextElementSchema(5, 10.5f, 5, 2, "Options", true),
+            new TextElementSchema(15, 12, 5, 2, "Exit", true)
+        ]));
         _textElementsByScene.Add(Scene.Game, new List<TextElementSchema>([]));
         _textElementsByScene.Add(Scene.GameOver, new List<TextElementSchema>([
-            new TextElementSchema( 5, 5, 10, 3, "Game Over"),
-            new TextElementSchema( 5, 9, 5, 2, "Play Again", true),
-            new TextElementSchema( 5, 12, 5, 2, "Main Menu", true),
-            new TextElementSchema( 15, 12, 5, 2, "Exit", true)
-            ]));
+            new TextElementSchema(5, 5, 10, 3, "Game Over"),
+            new TextElementSchema(5, 9, 5, 2, "Play Again", true),
+            new TextElementSchema(5, 12, 5, 2, "Main Menu", true),
+            new TextElementSchema(15, 12, 5, 2, "Exit", true)
+        ]));
         _textElementsByScene.Add(Scene.Win, new List<TextElementSchema>([
-            new TextElementSchema( 5, 5, 10, 3, "You Win!"),
-            new TextElementSchema( 5, 9, 5, 2, "Play Again", true),
-            new TextElementSchema( 5, 12, 5, 2, "Main Menu", true),
-            new TextElementSchema( 15, 12, 5, 2, "Exit", true)
-            ]));
+            new TextElementSchema(5, 5, 10, 3, "You Win!"),
+            new TextElementSchema(5, 9, 5, 2, "Play Again", true),
+            new TextElementSchema(5, 12, 5, 2, "Main Menu", true),
+            new TextElementSchema(15, 12, 5, 2, "Exit", true)
+        ]));
         _textElementsByScene.Add(Scene.Settings, new List<TextElementSchema>([
-            new TextElementSchema( 5, 5, 10, 3, "Options"),
-            new TextElementSchema( 5, 9, 5, 2, "Fullscreen:"),
-            new TextElementSchema( 10.5f, 9, 3, 2, "Off", true),
-            new TextElementSchema( 5, 12, 5, 2, "Main Menu", true)
-            ]));
+            new TextElementSchema(5, 5, 10, 3, "Options"),
+            new TextElementSchema(5, 9, 5, 2, "Fullscreen:"),
+            new TextElementSchema(10.5f, 9, 3, 2, "Off", true),
+            new TextElementSchema(5, 12, 5, 2, "Main Menu", true)
+        ]));
 
         ChangeScene(Scene.MainMenu);
     }
 
-    public void CreateTextElement(float coordX, float coordY, float width, float height, String text, bool isClickable = false)
+    public void CreateTextElement(float coordX, float coordY, float width, float height, String text,
+        bool isClickable = false)
     {
         _textElements.Add(new TextElement(coordX, coordY, width, height, text, isClickable));
     }
@@ -88,6 +90,16 @@ public class UIManager
         {
             _textElements.Add(new TextElement(schema));
         }
+
+        switch (scene)
+        {
+            case Scene.Game:
+                AudioManager.Instance.PlayBackground();
+                break;
+            case Scene.GameOver:
+                AudioManager.Instance.GameOver();
+                break;
+        }
     }
 
     public List<TextElement> GetCurrentSceneTextElements()
@@ -107,7 +119,11 @@ public struct TextElementSchema
 
     public TextElementSchema(float x, float y, float w, float h, String text, bool isClickable = false)
     {
-        CoordX = x; CoordY = y; Width = w; Height = h; Text = text;
+        CoordX = x;
+        CoordY = y;
+        Width = w;
+        Height = h;
+        Text = text;
         IsClickable = isClickable;
     }
 
@@ -119,5 +135,9 @@ public struct TextElementSchema
 
 public enum Scene
 {
-    MainMenu, Game, Settings, GameOver, Win
+    MainMenu,
+    Game,
+    Settings,
+    GameOver,
+    Win
 }

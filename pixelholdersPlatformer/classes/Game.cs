@@ -83,7 +83,7 @@ public class Game
         _enemies = new List<Enemy>();
 
         LoadMap();
-        
+
         SDL_DisplayMode _displayMode;
         SDL_GetCurrentDisplayMode(0, out _displayMode);
 

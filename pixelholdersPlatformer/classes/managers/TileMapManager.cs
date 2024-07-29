@@ -10,7 +10,7 @@ public class TileMapManager
 {
     private TiledMap _map;
     private Dictionary<int, TiledTileset> _tilesets;
-    public int CurrentLevel = 1;
+    public int CurrentLevel = 3;
 
     public delegate void LevelAdvancedEventHandler();
 
