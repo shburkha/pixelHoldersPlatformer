@@ -383,10 +383,6 @@ public class RenderManager
         }
 
     }
-
-    }
-
-
     public void RenderGameObjects()
     {
 
@@ -413,7 +409,7 @@ public class RenderManager
             {
                 DrawGameObject(gameObject);
             }
-            
+
         }
         SDL_RenderPresent(_renderer);
     }
@@ -424,7 +420,7 @@ public class RenderManager
     }
 
     public void SwitchDebugMode()
-    { 
+    {
         _debugMode = !_debugMode;
     }
 
@@ -503,7 +499,7 @@ public class RenderManager
     {
         var player = _gameObjects.Find(t => t.GetType().Name == "Player");
 
-        if (player == null) { return; } 
+        if (player == null) { return; }
 
         Vector2 diff = new Vector2 { X = 0, Y = 0 };
 
@@ -532,7 +528,7 @@ public class RenderManager
         IntPtr renderTarget = SDL_CreateTexture(_renderer,
             SDL_PIXELFORMAT_RGBA8888,
             (int)SDL_TextureAccess.SDL_TEXTUREACCESS_TARGET,
-            mapWidth, 
+            mapWidth,
             mapHeight
         );
         SDL_SetRenderTarget(_renderer, renderTarget);
@@ -595,13 +591,14 @@ public class RenderManager
 
         foreach (var element in elements)
         {
-            var surface = TTF_RenderText_Solid(font, element.GetText(), color); 
+            var surface = TTF_RenderText_Solid(font, element.GetText(), color);
 
             // Create a texture from the surface
             var texture = SDL_CreateTextureFromSurface(_renderer, surface);
             // Render the text
             // Copy the texture to the current rendering target.
-            var dest_rect = new SDL_Rect {
+            var dest_rect = new SDL_Rect
+            {
                 x = ((int)((element.CoordX - _camera.CoordX) * _scaleX)) + _offsetX,
                 y = ((int)((element.CoordY - _camera.CoordY) * _scaleY)) + _offsetY,
                 w = (int)(element.Width * _scaleX),
@@ -614,7 +611,7 @@ public class RenderManager
         SDL_RenderPresent(_renderer);
     }
 
-    public bool IsMouseOverGameObject(GameObject gameObject, int mouseX,  int mouseY)
+    public bool IsMouseOverGameObject(GameObject gameObject, int mouseX, int mouseY)
     {
         SDL_Rect rect = new SDL_Rect
         {
@@ -670,3 +667,6 @@ public class RenderManager
         return _map.Height;
     }
 }
+
+
+    
