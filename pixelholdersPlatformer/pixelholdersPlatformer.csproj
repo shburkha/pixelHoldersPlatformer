@@ -16,6 +16,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="assets\fonts\slkscr.ttf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="assets\map.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -167,6 +170,14 @@
 
   <ItemGroup>
     <Folder Include="assets\SFX\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="assets\SFX\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="assets\fonts\" />
   </ItemGroup>
 
 </Project>

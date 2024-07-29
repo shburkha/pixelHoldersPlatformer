@@ -141,7 +141,7 @@ public class Player : GameObject
 
     public override void Update()
     {
-        //if (PlayerHealth <= 0) { SDL_Quit(); }
+        if (_playerHealth <= 0) { UIManager.Instance.ChangeScene(Scene.GameOver); }
 
         _timeSinceLastDamage += ((PhysicsComponent)GetComponent(Component.Physics)).DeltaT;
         _timeSinceLastAttack += ((PhysicsComponent)GetComponent(Component.Physics)).DeltaT; // Update the attack cooldown timer

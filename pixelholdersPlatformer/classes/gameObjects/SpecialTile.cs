@@ -23,13 +23,16 @@ namespace pixelholdersPlatformer.classes.gameObjects
             {
                 case SpecialTileType.Goal:
                     TileMapManager.Instance.AdvanceLevel();
-                    SDL_Delay(500);
+                    // AudioManager.Instance.PlaySound("win");
+                    // SDL_Delay(500);
+                    // SDL_Quit();
                     break;
 
                 case SpecialTileType.Kill:
-                    Console.WriteLine("You Died.");
-                    SDL_Delay(500);
-                    SDL_Quit();
+                    UIManager.Instance.ChangeScene(Scene.GameOver);
+                    //Console.WriteLine("You Died.");
+                    //SDL_Delay(500);
+                    //SDL_Quit();
                     break;
             }
         }

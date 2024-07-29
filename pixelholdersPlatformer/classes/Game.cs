@@ -40,6 +40,7 @@ public class Game
     private InputManager _inputManager;
     private CollisionManager _collisionManager;
     private AnimationManager _animationManager;
+    private UIManager _uiManager;
 
     private const int _attackCooldown = 500;
     private Stopwatch _attackStopWatch = new Stopwatch();
@@ -56,6 +57,8 @@ public class Game
         _animationManager = new AnimationManager(_renderManager);
         _inputManager = new InputManager();
         _collisionManager = new CollisionManager();
+
+        _uiManager = UIManager.Instance;
 
         gameObjects = new List<GameObject>();
         _quit = false;
@@ -235,6 +238,47 @@ public class Game
 
     private void ProcessInput()
     {
+        if (_uiManager.CurrentScene != Scene.Game)
+        {
+            SDL_Point mousePos = new SDL_Point();
+            var mouseState = SDL_GetMouseState(out mousePos.x, out mousePos.y);
+
+            if (SDL_BUTTON(mouseState) == 1) //true if only left mouse button is pressed
+            {
+                var clickedElement = _renderManager.GetMouseOverTextElement(_uiManager.GetCurrentSceneTextElements(), mousePos.x, mousePos.y);
+                if (clickedElement != null)
+                {
+                    switch (clickedElement.GetText())
+                    {
+                        case "Start":
+                            _uiManager.ChangeScene(Scene.Game);
+                            break;
+                        case "Options":
+                            _uiManager.ChangeScene(Scene.Settings);
+                            break;
+                        case "Play Again":
+                            //TODO: add reset game method
+                            _uiManager.ChangeScene(Scene.Game);
+                            break;
+                        case "Main Menu":
+                            _uiManager.ChangeScene(Scene.MainMenu);
+                            break;
+                        case "Off":
+                        case "On":
+                            _renderManager.ChangeWindowSize();
+                            _uiManager.ToggleFullscreenStatus();
+                            SDL_Delay(200);
+                            break;
+                        case "Exit":
+                            _quit = true;
+                            break;
+                    }
+                }
+            }
+
+            return;
+        }
+
         List<InputTypes> inputs = _inputManager.GetInputs(_gamepad);
 
         if (!inputs.Contains(InputTypes.PlayerLeft) && !inputs.Contains(InputTypes.PlayerRight)
@@ -324,6 +368,15 @@ public class Game
 
     private void Update()
     {
+        if (_uiManager.CurrentScene != Scene.Game) //don't update game while not in the game scene
+        {
+            if (!_renderManager.IsCameraReset()) //make sure the camera is in the correct position for displaying menu ui
+            {
+                _renderManager.ResetCameraPos();
+            }
+            return;
+        }
+
         List<GameObject> objectsToAdd = new List<GameObject>();
         List<GameObject> objectsToRemove = new List<GameObject>();
         foreach (GameObject gameObject in gameObjects)
@@ -367,8 +420,21 @@ public class Game
 
     private void Render()
     {
-        _renderManager.CenterCameraAroundPlayer();
         _renderManager.WipeScreen();
-        _renderManager.RenderGameObjects();
+
+        switch (_uiManager.CurrentScene)
+        {
+            case Scene.Game:
+                _renderManager.CenterCameraAroundPlayer();
+                _renderManager.RenderGameObjects();
+                break;
+
+            case Scene.MainMenu:
+            case Scene.Settings:
+            case Scene.GameOver:
+            case Scene.Win:
+                _renderManager.RenderTextForScene(_uiManager.GetCurrentSceneTextElements(), _uiManager.Font);
+                break;
+        }
     }
 }

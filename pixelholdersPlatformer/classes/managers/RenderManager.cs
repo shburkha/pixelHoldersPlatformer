@@ -4,7 +4,13 @@ using SDL2;
 using TiledCSPlus;
 using System.Numerics;
 using static SDL2.SDL;
+using static SDL2.SDL_ttf;
 using SharpDX.Multimedia;
+using pixelholdersPlatformer.gameObjects;
+using pixelholdersPlatformer.classes.behaviours;
+using System.ComponentModel;
+using static System.Net.Mime.MediaTypeNames;
+using System.Xml.Linq;
 using pixelholdersPlatformer.gameObjects;
 using pixelholdersPlatformer.classes.behaviours;
 using System.ComponentModel;
@@ -31,6 +37,8 @@ public class RenderManager
 
     private GameObject _camera;
     private GameObject _map;
+
+    public bool isFullscreen = false;
 
 
     private IntPtr _mapTexture;
@@ -110,6 +118,32 @@ public class RenderManager
         };
 
         _tileSetTextures = new List<IntPtr>();
+    }
+
+    public void ChangeWindowSize()
+    {
+        if (!isFullscreen)
+        {
+            SDL_SetWindowFullscreen(_window, (uint)SDL_WindowFlags.SDL_WINDOW_FULLSCREEN);
+            isFullscreen = true;
+        }
+        else
+        {
+            SDL_SetWindowFullscreen(_window, 0);
+            SDL_SetWindowSize(_window, _defaultScreenWidth, _defaultScreenHeight);
+            isFullscreen = false;
+        }
+
+        //int windowW = 0;
+        //int windowH = 0;
+        //SDL_GetWindowSize(_window, out windowW, out windowH);
+        //float newScale = windowH / _defaultScreenHeight;
+        //SDL_RenderSetScale(_renderer, newScale, newScale);
+
+        //_scaleX = (int)(windowW / _camera.Width) / _zoomLevel;
+        //_scaleY = (int)(windowW / _camera.Width) / _zoomLevel;
+        //_offsetX = (int)((windowW / 2) - (_camera.Width / 2) * _scaleX);
+        //_offsetY = (int)((windowH / 2) - (_camera.Height / 2) * _scaleY);
     }
 
     public void SetGameObjects(List<GameObject> gameObjects)
@@ -350,6 +384,8 @@ public class RenderManager
 
     }
 
+    }
+
 
     public void RenderGameObjects()
     {
@@ -477,6 +513,17 @@ public class RenderManager
         MoveCamera(diff.X, diff.Y);
     }
 
+    public void ResetCameraPos()
+    {
+        _camera.CoordX = 5;
+        _camera.CoordY = 5;
+    }
+
+    public bool IsCameraReset()
+    {
+        return (_camera.CoordX == 5 && _camera.CoordY == 5);
+    }
+
     private void RenderMapFromTilemap()
     {
         int[] tilesetColumns = [_mapData.Tilesets[1].Columns, _mapData.Tilesets[248].Columns];
@@ -539,6 +586,58 @@ public class RenderManager
         SDL_RenderCopy(_renderer, renderTarget, IntPtr.Zero, ref renderDestRect);
 
         SDL_DestroyTexture(renderTarget);
+    }
+
+    public void RenderTextForScene(List<TextElement> elements, nint font)
+    {
+        // Create a surface for the text
+        var color = new SDL_Color { r = 255, g = 255, b = 255, a = 255 };
+
+        foreach (var element in elements)
+        {
+            var surface = TTF_RenderText_Solid(font, element.GetText(), color); 
+
+            // Create a texture from the surface
+            var texture = SDL_CreateTextureFromSurface(_renderer, surface);
+            // Render the text
+            // Copy the texture to the current rendering target.
+            var dest_rect = new SDL_Rect {
+                x = ((int)((element.CoordX - _camera.CoordX) * _scaleX)) + _offsetX,
+                y = ((int)((element.CoordY - _camera.CoordY) * _scaleY)) + _offsetY,
+                w = (int)(element.Width * _scaleX),
+                h = (int)(element.Height * _scaleY)
+            };
+            SDL_RenderCopy(_renderer, texture, (nint)null, ref dest_rect);
+            SDL_DestroyTexture(texture);
+
+        }
+        SDL_RenderPresent(_renderer);
+    }
+
+    public bool IsMouseOverGameObject(GameObject gameObject, int mouseX,  int mouseY)
+    {
+        SDL_Rect rect = new SDL_Rect
+        {
+            x = ((int)((gameObject.CoordX - _camera.CoordX) * _scaleX)) + _offsetX,
+            y = ((int)((gameObject.CoordY - _camera.CoordY) * _scaleY)) + _offsetY,
+            w = (int)(gameObject.Width * _scaleX),
+            h = (int)(gameObject.Height * _scaleY)
+        };
+
+        return mouseX > rect.x && mouseX < rect.x + rect.w && mouseY > rect.y && mouseY < rect.y + rect.h;
+    }
+
+    public TextElement GetMouseOverTextElement(List<TextElement> elements, int mouseX, int mouseY)
+    {
+        foreach (TextElement element in elements)
+        {
+            if (element.IsClickable && IsMouseOverGameObject(element, mouseX, mouseY))
+            {
+                return element;
+            }
+        }
+
+        return null;
     }
 
     public void SetMapData(MapData mapData)
