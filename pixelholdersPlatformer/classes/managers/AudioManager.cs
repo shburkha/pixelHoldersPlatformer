@@ -18,8 +18,7 @@ public class AudioManager
         _sounds = new Dictionary<string, IntPtr>();
         _isRunning = false;
         SDL_Init(SDL_INIT_AUDIO);
-        Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048);
-        // Mix_OpenAudio(44100, AUDIO_S16SYS, 2, 1024);
+        Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 3, 2048);
         LoadSounds();
     }
 
@@ -45,6 +44,7 @@ public class AudioManager
         _sounds["run"] = Mix_LoadWAV("assets/SFX/run.wav");
         _sounds["pigHit"] = Mix_LoadWAV("assets/SFX/pigHit.wav");
         _sounds["playerHit"] = Mix_LoadWAV("assets/SFX/playerHit.wav");
+        _sounds["background"] = Mix_LoadWAV("assets/SFX/precipice.wav");
     }
 
     public void PlaySound(string soundName)
@@ -53,6 +53,22 @@ public class AudioManager
         {
             Mix_PlayChannel(-1, _sounds[soundName], 0);
         }
+    }
+
+    public void PlayBackground()
+    {
+        Mix_PlayChannel(2, _sounds["background"], -1);
+    }
+
+    public void GameOver()
+    {
+        Mix_HaltChannel(2);
+        Mix_PlayChannel(2, _sounds["gameOver"], 0);
+    }
+    public void GameWon()
+    {
+        Mix_HaltChannel(2);
+        Mix_PlayChannel(2, _sounds["win"], 0);
     }
 
     public void StartRunning()
