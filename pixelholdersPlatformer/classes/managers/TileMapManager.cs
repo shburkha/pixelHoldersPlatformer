@@ -39,7 +39,7 @@ public class TileMapManager
 
     public TileMapManager()
     {
-        _map = new TiledMap("assets/level1.tmx"); // tilesize is 32x32
+        _map = new TiledMap("assets/level2.tmx"); // tilesize is 32x32
         _tilesets = _map.GetTiledTilesets("assets/");
         /*
         foreach (var tileset in _tilesets)

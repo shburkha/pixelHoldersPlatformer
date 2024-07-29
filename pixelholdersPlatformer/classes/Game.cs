@@ -60,8 +60,6 @@ public class Game
 
         LoadMap();
 
-        //_player = new Player(5, 10, 1, 1);
-
         _specialTiles = _tileMapManager.GetSpecialTiles();
         foreach (var box in _specialTiles)
         {
@@ -71,7 +69,6 @@ public class Game
             gameObjects.Add(box);
         }
 
-        //the sizes are important, don't change them please :)
         gameObjects.Add(_player);
 
         _cannons = new List<Cannon>();
@@ -154,7 +151,7 @@ public class Game
     private void AddEntities()
     {
         // TODO remove | just for testing
-        // TileMapManager.Instance.CurrentLevel = 3;
+        TileMapManager.Instance.CurrentLevel = 2;
 
         switch (TileMapManager.Instance.CurrentLevel)
         {
@@ -164,6 +161,23 @@ public class Game
                 _enemies.Add(CreatePig(58, 16));
                 _enemies.Add(CreatePig(72, 15));
                 _enemies.Add(CreatePig(81, 15));
+                _enemies.Add(CreatePig(87, 13));
+                _enemies.Add(CreatePig(94, 11));
+                _enemies.Add(CreatePig(99, 15));
+                _enemies.Add(CreatePig(117, 10));
+                _cannons.Add(new Cannon(134.5f, 6.5f, Direction.Left));
+                _cannons.Add(new Cannon(139.5f, 5.5f, Direction.Left));
+                _cannons.Add(new Cannon(147, 5.5f, Direction.Right));
+                _cannons.Add(new Cannon(160, 9.5f, Direction.Right));
+                _cannons.Add(new Cannon(170, 12.5f, Direction.Right));
+                _cannons.Add(new Cannon(169, 13.5f, Direction.Right));
+                _cannons.Add(new Cannon(179, 16.5f, Direction.Right));
+                _cannons.Add(new Cannon(178, 17.5f, Direction.Right));
+                _cannons.Add(new Cannon(177, 18.5f, Direction.Right));
+                _enemies.Add(CreatePig(158, 5));
+                _enemies.Add(CreatePig(168, 9));
+                _enemies.Add(CreatePig(188, 18));
+                _enemies.Add(CreatePig(196, 18));
                 break;
             case 3:
                 _enemies.Add(CreatePig(30, 15));
@@ -195,6 +209,7 @@ public class Game
 
     private Enemy CreatePig(float x, float y)
     {
+        //the sizes are important, don't change them please :)
         Enemy enemy = new Enemy(x, y, 0.5f, 0.5f);
         enemy.AddComponent(new PigBehaviour(enemy, _player, _collidableTiles));
         return enemy;
