@@ -39,6 +39,11 @@ namespace pixelholdersPlatformer.classes.states
                 return new JumpState();
             }
 
+            else if (input == PlayerInput.Attack)
+            {
+                return new AttackState();
+            }
+
             if (_player.GetPlayerVelocity().Y > 0)
             {
                 return new FallState();
