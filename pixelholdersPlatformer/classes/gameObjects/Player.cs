@@ -118,6 +118,8 @@ public class Player : GameObject
             if (Math.Abs(distanceX) < hitRange && Math.Abs(distanceY) < hitRange && IsThePlayerFacingTheEnemy(enemy, distanceX)) 
             { 
                 enemy.IsHurt = true;
+                enemy.HurtEnemy();
+
             }
         }
     }

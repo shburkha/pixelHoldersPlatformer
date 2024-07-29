@@ -402,6 +402,13 @@ public class Game
                     objectsToRemove.Add(gameObject);
                 }
             }
+            else if (gameObject is Enemy)
+            {
+                if ((gameObject as Enemy).EnemyHealth <= 0)
+                {
+                    objectsToRemove.Add(gameObject);
+                }
+            }
 
             gameObject.Update();
         }
