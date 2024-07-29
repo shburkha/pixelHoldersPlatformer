@@ -64,12 +64,12 @@ public class Player : GameObject
     public void PlayerToCheckpoint()
     {
         // this is to checkpoint
-        CoordX = 103;
-        CoordY = 13;
+        //CoordX = 103;
+        //CoordY = 13;
 
-        // this is to finish
-        // CoordX = 198;
-        // CoordY = 0;
+        //this is to finish
+        CoordX = 198;
+        CoordY = 0;
     }
     public void HurtPlayer()
     {

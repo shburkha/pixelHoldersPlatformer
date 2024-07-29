@@ -158,6 +158,9 @@ public class Game
 
     private void AddEntities()
     {
+
+        _enemies = new List<Enemy>();
+
         switch (TileMapManager.Instance.CurrentLevel)
         {
             case 2:
