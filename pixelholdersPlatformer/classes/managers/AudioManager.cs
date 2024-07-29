@@ -41,9 +41,10 @@ public class AudioManager
         _sounds["jump"] = Mix_LoadWAV("assets/SFX/jump.wav");
         _sounds["gameOver"] = Mix_LoadWAV("assets/SFX/gameOver.wav");
         _sounds["win"] = Mix_LoadWAV("assets/SFX/win.wav");
-        _sounds["hit"] = Mix_LoadWAV("assets/SFX/hit.wav");
         _sounds["attack"] = Mix_LoadWAV("assets/SFX/attack.wav");
         _sounds["run"] = Mix_LoadWAV("assets/SFX/run.wav");
+        _sounds["pigHit"] = Mix_LoadWAV("assets/SFX/pigHit.wav");
+        _sounds["playerHit"] = Mix_LoadWAV("assets/SFX/playerHit.wav");
     }
 
     public void PlaySound(string soundName)
