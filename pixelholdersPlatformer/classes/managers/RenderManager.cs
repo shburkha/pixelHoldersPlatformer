@@ -100,8 +100,8 @@ public class RenderManager
         _camera = new GameObject(5, 5, 16, 9);
         _map = new GameObject(0, 0, 200, 50);
 
-        _alwaysRender = true;
-        _debugMode = true;
+        _alwaysRender = false;
+        _debugMode = false;
 
         _zoomLevel = 1;
         _scaleX = (int)(_defaultScreenWidth / _camera.Width) / _zoomLevel;
