@@ -46,7 +46,7 @@ public class Player : GameObject
     {
         // this is to checkpoint
         CoordX = 103;
-        CoordY = 15;
+        CoordY = 13;
 
         // this is to finish
         // CoordX = 198;
