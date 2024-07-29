@@ -11,7 +11,7 @@ namespace pixelholdersPlatformer.classes.states
 {
     public class AttackState : IState
     {
-        private const float _attackCooldown = 0.5f;
+        private const float _attackCooldown = 0.2f;
         private float _elapsedTime;
 
         public void Enter(Player player)

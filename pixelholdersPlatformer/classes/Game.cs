@@ -64,9 +64,6 @@ public class Game
         TileMapManager.Instance.OnLevelAdvanced += HandleLevelAdvanced;
 
 
-
-        //_player = new Player(5, 10, 1, 1);
-
         _specialTiles = _tileMapManager.GetSpecialTiles();
         foreach (var box in _specialTiles)
         {
@@ -77,18 +74,12 @@ public class Game
         }
 
         //the sizes are important, don't change them please :)
-        gameObjects.Add(_player);
-
 
         _cannons = new List<Cannon>();
         _enemies = new List<Enemy>();
 
-        AddEntities();
-
-        //_renderManager.SetGameObjects(gameObjects);
-        //_collisionManager.SetGameObjects(gameObjects);
-        //_animationManager.SetGameObjects(gameObjects);
         LoadMap();
+        
         SDL_DisplayMode _displayMode;
         SDL_GetCurrentDisplayMode(0, out _displayMode);
 
@@ -153,17 +144,16 @@ public class Game
         //change no. 2
         _player = new Player(5, 10, 1, 1);
         gameObjects.Add(_player);
+        AddEntities();
         _renderManager.SetGameObjects(gameObjects);
         _collisionManager.SetGameObjects(gameObjects);
         _animationManager.SetGameObjects(gameObjects);
+
         _player.SetEnemies(gameObjects.FindAll(t => t is Enemy));
     }
 
     private void AddEntities()
     {
-        // TODO remove | just for testing
-        // TileMapManager.Instance.CurrentLevel = 3;
-
         switch (TileMapManager.Instance.CurrentLevel)
         {
             case 2:
@@ -211,7 +201,7 @@ public class Game
     private void HandleLevelAdvanced()
     {
         LoadMap();
-        AddEntities();
+        
     }
 
 
@@ -233,26 +223,17 @@ public class Game
                     {
                         _currentPlayerInput = PlayerInput.Jump;
                         _jumpStopWatch.Restart();
+                        
                     }
                    
                     break;
                 case InputTypes.PlayerLeft:
-                    _player.MovePlayerX(-0.22f);
-                    AudioManager.Instance.StartRunning();
+                    _currentPlayerInput = PlayerInput.Left;
                     break;
                 case InputTypes.PlayerRight:
-                    _player.MovePlayerX(0.22f);
-                    AudioManager.Instance.StartRunning();
+                    _currentPlayerInput = PlayerInput.Right;
                     break;
-                case InputTypes.PlayerJump:
-                    if (((PhysicsComponent)_player.GetComponent(Component.Physics)).Velocity.Y == 0)
-                    {
-                        _player.MovePlayerY(-0.5f);
-                        // _player.MovePlayerY(-0.7f);
-                        AudioManager.Instance.PlaySound("jump");
-                    }
 
-                    break;
 
                 case InputTypes.PlayerAttack:
                     if (_attackStopWatch.ElapsedMilliseconds > _attackCooldown)

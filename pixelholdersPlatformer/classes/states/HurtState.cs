@@ -21,6 +21,7 @@ namespace pixelholdersPlatformer.classes.states
             bool isFlipped = (player.GetComponent(gameObjects.Component.Animatable) as AnimatableComponent).isFlipped;
             player.PlayAnimation(AnimationType.Hit, isFlipped);
             player.HurtPlayer();
+            AudioManager.Instance.PlaySound("hit");
         }
 
         public IState HandleInput(PlayerInput input)

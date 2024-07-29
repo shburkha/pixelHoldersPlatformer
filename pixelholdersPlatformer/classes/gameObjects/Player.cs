@@ -113,11 +113,29 @@ public class Player : GameObject
 
         foreach (Enemy enemy in _enemies)
         {
-            float distance = Math.Abs((enemy.CoordX + enemy.Width/2) - (this.CoordX + this.Width/2));
-            if (distance < hitRange) 
+            float distanceX = (enemy.CoordX + enemy.Width/2) - (this.CoordX + this.Width/2);
+            float distanceY = (enemy.CoordY + enemy.Height / 2) - (this.CoordY + this.Height / 2);
+            if (Math.Abs(distanceX) < hitRange && Math.Abs(distanceY) < hitRange && IsThePlayerFacingTheEnemy(enemy, distanceX)) 
             { 
                 enemy.IsHurt = true;
             }
+        }
+    }
+
+    private bool IsThePlayerFacingTheEnemy(Enemy enemy, float distanceX)
+    {
+        AnimatableComponent pComp = GetComponent(Component.Animatable) as AnimatableComponent;
+        AnimatableComponent eComp = enemy.GetComponent(Component.Animatable) as AnimatableComponent;
+
+        //the player is to the left of the enemy
+        if (distanceX > 0)
+        {
+            return !pComp.isFlipped;
+        }
+        //the player is to the right of the enemy
+        else
+        {
+            return pComp.isFlipped;
         }
     }
 

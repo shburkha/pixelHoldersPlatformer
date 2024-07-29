@@ -20,6 +20,7 @@ namespace pixelholdersPlatformer.classes.states
             bool isFlipped = (_player.GetComponent(gameObjects.Component.Animatable) as AnimatableComponent).isFlipped;
             _player.PlayAnimation(AnimationType.Jump, isFlipped);
             _player.MovePlayerY(-0.5f); // Initial jump impulse
+            AudioManager.Instance.PlaySound("jump");
         }
 
         public IState HandleInput(PlayerInput input)

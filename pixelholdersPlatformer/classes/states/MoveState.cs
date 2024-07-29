@@ -16,7 +16,8 @@ namespace pixelholdersPlatformer.classes.states
 
         public void Enter(Player player)
         {
-            _player = player;     
+            _player = player;
+            AudioManager.Instance.StartRunning();
         }
 
         public IState HandleInput(PlayerInput input)
@@ -36,21 +37,25 @@ namespace pixelholdersPlatformer.classes.states
             }
             else if (input == PlayerInput.Jump)
             {
+                AudioManager.Instance.StopRunning();
                 return new JumpState();
             }
 
             else if (input == PlayerInput.Attack)
             {
+                AudioManager.Instance.StopRunning();
                 return new AttackState();
             }
 
             if (_player.GetPlayerVelocity().Y > 0)
             {
+                AudioManager.Instance.StopRunning();
                 return new FallState();
             }
 
             else if (input == PlayerInput.None)
             {
+                AudioManager.Instance.StopRunning();
                 return new StandState();
             }
 

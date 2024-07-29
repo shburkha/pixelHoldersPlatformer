@@ -1,5 +1,6 @@
 ﻿using pixelholdersPlatformer.classes.Component;
 using pixelholdersPlatformer.classes.gameObjects;
+using pixelholdersPlatformer.classes.managers;
 using pixelholdersPlatformer.gameObjects;
 using System;
 using System.Collections.Generic;
@@ -35,6 +36,7 @@ namespace pixelholdersPlatformer.classes.behaviours
 
         private float _previousDistanceX;
         private bool _isDirectionChanged;
+        
 
         private Random _random;
 
@@ -56,11 +58,6 @@ namespace pixelholdersPlatformer.classes.behaviours
 
         public void Update()
         {
-
-
-            
-
-
             float playerCenterX = _player.CoordX + _player.Width / 2;
             float playerCenterY = _player.CoordY + _player.Height / 2;
 
@@ -75,9 +72,11 @@ namespace pixelholdersPlatformer.classes.behaviours
                 bool isFlipped = (_owner.GetComponent(gameObjects.Component.Animatable) as AnimatableComponent).isFlipped;
                 (_owner.GetComponent(gameObjects.Component.Animatable) as AnimatableComponent).SetAnimationType(managers.AnimationType.Hit, isFlipped);
                 _hurtStopWatch.Start();
+                
 
                 if (_hurtStopWatch.ElapsedMilliseconds > _hurtCooldown)
                 {
+                    AudioManager.Instance.PlaySound("hit");
                     if (distanceX > 0)
                     {
                         
@@ -168,6 +167,7 @@ namespace pixelholdersPlatformer.classes.behaviours
                             (_owner.GetComponent(gameObjects.Component.Animatable) as AnimatableComponent).SetAnimationType(managers.AnimationType.Run, false);
                             ((PhysicsComponent)_owner.GetComponent(gameObjects.Component.Physics)).SetVelocityX(0.1f);
                         }
+
                         _isDirectionChanged = false;
                     }
                     else
@@ -175,6 +175,7 @@ namespace pixelholdersPlatformer.classes.behaviours
                         bool isFlipped = (_owner.GetComponent(gameObjects.Component.Animatable) as AnimatableComponent).isFlipped;
                         (_owner.GetComponent(gameObjects.Component.Animatable) as AnimatableComponent).SetAnimationType(managers.AnimationType.Idle, isFlipped);
                     }
+                    
                 }
             }
             else
