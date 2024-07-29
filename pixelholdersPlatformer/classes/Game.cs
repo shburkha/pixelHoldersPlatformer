@@ -202,13 +202,9 @@ public class Game
                             _uiManager.ChangeScene(Scene.MainMenu);
                             break;
                         case "Off":
-                            //toggle fullscreen
-                            clickedElement.SetText("On");
-                            SDL_Delay(200);
-                            break;
                         case "On":
-                            //toggle fullscreen
-                            clickedElement.SetText("Off");
+                            _renderManager.ChangeWindowSize();
+                            _uiManager.ToggleFullscreenStatus();
                             SDL_Delay(200);
                             break;
                         case "Exit":

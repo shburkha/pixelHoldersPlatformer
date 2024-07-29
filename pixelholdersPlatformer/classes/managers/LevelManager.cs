@@ -32,7 +32,7 @@ namespace pixelholdersPlatformer.classes.managers
                 Console.WriteLine("Congratulations! You've completed all levels.");
                 AudioManager.Instance.PlaySound("win");
                 SDL_Delay(500);
-                SDL_Quit();
+                UIManager.Instance.ChangeScene(Scene.Win);
             }
         }
     }

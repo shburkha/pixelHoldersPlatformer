@@ -63,6 +63,21 @@ public class UIManager
         _textElements.Add(new TextElement(coordX, coordY, width, height, text, isClickable));
     }
 
+    public void ToggleFullscreenStatus()
+    {
+        switch (_textElementsByScene[Scene.Settings][2].Text)
+        {
+            case "On":
+                _textElementsByScene[Scene.Settings][2] = new TextElementSchema(10.5f, 9, 3, 2, "Off", true);
+                _textElements[2].SetText("Off");
+                break;
+            case "Off":
+                _textElementsByScene[Scene.Settings][2] = new TextElementSchema(10.5f, 9, 3, 2, "On", true);
+                _textElements[2].SetText("On");
+                break;
+        }
+    }
+
     public void ChangeScene(Scene scene)
     {
         //if (scene == CurrentScene) { return; }
@@ -94,6 +109,11 @@ public struct TextElementSchema
     {
         CoordX = x; CoordY = y; Width = w; Height = h; Text = text;
         IsClickable = isClickable;
+    }
+
+    public void SetText(String text)
+    {
+        Text = text;
     }
 }
 
