@@ -213,7 +213,7 @@ public class TileMapManager
                 Console.WriteLine("You have completed all levels!");
                 AudioManager.Instance.PlaySound("win");
                 SDL_Delay(5000);
-                SDL_Quit();
+                UIManager.Instance.ChangeScene(Scene.Win);
                 break;
             default:
                 Console.WriteLine("Invalid level number");
