@@ -11,7 +11,8 @@ namespace pixelholdersPlatformer.classes.gameObjects
     public class Enemy : GameObject
     {
         private string _enemyType = "03-Pig";
-
+        
+        public bool IsHurt = false;
         public Enemy(float coordX, float coordY, float width, float height) : base(coordX, coordY, width, height)
         {
             this.Components.Add(new MovableComponent(this));

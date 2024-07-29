@@ -30,6 +30,9 @@ namespace pixelholdersPlatformer.classes.behaviours
         private Stopwatch _attackStopWatch;
         bool _attackJustHappened = false;
 
+        private Stopwatch _hurtStopWatch;
+        private const int _hurtCooldown = 250;
+
         private float _previousDistanceX;
         private bool _isDirectionChanged;
 
@@ -41,6 +44,7 @@ namespace pixelholdersPlatformer.classes.behaviours
             this._player = player;
             (_owner.GetComponent(gameObjects.Component.Animatable) as AnimatableComponent).SetAttackCooldown(_attackCooldown);
             _attackStopWatch = new Stopwatch();
+            _hurtStopWatch = new Stopwatch();
             _collidableObjects = collidableObjects;
         }
 
@@ -53,6 +57,10 @@ namespace pixelholdersPlatformer.classes.behaviours
         public void Update()
         {
 
+
+            
+
+
             float playerCenterX = _player.CoordX + _player.Width / 2;
             float playerCenterY = _player.CoordY + _player.Height / 2;
 
@@ -61,6 +69,31 @@ namespace pixelholdersPlatformer.classes.behaviours
 
             float distanceX = ownerCenterX - playerCenterX;
             float distanceY = ownerCenterY - playerCenterY;
+
+            if (_owner.IsHurt)
+            {
+                bool isFlipped = (_owner.GetComponent(gameObjects.Component.Animatable) as AnimatableComponent).isFlipped;
+                (_owner.GetComponent(gameObjects.Component.Animatable) as AnimatableComponent).SetAnimationType(managers.AnimationType.Hit, isFlipped);
+                _hurtStopWatch.Start();
+
+                if (_hurtStopWatch.ElapsedMilliseconds > _hurtCooldown)
+                {
+                    if (distanceX > 0)
+                    {
+                        
+                        ((PhysicsComponent)_owner.GetComponent(gameObjects.Component.Physics)).SetVelocityX(0.5f);
+                    }
+                    else if (distanceX < 0)
+                    {
+                        
+                        ((PhysicsComponent)_owner.GetComponent(gameObjects.Component.Physics)).SetVelocityX(-0.5f);
+                    }
+                    ((PhysicsComponent)_owner.GetComponent(gameObjects.Component.Physics)).SetVelocityY(-0.3f);
+                    _owner.IsHurt = false;
+                    _hurtStopWatch.Reset();
+                }
+                return;
+            }
 
 
             bool wouldItFallNextTime = true;

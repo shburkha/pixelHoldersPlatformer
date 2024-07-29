@@ -16,6 +16,7 @@ public class Player : GameObject
     private const double _invincibleTime = 1.0d; //in seconds
     private double _timeSinceLastDamage = 0.0d; //in seconds
 
+    private List<GameObject> _enemies;
 
 
     public float Speed = 0.25f;
@@ -35,6 +36,12 @@ public class Player : GameObject
         PlayerHealth = 3;
         _state = new StandState();
 
+    }
+
+
+    public void SetEnemies(List<GameObject> enemies)
+    {
+        _enemies = enemies;
     }
 
     public void MovePlayer(float amountX, float amountY)
@@ -94,6 +101,21 @@ public class Player : GameObject
             {
                 _state = next;
                 _state.Enter(this);
+            }
+        }
+    }
+
+
+    private const float hitRange = 2f;
+    public void HurtEnemy()
+    {
+
+        foreach (Enemy enemy in _enemies)
+        {
+            float distance = Math.Abs((enemy.CoordX + enemy.Width/2) - (this.CoordX + this.Width/2));
+            if (distance < hitRange) 
+            { 
+                enemy.IsHurt = true;
             }
         }
     }

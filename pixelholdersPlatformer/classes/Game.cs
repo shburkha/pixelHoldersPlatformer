@@ -9,6 +9,7 @@ using static SDL2.SDL;
 using TiledCSPlus;
 using pixelholdersPlatformer.classes.behaviours;
 using pixelholdersPlatformer.classes.states;
+using System.Numerics;
 
 namespace pixelholdersPlatformer;
 
@@ -38,7 +39,7 @@ public class Game
     private CollisionManager _collisionManager;
     private AnimationManager _animationManager;
 
-    private const int _attackCooldown = 1000;
+    private const int _attackCooldown = 500;
     private Stopwatch _attackStopWatch = new Stopwatch();
 
     private const int _jumpCooldown = 100;
@@ -61,7 +62,7 @@ public class Game
         _tileMapManager = TileMapManager.Instance;
         TileMapManager.Instance.OnLevelAdvanced += HandleLevelAdvanced;
 
-        LoadMap();
+
 
         //_player = new Player(5, 10, 1, 1);
 
@@ -87,18 +88,19 @@ public class Game
         gameObjects.Add(_testEnemy);
         gameObjects.Add(_testEnemy2);
 
+
         _cannons = new List<Cannon>();
-        _cannons.Add(new Cannon(1, 12.5f, Direction.Right));
+        //_cannons.Add(new Cannon(1, 12.5f, Direction.Right));
 
         foreach (var cannon in _cannons)
         {
             gameObjects.Add(cannon);
         }
 
-        _renderManager.SetGameObjects(gameObjects);
-        _collisionManager.SetGameObjects(gameObjects);
-        _animationManager.SetGameObjects(gameObjects);
-
+        //_renderManager.SetGameObjects(gameObjects);
+        //_collisionManager.SetGameObjects(gameObjects);
+        //_animationManager.SetGameObjects(gameObjects);
+        LoadMap();
         SDL_DisplayMode _displayMode;
         SDL_GetCurrentDisplayMode(0, out _displayMode);
 
@@ -169,6 +171,7 @@ public class Game
         _renderManager.SetGameObjects(gameObjects);
         _collisionManager.SetGameObjects(gameObjects);
         _animationManager.SetGameObjects(gameObjects);
+        _player.SetEnemies(gameObjects.FindAll(t => t is Enemy));
     }
 
     private void HandleLevelAdvanced()

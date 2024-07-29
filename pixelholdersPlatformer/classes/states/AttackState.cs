@@ -18,7 +18,7 @@ namespace pixelholdersPlatformer.classes.states
         {
             bool isFlipped = (player.GetComponent(gameObjects.Component.Animatable) as AnimatableComponent).isFlipped;
             player.PlayAnimation(managers.AnimationType.Attack, isFlipped);
-
+            player.HurtEnemy();
             _elapsedTime = 0; // Reset the elapsed time on entering the state
         }
 
