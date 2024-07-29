@@ -118,7 +118,7 @@ public class RenderManager
     {
         if (!isFullscreen)
         {
-            SDL_SetWindowFullscreen(_window, (uint)SDL_WindowFlags.SDL_WINDOW_FULLSCREEN_DESKTOP);
+            SDL_SetWindowFullscreen(_window, (uint)SDL_WindowFlags.SDL_WINDOW_FULLSCREEN);
             isFullscreen = true;
         }
         else
@@ -128,16 +128,16 @@ public class RenderManager
             isFullscreen = false;
         }
 
-        int windowW = 0;
-        int windowH = 0;
-        SDL_GetWindowSize(_window, out windowW, out windowH);
-        float newScale = windowH / _defaultScreenHeight;
-        SDL_RenderSetScale(_renderer, newScale, newScale);
+        //int windowW = 0;
+        //int windowH = 0;
+        //SDL_GetWindowSize(_window, out windowW, out windowH);
+        //float newScale = windowH / _defaultScreenHeight;
+        //SDL_RenderSetScale(_renderer, newScale, newScale);
 
-        _scaleX = (int)(windowW / _camera.Width) / _zoomLevel;
-        _scaleY = (int)(windowW / _camera.Width) / _zoomLevel;
-        _offsetX = (int)((windowW / 2) - (_camera.Width / 2) * _scaleX);
-        _offsetY = (int)((windowH / 2) - (_camera.Height / 2) * _scaleY);
+        //_scaleX = (int)(windowW / _camera.Width) / _zoomLevel;
+        //_scaleY = (int)(windowW / _camera.Width) / _zoomLevel;
+        //_offsetX = (int)((windowW / 2) - (_camera.Width / 2) * _scaleX);
+        //_offsetY = (int)((windowH / 2) - (_camera.Height / 2) * _scaleY);
     }
 
     public void SetGameObjects(List<GameObject> gameObjects)
@@ -446,14 +446,12 @@ public class RenderManager
 
     public void Zoom(int amount)
     {
-        int[] windowsize = new int[2];
-        SDL_GetWindowSize(_window, out windowsize[0], out windowsize[1]);
         _zoomLevel += amount;
         _zoomLevel = Math.Clamp(_zoomLevel, 1, 10); //does the same as before, just looks nicer and saves lines
-        _scaleX = (int)(windowsize[0] / _camera.Width) / _zoomLevel;
-        _scaleY = (int)(windowsize[0] / _camera.Width) / _zoomLevel;
-        _offsetX = (int)((windowsize[0] / 2) - (_camera.Width / 2) * _scaleX);
-        _offsetY = (int)((windowsize[1] / 2) - (_camera.Height / 2) * _scaleY);
+        _scaleX = (int)(_defaultScreenWidth / _camera.Width) / _zoomLevel;
+        _scaleY = (int)(_defaultScreenWidth / _camera.Width) / _zoomLevel;
+        _offsetX = (int)((_defaultScreenWidth / 2) - (_camera.Width / 2) * _scaleX);
+        _offsetY = (int)((_defaultScreenHeight / 2) - (_camera.Height / 2) * _scaleY);
 
         _camera_rect = new SDL_Rect
         {
