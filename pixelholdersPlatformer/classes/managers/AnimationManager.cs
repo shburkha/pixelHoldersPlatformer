@@ -16,9 +16,11 @@ namespace pixelholdersPlatformer.classes.managers
 {
     public class AnimationManager
     {
-        //the human king's picture height is 78px and with is 58px
-        //the pig king's picture height is 38px is 28px
-        //the pigs' picture height is 34px is 28px
+        //the human king's picture height is 78px and width is 58px
+        //the pig king's picture height is 28px and width is 38px
+        //the pigs' picture height is 28px and width is 34px
+        //the cannon's picture height is 28px and width is 44px
+        //the cannonball's picture height and width are 11px
 
         private const int _humanKingSpriteWidth = 78;
         private const int _humanKingSpriteHeight = 58;
@@ -28,12 +30,20 @@ namespace pixelholdersPlatformer.classes.managers
 
         private const int _pigSpriteWidth = 34;
         private const int _pigSpriteHeight = 28;
-        
+
+        private const int _cannonSpriteHeight = 28;
+        private const int _cannonSpriteWidth = 44;
+
+        private const int _cannonballSpriteHeight = 11;
+        private const int _cannonballSpriteWidth = 11;
+
 
         private Dictionary<string, IntPtr[]> _humanKingSprites;
         private Dictionary<string, IntPtr[]> _pigKingSprites;
         private Dictionary<string, IntPtr[]> _pigSprites;
-        
+        private Dictionary<string, IntPtr[]> _cannonSprites;
+        private Dictionary<string, IntPtr[]> _cannonballSprites;
+
         private RenderManager _renderManager;
 
         private Stopwatch _spriteChangeStopWatch;
@@ -52,8 +62,6 @@ namespace pixelholdersPlatformer.classes.managers
             _spriteChangeStopWatch = new Stopwatch();
             _spriteChangeStopWatch.Start();
             LoadAnimationSprites();
-            
-
         }
 
         private void LoadAnimationSprites()
@@ -64,7 +72,6 @@ namespace pixelholdersPlatformer.classes.managers
             {
                 LoadAnimationSprite(spriteFolderNames[i].Split("\\")[spriteFolderNames[i].Split("\\").Length-1]);
             }
-
         }
         
         private void LoadAnimationSprite(string folderName)
@@ -94,7 +101,6 @@ namespace pixelholdersPlatformer.classes.managers
                             currentSprites[i] = CreateTextureFromSurface(surface);
                         }
                         _humanKingSprites.Add(spriteName.Split("\\")[spriteName.Split("\\").Length-1].Split(" (")[0], currentSprites);
-
                     }
 
                     break;
@@ -146,7 +152,46 @@ namespace pixelholdersPlatformer.classes.managers
 
                     }
 
+                    break;
 
+                case "10-Cannon":
+                    _cannonSprites = new Dictionary<string, IntPtr[]>();
+                    foreach (string spriteName in spriteNames) 
+                    {  
+                        Image img = Image.FromFile(spriteName);
+
+                        int currentCannonSpriteCount = img.Width / _cannonSpriteWidth;
+
+                        IntPtr[] currentSprites = new IntPtr[currentCannonSpriteCount];
+
+                        IntPtr imgSurface = SDL_image.IMG_Load(spriteName);
+                        for (int i = 0; i < currentCannonSpriteCount; i++)
+                        {
+                            IntPtr surface = CreateSDLSurfaceFromImage(imgSurface, i, _cannonSpriteWidth, _cannonSpriteHeight);
+                            currentSprites[i] = CreateTextureFromSurface(surface);
+                        }
+                        _cannonSprites.Add(spriteName.Split("\\")[spriteName.Split('\\').Length - 1].Split(" (")[0], currentSprites);
+                    }
+                    break;
+
+                case "15-Cannonball":
+                    _cannonballSprites = new Dictionary<string, IntPtr[]>();
+                    foreach (string spriteName in spriteNames)
+                    {
+                        Image img = Image.FromFile(spriteName);
+
+                        int currentCannonballSpriteCount = img.Width / _cannonballSpriteWidth;
+
+                        IntPtr[] currentSprites = new IntPtr[currentCannonballSpriteCount];
+
+                        IntPtr imgSurface = SDL_image.IMG_Load(spriteName);
+                        for (int i = 0; i < currentCannonballSpriteCount; i++)
+                        {
+                            IntPtr surface = CreateSDLSurfaceFromImage(imgSurface, i, _cannonballSpriteWidth, _cannonballSpriteHeight);
+                            currentSprites[i] = CreateTextureFromSurface(surface);
+                        }
+                        _cannonballSprites.Add(spriteName.Split("\\")[spriteName.Split('\\').Length - 1].Split(" (")[0], currentSprites);
+                    }
                     break;
                 
             }
@@ -197,8 +242,7 @@ namespace pixelholdersPlatformer.classes.managers
                 if (gameObject.GetComponent(gameObjects.Component.Animatable) != null)
                 {
                     //we need to check which spriteFolder it uses
-                    //the we need to check the the animationType
-
+                    //then we need to check the the animationType
 
                     AnimatableComponent currentComponent = (AnimatableComponent)gameObject.GetComponent(gameObjects.Component.Animatable);
                     string spriteFolder = currentComponent.SpriteFolder;
@@ -224,8 +268,17 @@ namespace pixelholdersPlatformer.classes.managers
                             currentSprites = _pigSprites;
                             break;
 
+                        case "10-Cannon":
+                            currentSprites = _cannonSprites;
+                            break;
+
+                        case "15-Cannonball":
+                            currentSprites = _cannonballSprites;
+                            break;
 
                     }
+
+                    bool isCannon = gameObject is Cannon;
 
                     for (int i = 0; i < currentSprites[animationTypeInString].Length; i++)
                     {
@@ -233,19 +286,22 @@ namespace pixelholdersPlatformer.classes.managers
                         {
                             if (i == currentSprites[animationTypeInString].Length - 1)
                             {
-                                ((AnimatableComponent)gameObject.GetComponent(gameObjects.Component.Animatable)).CurrentAnimationSprite = currentSprites[animationTypeInString][0];
+                                if (isCannon)
+                                {
+                                    currentComponent.CurrentAnimationType = AnimationType.Idle;
+                                }
+                                currentComponent.CurrentAnimationSprite = currentSprites[animationTypeInString][0];
                                 break;
                             }
                             else
                             {
-                                ((AnimatableComponent)gameObject.GetComponent(gameObjects.Component.Animatable)).CurrentAnimationSprite = currentSprites[animationTypeInString][i + 1];
+                                currentComponent.CurrentAnimationSprite = currentSprites[animationTypeInString][i + 1];
                                 break;
                             }
                         }
                         else
                         {
-                            ((AnimatableComponent)gameObject.GetComponent(gameObjects.Component.Animatable)).CurrentAnimationSprite = currentSprites[animationTypeInString][0];
-                            
+                            currentComponent.CurrentAnimationSprite = currentSprites[animationTypeInString][0];
                         }
                     }
                 }

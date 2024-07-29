@@ -9,8 +9,9 @@ public class PhysicsComponent : IComponent
     private GameObject _owner;
 
     private const float _terminalVelocityY = 1;
-    public const double GRAVITY = 5.5d;
-    public const double AIR_RESISTANCE = 1.5d;
+    //TODO: make the player fall slower
+    public const double GRAVITY = 1.5f;
+    public const double AIR_RESISTANCE = 3.5d;
     public const double FRICTION = 2.5d;
 
     public double DeltaT = 0.016d;
@@ -97,6 +98,9 @@ public class PhysicsComponent : IComponent
                 }
             }
         }
-        ((MovableComponent)_owner.GetComponent(gameObjects.Component.Movable)).MoveGameObject(Velocity.X, Velocity.Y);
+        if (CanMove || HasGravity)
+        {
+            ((MovableComponent)_owner.GetComponent(gameObjects.Component.Movable)).MoveGameObject(Velocity.X, Velocity.Y);
+        }
     }
 };

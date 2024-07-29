@@ -35,8 +35,14 @@ public class CollisionManager
                     {
                         if (isColliding(gameObject, other))
                         {
-                              ((CollisionComponent)gameObject.GetComponent(gameObjects.Component.Collision)).Collide(overlapX, overlapY);
-
+                            if (gameObject is Player && other is Cannonball)
+                            {
+                                ((Player)gameObject).HurtPlayer();
+                                overlapX = 0;
+                                overlapY = 0;
+                                continue;
+                            }
+                            ((CollisionComponent)gameObject.GetComponent(gameObjects.Component.Collision)).Collide(overlapX, overlapY);
                         }
                         overlapX = 0;
                         overlapY = 0;
@@ -46,9 +52,17 @@ public class CollisionManager
         }
     }
 
-    
+
     private bool isColliding(GameObject gameObject, GameObject other)
     {
+        if (gameObject is Cannonball)
+        {
+            return false;
+        }
+        if (gameObject is Enemy && other is Cannonball)
+        {
+            return false;
+        }
 
         if (((CollisionComponent)gameObject.GetComponent(gameObjects.Component.Collision)).IsCollidable && ((CollisionComponent)other.GetComponent(gameObjects.Component.Collision)).IsCollidable)
         {
@@ -89,11 +103,11 @@ public class CollisionManager
                     overlapX = -1 * (other.CoordX + other.Width - gameObject.CoordX);
                 }
 
-                if (gameObject.GetType().Name == "SpecialTile" && other.GetType().Name == "Player")
+                if (gameObject is SpecialTile && other is Player)
                 {
                     ((SpecialTile)gameObject).SpecialCollision();
                 }
-                else if (other.GetType().Name == "SpecialTile" && gameObject.GetType().Name == "Player")
+                else if (other is SpecialTile && gameObject is Player)
                 {
                     ((SpecialTile)other).SpecialCollision();
                 }

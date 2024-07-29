@@ -7,6 +7,7 @@ using System.Diagnostics;
 using pixelholdersPlatformer.classes;
 using static SDL2.SDL;
 using TiledCSPlus;
+using pixelholdersPlatformer.classes.behaviours;
 
 namespace pixelholdersPlatformer;
 
@@ -14,13 +15,19 @@ public class Game
 {
     private List<GameObject> gameObjects;
 
-    private List<GameObject> _collidableObjects;
-    private List<SpecialTile> _specialObjects;
+    private List<GameObject> _collidableTiles;
+    private List<SpecialTile> _specialTiles;
+
+    private List<Cannon> _cannons;
 
     Stopwatch _gameStopwatch = new Stopwatch();
     private bool _quit;
 
     private Player _player;
+
+    private Enemy _testEnemy;
+    private Enemy _testEnemy2;
+
 
     private double _deltaT;
 
@@ -51,6 +58,38 @@ public class Game
         TileMapManager.Instance.OnLevelAdvanced += HandleLevelAdvanced;
 
         LoadMap();
+
+        //_player = new Player(5, 10, 1, 1);
+
+        _specialTiles = _tileMapManager.GetSpecialTiles();
+        foreach (var box in _specialTiles)
+        {
+            //box.AddComponent(new MovableComponent(box));
+            box.AddComponent(new PhysicsComponent(box));
+            box.AddComponent(new CollisionComponent(box));
+            gameObjects.Add(box);
+        }
+
+        //the sizes are important, don't change them please :)
+
+        _testEnemy = new Enemy(10, 10, 0.5f, 0.5f);
+        _testEnemy.AddComponent(new PigBehaviour(_testEnemy, _player, _collidableTiles));
+
+        _testEnemy2 = new Enemy(30, 10, 0.5f, 0.5f);
+        _testEnemy2.AddComponent(new PigBehaviour(_testEnemy2, _player, _collidableTiles));
+
+
+        gameObjects.Add(_player);
+        gameObjects.Add(_testEnemy);
+        gameObjects.Add(_testEnemy2);
+
+        _cannons = new List<Cannon>();
+        _cannons.Add(new Cannon(1, 12.5f, Direction.Right));
+
+        foreach (var cannon in _cannons)
+        {
+            gameObjects.Add(cannon);
+        }
 
         _renderManager.SetGameObjects(gameObjects);
         _collisionManager.SetGameObjects(gameObjects);
@@ -97,9 +136,9 @@ public class Game
         gameObjects = new List<GameObject>();
 
         _renderManager.SetMapData(_tileMapManager.GetMapData());
-        _collidableObjects = _tileMapManager.GetEnvironmentCollidables();
+        _collidableTiles = _tileMapManager.GetEnvironmentCollidables();
 
-        foreach (var box in _collidableObjects)
+        foreach (var box in _collidableTiles)
         {
             box.AddComponent(new MovableComponent(box));
             box.AddComponent(new PhysicsComponent(box));
@@ -107,8 +146,8 @@ public class Game
             gameObjects.Add(box);
         }
 
-        _specialObjects = _tileMapManager.GetSpecialTiles();
-        foreach (var box in _specialObjects)
+        _specialTiles = _tileMapManager.GetSpecialTiles();
+        foreach (var box in _specialTiles)
         {
             box.AddComponent(new MovableComponent(box));
             box.AddComponent(new PhysicsComponent(box));
@@ -139,15 +178,16 @@ public class Game
             switch (input)
             {
                 case InputTypes.PlayerLeft:
-                    _player.MovePlayerX(-0.3f);
+                    _player.MovePlayerX(-0.22f);
                     break;
                 case InputTypes.PlayerRight:
-                    _player.MovePlayerX(0.3f);
+                    _player.MovePlayerX(0.22f);
                     break;
                 case InputTypes.PlayerJump:
                     if (((PhysicsComponent)_player.GetComponent(Component.Physics)).Velocity.Y == 0)
                     {
-                        _player.MovePlayerY(-0.7f);
+                        _player.MovePlayerY(-0.5f);
+                        // _player.MovePlayerY(-0.7f);
                         AudioManager.Instance.PlaySound("jump");
                     }
                     break;
@@ -200,22 +240,51 @@ public class Game
                     _renderManager.CenterCameraAroundPlayer();
                     _renderManager.Zoom(1);
                     break;
+                case InputTypes.DebugMode:
+                    _renderManager.SwitchDebugMode();
+                    break;
             }
         }
     }
 
     private void Update()
     {
+        List<GameObject> objectsToAdd = new List<GameObject>();
+        List<GameObject> objectsToRemove = new List<GameObject>();
         foreach (GameObject gameObject in gameObjects)
         {
-            if (gameObject.GetType().Name == "Player")
+            if (gameObject is Player)
             {
                 ((Player)gameObject).SetDeltaTime(_deltaT/1000d);
+            }
+            else if (gameObject is Cannon)
+            {
+                ((Cannon)gameObject).SetDeltaTime(_deltaT/1000d);
+                if (((Cannon)gameObject).CanShoot())
+                {
+                    objectsToAdd.Add(((Cannon)gameObject).Shoot());
+                }
+            }
+            else if (gameObject is Cannonball)
+            {
+                ((Cannonball)gameObject).SetDeltaTime(_deltaT / 1000d);
+                if (gameObject.CoordX > _renderManager.GetMapWidth() || gameObject.CoordX < 0)
+                {
+                    objectsToRemove.Add(gameObject);
+                }
             }
             gameObject.Update();
         }
         _collisionManager.HandleCollision();
         _animationManager.AnimateObjects();
+        foreach (GameObject gameObject in objectsToAdd)
+        {
+            gameObjects.Add(gameObject);
+        }
+        foreach (GameObject gameObject in objectsToRemove)
+        {
+            gameObjects.Remove(gameObject);
+        }
     }
 
     private void Render()

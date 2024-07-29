@@ -25,6 +25,12 @@ namespace pixelholdersPlatformer.classes.gameObjects
                     TileMapManager.Instance.AdvanceLevel();
                     SDL_Delay(500);
                     break;
+
+                case SpecialTileType.Kill:
+                    Console.WriteLine("You Died.");
+                    SDL_Delay(500);
+                    SDL_Quit();
+                    break;
             }
         }
     }
@@ -32,5 +38,5 @@ namespace pixelholdersPlatformer.classes.gameObjects
 
 public enum SpecialTileType
 {
-    Goal
+    Goal, Kill
 }
